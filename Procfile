@@ -1,2 +1,1 @@
-#!/usr/bin/env node
-npm run start
+web: npm run start
