@@ -1,0 +1,26 @@
+[
+  {
+    "id": "news-1",
+    "title": "Celebrity Charity Event Raises Millions",
+    "content": "A major charity event organized by celebrities raises record-breaking funds",
+    "category": "Celebrity",
+    "author": "Prince Anisiofor",
+    "createdAt": "2026-01-03T15:44:43.214Z"
+  },
+  {
+    "id": "news-2",
+    "title": "Tech Industry Announces Major Breakthrough",
+    "content": "Major technology companies announce joint venture",
+    "category": "Technology",
+    "author": "Alex King",
+    "createdAt": "2026-01-03T15:44:43.214Z"
+  },
+  {
+    "id": "news-3",
+    "title": "Sports Championship Finals Underway",
+    "content": "Exciting championship matches happening this weekend",
+    "category": "Sports",
+    "author": "Kunle Okafor",
+    "createdAt": "2026-01-03T15:44:43.214Z"
+  }
+]

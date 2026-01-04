@@ -1,0 +1,23 @@
+[
+  {
+    "id": "channel-1",
+    "name": "Entertainment News",
+    "description": "Latest entertainment industry news",
+    "members": 456,
+    "createdAt": "2026-01-03T15:44:43.212Z"
+  },
+  {
+    "id": "channel-2",
+    "name": "Sports Updates",
+    "description": "Sports scores and updates",
+    "members": 789,
+    "createdAt": "2026-01-03T15:44:43.212Z"
+  },
+  {
+    "id": "channel-3",
+    "name": "Politics & Government",
+    "description": "Political news and government updates",
+    "members": 634,
+    "createdAt": "2026-01-03T15:44:43.212Z"
+  }
+]

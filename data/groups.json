@@ -1,0 +1,23 @@
+[
+  {
+    "id": "group-1",
+    "name": "Celebrity Gossip Central",
+    "description": "All the latest celebrity news and entertainment updates",
+    "members": 245,
+    "createdAt": "2026-01-03T15:44:43.208Z"
+  },
+  {
+    "id": "group-2",
+    "name": "Breaking News Hub",
+    "description": "Real-time breaking news and current events",
+    "members": 512,
+    "createdAt": "2026-01-03T15:44:43.208Z"
+  },
+  {
+    "id": "group-3",
+    "name": "Viral Trends",
+    "description": "Share and discuss viral content",
+    "members": 1023,
+    "createdAt": "2026-01-03T15:44:43.208Z"
+  }
+]
