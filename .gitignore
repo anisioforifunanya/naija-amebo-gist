@@ -11,6 +11,7 @@ node_modules/
 /dist
 /.next
 /out
+tsconfig.tsbuildinfo
 
 # Misc
 .DS_Store
