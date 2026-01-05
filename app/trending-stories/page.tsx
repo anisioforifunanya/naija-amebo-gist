@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
+import NewsCarousel from '../../components/NewsCarousel';
 
 interface NewsItem {
   id: string;
@@ -81,6 +82,8 @@ export default function TrendingStories() {
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
+        {/* News Carousel */}
+        <NewsCarousel items={newsItems} title="Featured Trending Stories" />
       </div>
     </div>
   )
