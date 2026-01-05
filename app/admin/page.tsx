@@ -1008,6 +1008,13 @@ export default function AdminDashboard() {
                 <span className="text-lg">💬</span>
                 <span>Messages</span>
               </Link>
+              <Link
+                href="/setup-demo"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:from-yellow-600 hover:to-orange-600 font-semibold transition-all shadow-md hover:shadow-lg"
+              >
+                <span className="text-lg">🚀</span>
+                <span>Setup Demo</span>
+              </Link>
             </div>
           </div>
         </div>
