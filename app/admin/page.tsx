@@ -130,11 +130,24 @@ export default function AdminDashboard() {
   })
   const [isMounted, setIsMounted] = useState(false)
 
-  const loadAllData = () => {
-    // Load admins
-    const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
-    console.log('[AdminDashboard] All admins:', admins)
-    setAllAdmins(admins)
+  const loadAllData = async () => {
+    try {
+      // Load admins from Firebase Firestore
+      const { db } = await import('@/lib/firebase')
+      const { collection, getDocs } = await import('firebase/firestore')
+      const adminsSnapshot = await getDocs(collection(db, 'admins'))
+      const admins = adminsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as AdminData[]
+      console.log('[AdminDashboard] All admins from Firebase:', admins)
+      setAllAdmins(admins)
+    } catch (error) {
+      console.error('[AdminDashboard] Error loading admins from Firebase:', error)
+      // Fallback to localStorage
+      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      setAllAdmins(admins)
+    }
 
     // Load admin requests - FORCE RELOAD
     const requests = JSON.parse(localStorage.getItem('adminRequests') || '[]')
@@ -142,30 +155,27 @@ export default function AdminDashboard() {
     console.log('[AdminDashboard] Number of pending requests:', requests.filter((r: any) => r.status === 'pending').length)
     setAdminRequests(requests)
 
-    // Load users
-    const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
-    setAllUsers(users)
+    // Load users from Firebase Firestore
+    try {
+      const { db } = await import('@/lib/firebase')
+      const { collection, getDocs } = await import('firebase/firestore')
+      const usersSnapshot = await getDocs(collection(db, 'users'))
+      const users = usersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as any[]
+      console.log('[AdminDashboard] All users from Firebase:', users)
+      setAllUsers(users)
+    } catch (error) {
+      console.error('[AdminDashboard] Error loading users from Firebase:', error)
+      // Fallback to localStorage
+      const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+      setAllUsers(users)
+    }
 
     // Load messages
     const messages = JSON.parse(localStorage.getItem('naijaAmeboChatMessages') || '[]')
     setAllMessages(messages)
-
-    // FORCE UPDATE: Ensure currentAdmin has latest isSuperAdmin status
-    const sessionAdmin = localStorage.getItem('naijaAmeboCurrentAdmin')
-    if (sessionAdmin) {
-      try {
-        const admin = JSON.parse(sessionAdmin)
-        const freshAdmin = admins.find((a: any) => a.id === admin.id)
-        if (freshAdmin) {
-          const updatedAdmin = { ...admin, isSuperAdmin: freshAdmin.isSuperAdmin || false }
-          console.log('[AdminDashboard] FORCE UPDATED currentAdmin:', updatedAdmin)
-          setCurrentAdmin(updatedAdmin)
-          localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(updatedAdmin))
-        }
-      } catch (e) {
-        console.error('[AdminDashboard] Error updating currentAdmin:', e)
-      }
-    }
   }
 
   const forceRefreshRequests = () => {
@@ -357,7 +367,7 @@ export default function AdminDashboard() {
           setIsLoggedIn(true)
           setLoginStep('email') // Reset for next session
           localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(adminWithSuperAdminFlag))
-          loadAllData()
+          await loadAllData()
         } else {
           alert('Admin profile not found. Please contact support.')
           setLoginForm({ ...loginForm, password: '' })
