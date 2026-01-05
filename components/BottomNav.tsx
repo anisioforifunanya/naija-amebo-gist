@@ -8,6 +8,7 @@ export default function BottomNav() {
   const isActive = (href: string) => pathname === href
 
   const navItems = [
+    { href: '/features', label: 'Features', icon: '✨' },
     { href: '/private-messages', label: 'Messages', icon: '💬' },
     { href: '/group-chats', label: 'Groups', icon: '👥' },
     { href: '/channels', label: 'Channels', icon: '#' },
@@ -15,7 +16,6 @@ export default function BottomNav() {
     { href: '/gossip', label: 'Gossip', icon: '💬' },
     { href: '/galleries', label: 'Photos', icon: '📸' },
     { href: '/polls', label: 'Polls', icon: '🗳️' },
-    { href: '/feedback', label: 'Tip-Off', icon: '📮' },
   ]
 
   return (

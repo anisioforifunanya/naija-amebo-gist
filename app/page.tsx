@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
+import FeaturesWidget from '../components/FeaturesWidget';
 
 interface UserData {
   id: string;
@@ -269,6 +270,9 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* Features Widget */}
+        <FeaturesWidget />
 
       </div>
     </div>

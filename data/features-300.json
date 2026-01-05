@@ -1,0 +1,1756 @@
+{
+  "categories": [
+    {
+      "id": "celebrity-tools",
+      "name": "Celebrity Tools",
+      "icon": "⭐",
+      "description": "Tools for analyzing and comparing celebrities",
+      "features": [
+        {
+          "id": 101,
+          "name": "Celebrity Comparison Tool",
+          "description": "Compare two celebrities (net worth, awards, popularity)",
+          "status": "active",
+          "icon": "⚖️",
+          "href": "/features/celebrity-comparison"
+        },
+        {
+          "id": 102,
+          "name": "Trending Hashtags Tracker",
+          "description": "Displays hot hashtags on X, TikTok, Instagram",
+          "status": "active",
+          "icon": "#️⃣",
+          "href": "/features/trending-hashtags"
+        },
+        {
+          "id": 103,
+          "name": "Meme Gallery Section",
+          "description": "Curated celebrity memes and funny viral moments",
+          "status": "active",
+          "icon": "😂",
+          "href": "/features/meme-gallery"
+        },
+        {
+          "id": 104,
+          "name": "Meme Generator Tool",
+          "description": "Create memes using celebrity images",
+          "status": "coming",
+          "icon": "🎨",
+          "href": "/features/meme-generator"
+        },
+        {
+          "id": 105,
+          "name": "Celebrity Voice AI Reads",
+          "description": "AI voice reads celebrity gists like radio news",
+          "status": "coming",
+          "icon": "🎙️",
+          "href": "/features/ai-voice-reads"
+        },
+        {
+          "id": 106,
+          "name": "Daily Gist Countdown",
+          "description": "Countdown timer for next major gist update",
+          "status": "active",
+          "icon": "⏱️",
+          "href": "/features/gist-countdown"
+        },
+        {
+          "id": 107,
+          "name": "Breaking Gist Sound Alerts",
+          "description": "Sound notification when major gist drops",
+          "status": "coming",
+          "icon": "🔔",
+          "href": "/features/sound-alerts"
+        },
+        {
+          "id": 108,
+          "name": "Celebrity Birthday Alerts",
+          "description": "Notifies users of celebrity birthdays",
+          "status": "active",
+          "icon": "🎂",
+          "href": "/features/birthday-alerts"
+        },
+        {
+          "id": 109,
+          "name": "Anniversary & Throwback Posts",
+          "description": "Highlights throwback moments and anniversaries",
+          "status": "active",
+          "icon": "📅",
+          "href": "/features/anniversaries"
+        },
+        {
+          "id": 110,
+          "name": "Flashback Friday Feature",
+          "description": "Weekly nostalgic celebrity content",
+          "status": "active",
+          "icon": "📸",
+          "href": "/features/flashback-friday"
+        }
+      ]
+    },
+    {
+      "id": "community",
+      "name": "Community Features",
+      "icon": "👥",
+      "description": "Engage with the community and participate",
+      "features": [
+        {
+          "id": 111,
+          "name": "Fan Prediction Section",
+          "description": "Fans predict award winners, breakups, hits",
+          "status": "active",
+          "icon": "🔮",
+          "href": "/features/fan-predictions"
+        },
+        {
+          "id": 112,
+          "name": "Opinion Poll Archive",
+          "description": "Stores past polls and voting results",
+          "status": "active",
+          "icon": "📊",
+          "href": "/features/poll-archive"
+        },
+        {
+          "id": 113,
+          "name": "Comment-to-Post Feature",
+          "description": "Top comments become standalone posts",
+          "status": "coming",
+          "icon": "💬",
+          "href": "/features/comment-to-post"
+        },
+        {
+          "id": 114,
+          "name": "Fan Shoutout Feature",
+          "description": "Highlights loyal fans on homepage",
+          "status": "active",
+          "icon": "📢",
+          "href": "/features/fan-shoutouts"
+        },
+        {
+          "id": 115,
+          "name": "Community Hall of Fame",
+          "description": "Lists top contributors and long-term followers",
+          "status": "active",
+          "icon": "🏆",
+          "href": "/features/hall-of-fame"
+        },
+        {
+          "id": 116,
+          "name": "User Profile Pages",
+          "description": "Each registered user has a profile",
+          "status": "active",
+          "icon": "👤",
+          "href": "/features/user-profiles"
+        },
+        {
+          "id": 117,
+          "name": "Comment Editing Feature",
+          "description": "Edit comments within time limit",
+          "status": "coming",
+          "icon": "✏️",
+          "href": "/features/comment-editing"
+        },
+        {
+          "id": 118,
+          "name": "Comment Reply Threads",
+          "description": "Deep conversation threads",
+          "status": "coming",
+          "icon": "🧵",
+          "href": "/features/reply-threads"
+        },
+        {
+          "id": 119,
+          "name": "GIF Comment Support",
+          "description": "React using GIFs",
+          "status": "coming",
+          "icon": "🎬",
+          "href": "/features/gif-reactions"
+        },
+        {
+          "id": 120,
+          "name": "Voice Comment Feature",
+          "description": "Leave short voice reactions",
+          "status": "coming",
+          "icon": "🎤",
+          "href": "/features/voice-comments"
+        }
+      ]
+    },
+    {
+      "id": "content-creation",
+      "name": "Content Creation & Localization",
+      "icon": "✍️",
+      "description": "Create and customize content",
+      "features": [
+        {
+          "id": 121,
+          "name": "Multi-Language Translation",
+          "description": "Auto-translates to Yoruba, Igbo, Hausa, English",
+          "status": "coming",
+          "icon": "🌍",
+          "href": "/features/translations"
+        },
+        {
+          "id": 122,
+          "name": "Slang-Friendly Writing Mode",
+          "description": "Uses Naija slang tone for posts",
+          "status": "coming",
+          "icon": "🗣️",
+          "href": "/features/slang-mode"
+        },
+        {
+          "id": 123,
+          "name": "Tone Switch Button",
+          "description": "Switch between Serious, Savage, or Soft",
+          "status": "coming",
+          "icon": "😎",
+          "href": "/features/tone-switch"
+        },
+        {
+          "id": 124,
+          "name": "Audio-to-Text Gist Upload",
+          "description": "Converts voice gist to text automatically",
+          "status": "coming",
+          "icon": "🎙️",
+          "href": "/features/audio-to-text"
+        },
+        {
+          "id": 125,
+          "name": "Screenshot-to-Text Extractor",
+          "description": "Extracts text from screenshots",
+          "status": "coming",
+          "icon": "📷",
+          "href": "/features/screenshot-text"
+        },
+        {
+          "id": 126,
+          "name": "Image Watermark System",
+          "description": "Automatically brands all images",
+          "status": "active",
+          "icon": "🎯",
+          "href": "/features/watermarks"
+        },
+        {
+          "id": 127,
+          "name": "Video Watermark Branding",
+          "description": "Protects video content from theft",
+          "status": "coming",
+          "icon": "🎬",
+          "href": "/features/video-watermarks"
+        },
+        {
+          "id": 128,
+          "name": "Content Theft Detection",
+          "description": "Detects reposts on other platforms",
+          "status": "coming",
+          "icon": "🚨",
+          "href": "/features/theft-detection"
+        },
+        {
+          "id": 129,
+          "name": "Auto Copyright Claim System",
+          "description": "Flags stolen content automatically",
+          "status": "coming",
+          "icon": "©️",
+          "href": "/features/copyright-claims"
+        },
+        {
+          "id": 130,
+          "name": "Exclusive Content Lock",
+          "description": "Premium or members-only gist",
+          "status": "coming",
+          "icon": "🔒",
+          "href": "/features/content-lock"
+        }
+      ]
+    },
+    {
+      "id": "monetization",
+      "name": "Monetization & Membership",
+      "icon": "💰",
+      "description": "Revenue and membership management",
+      "features": [
+        {
+          "id": 131,
+          "name": "VIP Membership Program",
+          "description": "Paid membership for early access",
+          "status": "coming",
+          "icon": "👑",
+          "href": "/features/vip-membership"
+        },
+        {
+          "id": 132,
+          "name": "Ad-Free Mode",
+          "description": "Remove ads for premium users",
+          "status": "coming",
+          "icon": "🚫",
+          "href": "/features/ad-free"
+        },
+        {
+          "id": 133,
+          "name": "Donation & Support Button",
+          "description": "Fans support platform financially",
+          "status": "active",
+          "icon": "❤️",
+          "href": "/features/donations"
+        },
+        {
+          "id": 134,
+          "name": "Affiliate Product Listings",
+          "description": "Links celebrity-used products",
+          "status": "coming",
+          "icon": "🛍️",
+          "href": "/features/affiliates"
+        },
+        {
+          "id": 135,
+          "name": "Ticket Sales Integration",
+          "description": "Sell concert or event tickets",
+          "status": "coming",
+          "icon": "🎫",
+          "href": "/features/ticket-sales"
+        },
+        {
+          "id": 136,
+          "name": "Merchandise Store",
+          "description": "Sell branded Amebo merch",
+          "status": "coming",
+          "icon": "👕",
+          "href": "/features/merch-store"
+        },
+        {
+          "id": 137,
+          "name": "Influencer Marketplace",
+          "description": "Connect brands to influencers",
+          "status": "coming",
+          "icon": "🤝",
+          "href": "/features/influencer-marketplace"
+        },
+        {
+          "id": 138,
+          "name": "Sponsored Trend Boost",
+          "description": "Brands boost certain posts",
+          "status": "coming",
+          "icon": "📈",
+          "href": "/features/sponsored-boost"
+        },
+        {
+          "id": 139,
+          "name": "Paid Story Highlighting",
+          "description": "Sponsored posts get featured placement",
+          "status": "coming",
+          "icon": "⭐",
+          "href": "/features/paid-highlight"
+        },
+        {
+          "id": 140,
+          "name": "Revenue Analytics Dashboard",
+          "description": "Tracks income from all sources",
+          "status": "coming",
+          "icon": "📊",
+          "href": "/features/revenue-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "publishing",
+      "name": "Publishing & Moderation",
+      "icon": "📝",
+      "description": "Content approval and quality control",
+      "features": [
+        {
+          "id": 141,
+          "name": "Gist Approval Workflow",
+          "description": "Editors approve stories before publishing",
+          "status": "coming",
+          "icon": "✅",
+          "href": "/features/approval-workflow"
+        },
+        {
+          "id": 142,
+          "name": "Legal Review Queue",
+          "description": "Sensitive stories flagged for legal review",
+          "status": "coming",
+          "icon": "⚖️",
+          "href": "/features/legal-review"
+        },
+        {
+          "id": 143,
+          "name": "Sensitive Content Warning",
+          "description": "Displays warnings before controversial content",
+          "status": "active",
+          "icon": "⚠️",
+          "href": "/features/content-warning"
+        },
+        {
+          "id": 144,
+          "name": "Age Restriction Filter",
+          "description": "Blocks adult content for minors",
+          "status": "coming",
+          "icon": "🔞",
+          "href": "/features/age-restriction"
+        },
+        {
+          "id": 145,
+          "name": "Crisis Mode Publishing",
+          "description": "Slows posting during sensitive events",
+          "status": "coming",
+          "icon": "🚨",
+          "href": "/features/crisis-mode"
+        },
+        {
+          "id": 146,
+          "name": "Emergency Retraction Button",
+          "description": "Instantly unpublish harmful content",
+          "status": "coming",
+          "icon": "🗑️",
+          "href": "/features/emergency-retraction"
+        },
+        {
+          "id": 147,
+          "name": "Transparency Log",
+          "description": "Shows corrections and updates history",
+          "status": "active",
+          "icon": "📋",
+          "href": "/features/transparency-log"
+        },
+        {
+          "id": 148,
+          "name": "Reputation Score System",
+          "description": "Rates reliability of contributors",
+          "status": "active",
+          "icon": "⭐",
+          "href": "/features/reputation-score"
+        },
+        {
+          "id": 149,
+          "name": "Platform Downtime Backup",
+          "description": "Mirror site for high traffic moments",
+          "status": "coming",
+          "icon": "🔄",
+          "href": "/features/backup-mirror"
+        },
+        {
+          "id": 150,
+          "name": "AI Scalability Manager",
+          "description": "Auto-adjust resources during viral spikes",
+          "status": "coming",
+          "icon": "⚙️",
+          "href": "/features/scalability"
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics & Trending",
+      "icon": "📊",
+      "description": "Track trends and measure engagement",
+      "features": [
+        {
+          "id": 151,
+          "name": "Celebrity Popularity Index",
+          "description": "Ranks celebrities daily by mentions, shares",
+          "status": "active",
+          "icon": "📈",
+          "href": "/features/popularity-index"
+        },
+        {
+          "id": 152,
+          "name": "Daily Top 10 Gists",
+          "description": "Compiles top 10 hottest gists daily",
+          "status": "active",
+          "icon": "🏆",
+          "href": "/features/top-10-gists"
+        },
+        {
+          "id": 153,
+          "name": "Weekly Amebo Recap",
+          "description": "Summarized weekly digest via WhatsApp, Telegram, email",
+          "status": "coming",
+          "icon": "📧",
+          "href": "/features/weekly-recap"
+        },
+        {
+          "id": 154,
+          "name": "Monthly Celebrity Report",
+          "description": "In-depth analysis of trends and controversies",
+          "status": "coming",
+          "icon": "📄",
+          "href": "/features/monthly-report"
+        },
+        {
+          "id": 155,
+          "name": "Trending Personality of Week",
+          "description": "Highlights most talked-about celeb weekly",
+          "status": "active",
+          "icon": "⭐",
+          "href": "/features/trending-personality"
+        },
+        {
+          "id": 156,
+          "name": "Who Is Trending? Widget",
+          "description": "Live widget showing celebrities blowing up",
+          "status": "active",
+          "icon": "🔥",
+          "href": "/features/trending-widget"
+        },
+        {
+          "id": 157,
+          "name": "Geo-Trending Filter",
+          "description": "Shows trending by location (Lagos, Abuja, UK, US)",
+          "status": "coming",
+          "icon": "🗺️",
+          "href": "/features/geo-trending"
+        },
+        {
+          "id": 158,
+          "name": "Platform-Specific Trend View",
+          "description": "Separates trends by TikTok, Instagram, X, YouTube",
+          "status": "active",
+          "icon": "📱",
+          "href": "/features/platform-trends"
+        },
+        {
+          "id": 159,
+          "name": "Sentiment Heatmap",
+          "description": "Visual display of public opinion",
+          "status": "coming",
+          "icon": "🔥",
+          "href": "/features/sentiment-map"
+        },
+        {
+          "id": 160,
+          "name": "Crisis Trend Monitor",
+          "description": "Alerts admins when negative trends escalate",
+          "status": "coming",
+          "icon": "🚨",
+          "href": "/features/crisis-monitor"
+        }
+      ]
+    },
+    {
+      "id": "content-management",
+      "name": "Content Management",
+      "icon": "📚",
+      "description": "Organize and track content",
+      "features": [
+        {
+          "id": 161,
+          "name": "Celebrity Timeline Auto-Builder",
+          "description": "Automatically builds timelines from past stories",
+          "status": "coming",
+          "icon": "📅",
+          "href": "/features/timelines"
+        },
+        {
+          "id": 162,
+          "name": "Quote Highlight System",
+          "description": "Extracts viral quotes from interviews",
+          "status": "active",
+          "icon": "💭",
+          "href": "/features/quote-highlights"
+        },
+        {
+          "id": 163,
+          "name": "Screenshot Timestamp Verifier",
+          "description": "Shows when screenshot was originally posted",
+          "status": "coming",
+          "icon": "📸",
+          "href": "/features/screenshot-verify"
+        },
+        {
+          "id": 164,
+          "name": "Original Source Attribution",
+          "description": "Credits the first platform or poster",
+          "status": "active",
+          "icon": "🏷️",
+          "href": "/features/source-attribution"
+        },
+        {
+          "id": 165,
+          "name": "Duplicate Story Detection",
+          "description": "Prevents reposting same gist twice",
+          "status": "coming",
+          "icon": "🔍",
+          "href": "/features/duplicate-detection"
+        },
+        {
+          "id": 166,
+          "name": "Smart Story Merging",
+          "description": "Combines related gists into one story",
+          "status": "coming",
+          "icon": "🔗",
+          "href": "/features/story-merging"
+        },
+        {
+          "id": 167,
+          "name": "Story Update Notifications",
+          "description": "Notifies readers when story changes",
+          "status": "active",
+          "icon": "🔔",
+          "href": "/features/update-notifications"
+        },
+        {
+          "id": 168,
+          "name": "Correction Highlight Badge",
+          "description": "Marks corrected stories clearly",
+          "status": "active",
+          "icon": "✏️",
+          "href": "/features/correction-badge"
+        },
+        {
+          "id": 169,
+          "name": "What Changed? Section",
+          "description": "Shows updates made to article",
+          "status": "active",
+          "icon": "📝",
+          "href": "/features/what-changed"
+        },
+        {
+          "id": 170,
+          "name": "Archived Controversy Locker",
+          "description": "Stores resolved controversies separately",
+          "status": "coming",
+          "icon": "📦",
+          "href": "/features/controversy-locker"
+        }
+      ]
+    },
+    {
+      "id": "auto-content",
+      "name": "Auto-Generated Content",
+      "icon": "🤖",
+      "description": "Automatically create and optimize content",
+      "features": [
+        {
+          "id": 171,
+          "name": "Voice-to-Video Converter",
+          "description": "Turns gist scripts into narrated videos",
+          "status": "coming",
+          "icon": "🎬",
+          "href": "/features/voice-to-video"
+        },
+        {
+          "id": 172,
+          "name": "Auto Reel Generator",
+          "description": "Creates short reels from articles automatically",
+          "status": "coming",
+          "icon": "📹",
+          "href": "/features/auto-reels"
+        },
+        {
+          "id": 173,
+          "name": "Thumbnail Auto-Designer",
+          "description": "AI designs thumbnails with faces and text",
+          "status": "coming",
+          "icon": "🖼️",
+          "href": "/features/auto-thumbnails"
+        },
+        {
+          "id": 174,
+          "name": "Caption A/B Testing",
+          "description": "Tests which caption gets more engagement",
+          "status": "coming",
+          "icon": "🧪",
+          "href": "/features/caption-testing"
+        },
+        {
+          "id": 175,
+          "name": "Hook Line Generator",
+          "description": "Creates scroll-stopping opening lines",
+          "status": "coming",
+          "icon": "🎣",
+          "href": "/features/hook-generator"
+        },
+        {
+          "id": 176,
+          "name": "Emoji Placement Optimizer",
+          "description": "Places emojis for maximum engagement",
+          "status": "coming",
+          "icon": "😊",
+          "href": "/features/emoji-optimizer"
+        },
+        {
+          "id": 177,
+          "name": "Comment Pinning Automation",
+          "description": "Pins high-engagement comments automatically",
+          "status": "coming",
+          "icon": "📌",
+          "href": "/features/auto-pin-comments"
+        },
+        {
+          "id": 178,
+          "name": "Auto Hashtag Rotation",
+          "description": "Rotates hashtags to avoid shadow banning",
+          "status": "coming",
+          "icon": "#️⃣",
+          "href": "/features/hashtag-rotation"
+        },
+        {
+          "id": 179,
+          "name": "Engagement Boost Scheduler",
+          "description": "Pushes posts at peak traffic times",
+          "status": "coming",
+          "icon": "⏰",
+          "href": "/features/boost-scheduler"
+        },
+        {
+          "id": 180,
+          "name": "Shadow-Ban Risk Detector",
+          "description": "Warns when content violates platform rules",
+          "status": "coming",
+          "icon": "⚠️",
+          "href": "/features/ban-detector"
+        }
+      ]
+    },
+    {
+      "id": "celebrity-tracking",
+      "name": "Celebrity Tracking",
+      "icon": "👁️",
+      "description": "Monitor celebrity activities and news",
+      "features": [
+        {
+          "id": 181,
+          "name": "Celebrity Collaboration Tracker",
+          "description": "Tracks collaborations between celebrities",
+          "status": "active",
+          "icon": "🤝",
+          "href": "/features/collaborations"
+        },
+        {
+          "id": 182,
+          "name": "Industry Insider Reports",
+          "description": "Behind-the-scenes entertainment industry news",
+          "status": "coming",
+          "icon": "🎬",
+          "href": "/features/insider-reports"
+        },
+        {
+          "id": 183,
+          "name": "Contract & Deal Leak Alerts",
+          "description": "Flags leaked contracts or deal rumors",
+          "status": "coming",
+          "icon": "📄",
+          "href": "/features/deal-alerts"
+        },
+        {
+          "id": 184,
+          "name": "Unreleased Content Monitor",
+          "description": "Tracks leaked songs, videos, or photos",
+          "status": "coming",
+          "icon": "🎵",
+          "href": "/features/leaked-content"
+        },
+        {
+          "id": 185,
+          "name": "Court Case & Legal Tracker",
+          "description": "Monitors celebrity legal cases",
+          "status": "active",
+          "icon": "⚖️",
+          "href": "/features/legal-tracker"
+        },
+        {
+          "id": 186,
+          "name": "Brand Fallout Tracker",
+          "description": "Tracks brands dropping or signing celebrities",
+          "status": "active",
+          "icon": "💼",
+          "href": "/features/brand-tracker"
+        },
+        {
+          "id": 187,
+          "name": "Damage Control Coverage",
+          "description": "Covers apology videos and PR responses",
+          "status": "active",
+          "icon": "🛡️",
+          "href": "/features/damage-control"
+        },
+        {
+          "id": 188,
+          "name": "Redemption Story Spotlight",
+          "description": "Highlights celebrity comeback stories",
+          "status": "active",
+          "icon": "🌟",
+          "href": "/features/redemption-stories"
+        },
+        {
+          "id": 189,
+          "name": "Image Rehab Score",
+          "description": "Measures how well celeb recovers from scandal",
+          "status": "coming",
+          "icon": "📊",
+          "href": "/features/rehab-score"
+        },
+        {
+          "id": 190,
+          "name": "Legacy Impact Analysis",
+          "description": "Evaluates long-term influence of celebrities",
+          "status": "coming",
+          "icon": "🏛️",
+          "href": "/features/legacy-analysis"
+        }
+      ]
+    },
+    {
+      "id": "team-collaboration",
+      "name": "Team Collaboration",
+      "icon": "👨‍💼",
+      "description": "Manage team and content workflow",
+      "features": [
+        {
+          "id": 191,
+          "name": "Creator Collaboration Hub",
+          "description": "Connects writers, editors, video creators",
+          "status": "coming",
+          "icon": "🤝",
+          "href": "/features/collab-hub"
+        },
+        {
+          "id": 192,
+          "name": "Internal Chat for Editors",
+          "description": "Private communication for content team",
+          "status": "coming",
+          "icon": "💬",
+          "href": "/features/team-chat"
+        },
+        {
+          "id": 193,
+          "name": "Draft Sharing & Review System",
+          "description": "Multiple editors review one story",
+          "status": "coming",
+          "icon": "📋",
+          "href": "/features/draft-sharing"
+        },
+        {
+          "id": 194,
+          "name": "Version Control for Articles",
+          "description": "Tracks every change made to post",
+          "status": "coming",
+          "icon": "🔄",
+          "href": "/features/version-control"
+        },
+        {
+          "id": 195,
+          "name": "Publishing Delay Safeguard",
+          "description": "Prevents accidental posting",
+          "status": "coming",
+          "icon": "⏳",
+          "href": "/features/publish-safeguard"
+        },
+        {
+          "id": 196,
+          "name": "Night-Mode Publishing Lock",
+          "description": "Limits posting at risky hours",
+          "status": "coming",
+          "icon": "🌙",
+          "href": "/features/night-lock"
+        },
+        {
+          "id": 197,
+          "name": "Platform Rule Compliance Checker",
+          "description": "Checks content against social rules",
+          "status": "coming",
+          "icon": "✅",
+          "href": "/features/compliance-checker"
+        },
+        {
+          "id": 198,
+          "name": "Emergency Traffic Throttling",
+          "description": "Controls server load during viral spikes",
+          "status": "coming",
+          "icon": "⚙️",
+          "href": "/features/throttling"
+        },
+        {
+          "id": 199,
+          "name": "Backup Content Mirror",
+          "description": "Automatic backup of all posts",
+          "status": "coming",
+          "icon": "💾",
+          "href": "/features/backup-mirror"
+        },
+        {
+          "id": 200,
+          "name": "Disaster Recovery System",
+          "description": "Restores site instantly after failure",
+          "status": "coming",
+          "icon": "🚑",
+          "href": "/features/disaster-recovery"
+        }
+      ]
+    },
+    {
+      "id": "insights",
+      "name": "Insights & Intelligence",
+      "icon": "🧠",
+      "description": "Data-driven insights and predictions",
+      "features": [
+        {
+          "id": 201,
+          "name": "Celebrity Mention Heat Index",
+          "description": "Shows how frequently celeb is mentioned",
+          "status": "active",
+          "icon": "🔥",
+          "href": "/features/mention-index"
+        },
+        {
+          "id": 202,
+          "name": "Daily Rumor vs Reality Board",
+          "description": "Separates rumors from confirmed facts",
+          "status": "active",
+          "icon": "✔️",
+          "href": "/features/rumor-vs-reality"
+        },
+        {
+          "id": 203,
+          "name": "Celebrity Clapback Tracker",
+          "description": "Documents celebrity responses to criticism",
+          "status": "active",
+          "icon": "💬",
+          "href": "/features/clapback-tracker"
+        },
+        {
+          "id": 204,
+          "name": "Verified Source Badge System",
+          "description": "Badges for trusted sources",
+          "status": "active",
+          "icon": "🏅",
+          "href": "/features/verified-sources"
+        },
+        {
+          "id": 205,
+          "name": "Timeline Comparison Tool",
+          "description": "Compare how two scandals evolved",
+          "status": "active",
+          "icon": "⏱️",
+          "href": "/features/timeline-compare"
+        },
+        {
+          "id": 206,
+          "name": "First-Reported-By Tag",
+          "description": "Credits platform that broke gist first",
+          "status": "active",
+          "icon": "🎯",
+          "href": "/features/first-reported"
+        },
+        {
+          "id": 207,
+          "name": "Celebrity Apology Archive",
+          "description": "Stores apology statements and videos",
+          "status": "active",
+          "icon": "🙏",
+          "href": "/features/apology-archive"
+        },
+        {
+          "id": 208,
+          "name": "Public Reaction Snapshot",
+          "description": "Summarizes audience reaction",
+          "status": "active",
+          "icon": "👥",
+          "href": "/features/reaction-snapshot"
+        },
+        {
+          "id": 209,
+          "name": "Celebrity Career Milestone Map",
+          "description": "Shows career highs and turning points",
+          "status": "active",
+          "icon": "🗺️",
+          "href": "/features/milestone-map"
+        },
+        {
+          "id": 210,
+          "name": "Influence Growth Graph",
+          "description": "Tracks follower growth across platforms",
+          "status": "active",
+          "icon": "📈",
+          "href": "/features/growth-graph"
+        },
+        {
+          "id": 211,
+          "name": "Social Platform Performance Split",
+          "description": "Shows which platform drives most traffic",
+          "status": "active",
+          "icon": "📊",
+          "href": "/features/platform-split"
+        },
+        {
+          "id": 212,
+          "name": "Viral Probability Meter",
+          "description": "Predicts how likely gist will trend",
+          "status": "coming",
+          "icon": "🎯",
+          "href": "/features/viral-meter"
+        },
+        {
+          "id": 213,
+          "name": "Content Longevity Score",
+          "description": "Measures how long story stays relevant",
+          "status": "coming",
+          "icon": "⏰",
+          "href": "/features/longevity-score"
+        },
+        {
+          "id": 214,
+          "name": "Audience Demographic Insights",
+          "description": "Shows age, region, interests of readers",
+          "status": "coming",
+          "icon": "👥",
+          "href": "/features/demographics"
+        },
+        {
+          "id": 215,
+          "name": "Peak Engagement Timeline",
+          "description": "Displays best hours for posting",
+          "status": "coming",
+          "icon": "📱",
+          "href": "/features/peak-times"
+        },
+        {
+          "id": 216,
+          "name": "Story Drop Countdown",
+          "description": "Scheduled release countdown for exclusives",
+          "status": "active",
+          "icon": "⏱️",
+          "href": "/features/drop-countdown"
+        },
+        {
+          "id": 217,
+          "name": "Exclusive Leak Vault",
+          "description": "Secure area for sensitive materials",
+          "status": "coming",
+          "icon": "🔒",
+          "href": "/features/leak-vault"
+        },
+        {
+          "id": 218,
+          "name": "Legal Sensitivity Score",
+          "description": "Flags stories with legal risk",
+          "status": "coming",
+          "icon": "⚖️",
+          "href": "/features/legal-score"
+        },
+        {
+          "id": 219,
+          "name": "Controlled Leak Publishing",
+          "description": "Gradual release of sensitive gist",
+          "status": "coming",
+          "icon": "📅",
+          "href": "/features/controlled-leak"
+        },
+        {
+          "id": 220,
+          "name": "Source Confidentiality Lock",
+          "description": "Protects whistleblower identity",
+          "status": "coming",
+          "icon": "🔐",
+          "href": "/features/confidentiality-lock"
+        }
+      ]
+    },
+    {
+      "id": "reader-experience",
+      "name": "Reader Experience",
+      "icon": "📖",
+      "description": "Enhance how readers consume content",
+      "features": [
+        {
+          "id": 221,
+          "name": "Auto-Summary for WhatsApp",
+          "description": "Condenses articles into short gist text",
+          "status": "coming",
+          "icon": "📱",
+          "href": "/features/auto-summary"
+        },
+        {
+          "id": 222,
+          "name": "Swipe-Style Story Reader",
+          "description": "Instagram-style swipe reading",
+          "status": "coming",
+          "icon": "👆",
+          "href": "/features/swipe-reader"
+        },
+        {
+          "id": 223,
+          "name": "Tap-to-Reveal Gist",
+          "description": "Hidden details revealed by tap",
+          "status": "coming",
+          "icon": "👁️",
+          "href": "/features/tap-reveal"
+        },
+        {
+          "id": 224,
+          "name": "Too Long; Didn't Read Button",
+          "description": "Instant short summary view",
+          "status": "active",
+          "icon": "⏱️",
+          "href": "/features/tldr"
+        },
+        {
+          "id": 225,
+          "name": "Offline Reading Mode",
+          "description": "Save gists to read without internet",
+          "status": "coming",
+          "icon": "📲",
+          "href": "/features/offline-reading"
+        },
+        {
+          "id": 226,
+          "name": "Smart Font Adjuster",
+          "description": "Automatically optimizes text readability",
+          "status": "active",
+          "icon": "🔤",
+          "href": "/features/font-adjuster"
+        },
+        {
+          "id": 227,
+          "name": "Voice Playback Speed Control",
+          "description": "Adjust audio gist speed",
+          "status": "coming",
+          "icon": "🎙️",
+          "href": "/features/playback-speed"
+        },
+        {
+          "id": 228,
+          "name": "Night-Data Saver Mode",
+          "description": "Optimized loading for low data users",
+          "status": "coming",
+          "icon": "💾",
+          "href": "/features/data-saver"
+        },
+        {
+          "id": 229,
+          "name": "Screenshot Protection Layer",
+          "description": "Discourages content theft",
+          "status": "coming",
+          "icon": "🛡️",
+          "href": "/features/screenshot-protect"
+        },
+        {
+          "id": 230,
+          "name": "Auto Scroll Reader",
+          "description": "Hands-free reading experience",
+          "status": "coming",
+          "icon": "↓",
+          "href": "/features/auto-scroll"
+        }
+      ]
+    },
+    {
+      "id": "engagement",
+      "name": "Engagement & Loyalty",
+      "icon": "💪",
+      "description": "Build community and reward users",
+      "features": [
+        {
+          "id": 231,
+          "name": "Celebrity Fanbase Strength Score",
+          "description": "Ranks celebrities by fan loyalty",
+          "status": "active",
+          "icon": "❤️",
+          "href": "/features/fanbase-score"
+        },
+        {
+          "id": 232,
+          "name": "Rivalry Intensity Meter",
+          "description": "Measures heat between celebrities",
+          "status": "active",
+          "icon": "🔥",
+          "href": "/features/rivalry-meter"
+        },
+        {
+          "id": 233,
+          "name": "Trend Saturation Alert",
+          "description": "Warns when gist is over-posted",
+          "status": "coming",
+          "icon": "⚠️",
+          "href": "/features/saturation-alert"
+        },
+        {
+          "id": 234,
+          "name": "Reputation Recovery Tracker",
+          "description": "Tracks how fast celeb recovers from scandals",
+          "status": "active",
+          "icon": "📈",
+          "href": "/features/recovery-tracker"
+        },
+        {
+          "id": 235,
+          "name": "Media Coverage Comparison",
+          "description": "Compares coverage across blogs",
+          "status": "coming",
+          "icon": "📰",
+          "href": "/features/coverage-compare"
+        },
+        {
+          "id": 236,
+          "name": "Cross-Platform Echo Tracker",
+          "description": "Shows how gist spreads across platforms",
+          "status": "coming",
+          "icon": "📡",
+          "href": "/features/echo-tracker"
+        },
+        {
+          "id": 237,
+          "name": "Screenshot Virality Tracker",
+          "description": "Tracks how far screenshots travel",
+          "status": "coming",
+          "icon": "📸",
+          "href": "/features/screenshot-viral"
+        },
+        {
+          "id": 238,
+          "name": "Comment Velocity Monitor",
+          "description": "Measures speed of comment growth",
+          "status": "coming",
+          "icon": "⚡",
+          "href": "/features/comment-velocity"
+        },
+        {
+          "id": 239,
+          "name": "Engagement Drop Alert",
+          "description": "Alerts when interest is fading",
+          "status": "coming",
+          "icon": "📉",
+          "href": "/features/engagement-alert"
+        },
+        {
+          "id": 240,
+          "name": "Follow-Up Story Reminder",
+          "description": "Prompts editors to post updates",
+          "status": "coming",
+          "icon": "🔔",
+          "href": "/features/followup-reminder"
+        }
+      ]
+    },
+    {
+      "id": "quality-control",
+      "name": "Quality & Safety",
+      "icon": "🛡️",
+      "description": "Ensure quality and protect users",
+      "features": [
+        {
+          "id": 241,
+          "name": "Editor Performance Metrics",
+          "description": "Tracks productivity of writers",
+          "status": "coming",
+          "icon": "📊",
+          "href": "/features/editor-metrics"
+        },
+        {
+          "id": 242,
+          "name": "Story Approval SLA",
+          "description": "Time limits for editorial approvals",
+          "status": "coming",
+          "icon": "⏰",
+          "href": "/features/approval-sla"
+        },
+        {
+          "id": 243,
+          "name": "Sensitive Word Detector",
+          "description": "Flags dangerous or defamatory words",
+          "status": "coming",
+          "icon": "🚩",
+          "href": "/features/word-detector"
+        },
+        {
+          "id": 244,
+          "name": "AI Headline Risk Checker",
+          "description": "Detects misleading clickbait",
+          "status": "coming",
+          "icon": "⚠️",
+          "href": "/features/headline-checker"
+        },
+        {
+          "id": 245,
+          "name": "Crisis Response Playbook",
+          "description": "Predefined steps for major controversies",
+          "status": "coming",
+          "icon": "📋",
+          "href": "/features/crisis-playbook"
+        },
+        {
+          "id": 246,
+          "name": "Platform Ban Risk Warning",
+          "description": "Alerts when content risks suspension",
+          "status": "coming",
+          "icon": "🚨",
+          "href": "/features/ban-risk"
+        },
+        {
+          "id": 247,
+          "name": "Legal Evidence Attachment",
+          "description": "Attach proof to sensitive stories",
+          "status": "coming",
+          "icon": "📎",
+          "href": "/features/evidence-attach"
+        },
+        {
+          "id": 248,
+          "name": "Automated Correction Prompt",
+          "description": "Reminds editors to update errors",
+          "status": "coming",
+          "icon": "✏️",
+          "href": "/features/correction-prompt"
+        },
+        {
+          "id": 249,
+          "name": "Compliance Audit Log",
+          "description": "Tracks adherence to media laws",
+          "status": "coming",
+          "icon": "📝",
+          "href": "/features/compliance-log"
+        },
+        {
+          "id": 250,
+          "name": "Trust Score Dashboard",
+          "description": "Overall credibility score for platform",
+          "status": "active",
+          "icon": "⭐",
+          "href": "/features/trust-score"
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "name": "Verification & Authenticity",
+      "icon": "✅",
+      "description": "Verify and authenticate content",
+      "features": [
+        {
+          "id": 251,
+          "name": "Celebrity Social Handle Verifier",
+          "description": "Confirms official celebrity social accounts",
+          "status": "active",
+          "icon": "✔️",
+          "href": "/features/handle-verifier"
+        },
+        {
+          "id": 252,
+          "name": "Fake Account Exposure Section",
+          "description": "Exposes fake celebrity accounts",
+          "status": "active",
+          "icon": "🚫",
+          "href": "/features/fake-accounts"
+        },
+        {
+          "id": 253,
+          "name": "Screenshot Authenticity Checker",
+          "description": "Detects edited or manipulated screenshots",
+          "status": "coming",
+          "icon": "🔍",
+          "href": "/features/screenshot-check"
+        },
+        {
+          "id": 254,
+          "name": "Time-Zone Aware Publishing",
+          "description": "Schedules posts based on audience time zones",
+          "status": "coming",
+          "icon": "🌍",
+          "href": "/features/timezone-publish"
+        },
+        {
+          "id": 255,
+          "name": "Regional Slang Localization",
+          "description": "Adapts gist tone to regional slang",
+          "status": "coming",
+          "icon": "🗣️",
+          "href": "/features/slang-local"
+        },
+        {
+          "id": 256,
+          "name": "Cross-Celebrity Tag Linking",
+          "description": "Links all mentions of celebrity across articles",
+          "status": "active",
+          "icon": "🔗",
+          "href": "/features/tag-linking"
+        },
+        {
+          "id": 257,
+          "name": "Dynamic Story Update Banner",
+          "description": "Shows Story Updated alerts prominently",
+          "status": "active",
+          "icon": "📢",
+          "href": "/features/update-banner"
+        },
+        {
+          "id": 258,
+          "name": "Rumor Expiry Timer",
+          "description": "Downgrades rumors if unconfirmed after set time",
+          "status": "coming",
+          "icon": "⏰",
+          "href": "/features/rumor-timer"
+        },
+        {
+          "id": 259,
+          "name": "Verified Quote Library",
+          "description": "Stores confirmed celebrity statements",
+          "status": "active",
+          "icon": "💭",
+          "href": "/features/quote-library"
+        },
+        {
+          "id": 260,
+          "name": "Celebrity Statement Comparison",
+          "description": "Compares past and present statements",
+          "status": "active",
+          "icon": "⚖️",
+          "href": "/features/statement-compare"
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "name": "Social & Community",
+      "icon": "👫",
+      "description": "Social features and community interaction",
+      "features": [
+        {
+          "id": 261,
+          "name": "Viral Screenshot Wall",
+          "description": "Displays most-shared screenshots of the day",
+          "status": "active",
+          "icon": "📸",
+          "href": "/features/screenshot-wall"
+        },
+        {
+          "id": 262,
+          "name": "Comment Heat Ranking",
+          "description": "Ranks comments by engagement speed",
+          "status": "coming",
+          "icon": "🔥",
+          "href": "/features/comment-heat"
+        },
+        {
+          "id": 263,
+          "name": "Emoji Trend Tracker",
+          "description": "Shows trending emojis used in reactions",
+          "status": "coming",
+          "icon": "😊",
+          "href": "/features/emoji-trends"
+        },
+        {
+          "id": 264,
+          "name": "Reaction Pattern Analysis",
+          "description": "Analyzes how users react emotionally",
+          "status": "coming",
+          "icon": "💭",
+          "href": "/features/reaction-pattern"
+        },
+        {
+          "id": 265,
+          "name": "Live Comment Pulse",
+          "description": "Real-time comment flow during breaking gist",
+          "status": "coming",
+          "icon": "💓",
+          "href": "/features/live-pulse"
+        },
+        {
+          "id": 266,
+          "name": "Fan Loyalty Streaks",
+          "description": "Rewards users for consistent engagement",
+          "status": "active",
+          "icon": "🔥",
+          "href": "/features/loyalty-streaks"
+        },
+        {
+          "id": 267,
+          "name": "Silent Mode Notifications",
+          "description": "Low-noise alerts for late-night updates",
+          "status": "coming",
+          "icon": "🔕",
+          "href": "/features/silent-mode"
+        },
+        {
+          "id": 268,
+          "name": "Gist Reminder Alerts",
+          "description": "Notifies users to check follow-up stories",
+          "status": "coming",
+          "icon": "🔔",
+          "href": "/features/gist-reminders"
+        },
+        {
+          "id": 269,
+          "name": "Auto Pin Breaking Gist",
+          "description": "Pins major gist across all pages",
+          "status": "active",
+          "icon": "📌",
+          "href": "/features/auto-pin-gist"
+        },
+        {
+          "id": 270,
+          "name": "Community Mood Indicator",
+          "description": "Shows overall audience mood",
+          "status": "coming",
+          "icon": "😊",
+          "href": "/features/mood-indicator"
+        }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring & Alerts",
+      "icon": "📡",
+      "description": "Monitor trends and provide alerts",
+      "features": [
+        {
+          "id": 271,
+          "name": "Celebrity Social Growth Alerts",
+          "description": "Alerts on sudden follower changes",
+          "status": "coming",
+          "icon": "📈",
+          "href": "/features/growth-alerts"
+        },
+        {
+          "id": 272,
+          "name": "Influencer Scam Watch",
+          "description": "Flags influencers linked to scams",
+          "status": "coming",
+          "icon": "🚨",
+          "href": "/features/scam-watch"
+        },
+        {
+          "id": 273,
+          "name": "Giveaway Authenticity Checker",
+          "description": "Verifies legitimacy of giveaways",
+          "status": "coming",
+          "icon": "🎁",
+          "href": "/features/giveaway-check"
+        },
+        {
+          "id": 274,
+          "name": "Endorsement Risk Alerts",
+          "description": "Warns brands about risky partnerships",
+          "status": "coming",
+          "icon": "⚠️",
+          "href": "/features/endorsement-risk"
+        },
+        {
+          "id": 275,
+          "name": "Brand Damage Forecast",
+          "description": "Predicts impact of scandals on brands",
+          "status": "coming",
+          "icon": "💥",
+          "href": "/features/brand-forecast"
+        },
+        {
+          "id": 276,
+          "name": "Public Apology Effectiveness Score",
+          "description": "Measures how well apologies are received",
+          "status": "coming",
+          "icon": "🙏",
+          "href": "/features/apology-score"
+        },
+        {
+          "id": 277,
+          "name": "Celebrity Silence Tracker",
+          "description": "Tracks how long celebs stay silent",
+          "status": "coming",
+          "icon": "🤐",
+          "href": "/features/silence-tracker"
+        },
+        {
+          "id": 278,
+          "name": "Comeback Timing Analyzer",
+          "description": "Suggests best time for comeback posts",
+          "status": "coming",
+          "icon": "⏰",
+          "href": "/features/comeback-timer"
+        },
+        {
+          "id": 279,
+          "name": "Media Fatigue Detector",
+          "description": "Identifies when audience tired of gist",
+          "status": "coming",
+          "icon": "😴",
+          "href": "/features/fatigue-detector"
+        },
+        {
+          "id": 280,
+          "name": "Fame Longevity Predictor",
+          "description": "Estimates long-term relevance",
+          "status": "coming",
+          "icon": "🔮",
+          "href": "/features/longevity-predictor"
+        }
+      ]
+    },
+    {
+      "id": "content-safety",
+      "name": "Content Safety & Moderation",
+      "icon": "🛑",
+      "description": "Safety and moderation tools",
+      "features": [
+        {
+          "id": 281,
+          "name": "Story Archival by Era",
+          "description": "Groups content by era or year",
+          "status": "coming",
+          "icon": "📦",
+          "href": "/features/era-archive"
+        },
+        {
+          "id": 282,
+          "name": "Controversy Resolution Badge",
+          "description": "Marks resolved issues clearly",
+          "status": "active",
+          "icon": "✅",
+          "href": "/features/resolution-badge"
+        },
+        {
+          "id": 283,
+          "name": "Long-Read Mode",
+          "description": "Distraction-free reading experience",
+          "status": "active",
+          "icon": "📖",
+          "href": "/features/long-read"
+        },
+        {
+          "id": 284,
+          "name": "Story Difficulty Level",
+          "description": "Labels as Light, Sensitive, or Serious",
+          "status": "active",
+          "icon": "⚠️",
+          "href": "/features/difficulty-level"
+        },
+        {
+          "id": 285,
+          "name": "Cultural Sensitivity Filter",
+          "description": "Flags culturally sensitive content",
+          "status": "coming",
+          "icon": "🌍",
+          "href": "/features/cultural-filter"
+        },
+        {
+          "id": 286,
+          "name": "Age-Appropriate Content Tagging",
+          "description": "Separates adult gist from general",
+          "status": "active",
+          "icon": "🔞",
+          "href": "/features/age-tagging"
+        },
+        {
+          "id": 287,
+          "name": "Comment Cooling-Off Timer",
+          "description": "Slows comments during heated discussions",
+          "status": "coming",
+          "icon": "❄️",
+          "href": "/features/cooling-timer"
+        },
+        {
+          "id": 288,
+          "name": "Abuse Pattern Detection",
+          "description": "Identifies repeat abusive behavior",
+          "status": "coming",
+          "icon": "🚩",
+          "href": "/features/abuse-detect"
+        },
+        {
+          "id": 289,
+          "name": "Emergency Comment Lock",
+          "description": "Locks comments instantly if needed",
+          "status": "coming",
+          "icon": "🔒",
+          "href": "/features/comment-lock"
+        },
+        {
+          "id": 290,
+          "name": "Transparency Correction Timeline",
+          "description": "Public log of all edits",
+          "status": "active",
+          "icon": "📋",
+          "href": "/features/correction-timeline"
+        }
+      ]
+    },
+    {
+      "id": "optimization",
+      "name": "Optimization & Performance",
+      "icon": "⚡",
+      "description": "Optimize content and performance",
+      "features": [
+        {
+          "id": 291,
+          "name": "AI Story Angle Generator",
+          "description": "Suggests alternative story perspectives",
+          "status": "coming",
+          "icon": "💡",
+          "href": "/features/angle-generator"
+        },
+        {
+          "id": 292,
+          "name": "Headline Fatigue Detector",
+          "description": "Detects overused headline styles",
+          "status": "coming",
+          "icon": "😫",
+          "href": "/features/headline-fatigue"
+        },
+        {
+          "id": 293,
+          "name": "Visual Click-Through Predictor",
+          "description": "Predicts image performance",
+          "status": "coming",
+          "icon": "🖼️",
+          "href": "/features/visual-predictor"
+        },
+        {
+          "id": 294,
+          "name": "Caption Emotion Matching",
+          "description": "Matches caption tone to story mood",
+          "status": "coming",
+          "icon": "💭",
+          "href": "/features/caption-emotion"
+        },
+        {
+          "id": 295,
+          "name": "Multi-Version Headline Testing",
+          "description": "Tests headlines simultaneously",
+          "status": "coming",
+          "icon": "🧪",
+          "href": "/features/headline-test"
+        },
+        {
+          "id": 296,
+          "name": "Adaptive Layout Engine",
+          "description": "Rearranges homepage based on trends",
+          "status": "coming",
+          "icon": "📱",
+          "href": "/features/adaptive-layout"
+        },
+        {
+          "id": 297,
+          "name": "Traffic Surge Simulator",
+          "description": "Tests site performance under viral load",
+          "status": "coming",
+          "icon": "📊",
+          "href": "/features/surge-simulator"
+        },
+        {
+          "id": 298,
+          "name": "Emergency Read-Only Mode",
+          "description": "Protects site during attacks",
+          "status": "coming",
+          "icon": "🛡️",
+          "href": "/features/read-only-mode"
+        },
+        {
+          "id": 299,
+          "name": "Legal Hold Content Locker",
+          "description": "Prevents deletion of sensitive posts",
+          "status": "coming",
+          "icon": "🔐",
+          "href": "/features/legal-lock"
+        },
+        {
+          "id": 300,
+          "name": "Platform Credibility Index",
+          "description": "Overall trust and reliability score",
+          "status": "active",
+          "icon": "⭐",
+          "href": "/features/credibility-index"
+        }
+      ]
+    }
+  ]
+}
