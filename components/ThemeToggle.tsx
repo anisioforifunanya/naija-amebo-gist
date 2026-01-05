@@ -7,20 +7,27 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    // Check current theme
-    const html = document.documentElement
-    setIsDark(html.classList.contains('dark'))
+    // Wait for next tick to ensure DOM is ready
+    const timer = setTimeout(() => {
+      const html = document.documentElement
+      const isCurrentlyDark = html.classList.contains('dark')
+      setIsDark(isCurrentlyDark)
+      setMounted(true)
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const toggleTheme = () => {
     const html = document.documentElement
-    const newIsDark = !isDark
+    const isCurrentlyDark = html.classList.contains('dark')
+    const newIsDark = !isCurrentlyDark
     
     if (newIsDark) {
       html.classList.add('dark')
+      html.style.colorScheme = 'dark'
     } else {
       html.classList.remove('dark')
+      html.style.colorScheme = 'light'
     }
     
     localStorage.setItem('theme', newIsDark ? 'dark' : 'light')
