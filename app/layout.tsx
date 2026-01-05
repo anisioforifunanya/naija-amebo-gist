@@ -3,6 +3,7 @@ import './globals.css'
 import 'leaflet/dist/leaflet.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import { BrowserCompatibilityInit } from '../components/BrowserCompatibilityInit'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -104,6 +105,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <BrowserCompatibilityInit />
         <Header />
         <main className="pt-20">{children}</main>
         <Footer />

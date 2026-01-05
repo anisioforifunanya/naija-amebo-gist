@@ -21,18 +21,26 @@ interface ButtonPosition {
 export default function FloatingButtons() {
   const [positions, setPositions] = useState<ButtonPosition[]>([])
   const [isMobile, setIsMobile] = useState(false)
+  const [isClient, setIsClient] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const positionsRef = useRef<ButtonPosition[]>([])
   
+  // Check if we're on client side (for SSR compatibility)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  
   // Check if mobile on mount
   useEffect(() => {
+    if (!isClient) return
+    
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  }, [isClient])
 
   const buttons: FloatingButton[] = [
     {
@@ -81,22 +89,38 @@ export default function FloatingButtons() {
 
   // Initialize positions
   useEffect(() => {
+    if (!isClient || typeof window === 'undefined') return
+    
     const buttonSize = isMobile ? 70 : 110
     const initialPositions = buttons.map((_, index) => ({
-      x: Math.random() * Math.max(100, window.innerWidth - buttonSize - 20),
-      y: Math.random() * Math.max(100, window.innerHeight - buttonSize - 20),
+      x: Math.max(0, Math.min(Math.random() * (window.innerWidth - buttonSize - 20), window.innerWidth - buttonSize)),
+      y: Math.max(0, Math.min(Math.random() * (window.innerHeight - buttonSize - 20), window.innerHeight - buttonSize)),
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2
     }))
     positionsRef.current = initialPositions
     setPositions(initialPositions)
-  }, [isMobile])
+  }, [isMobile, isClient])
 
-  // Animation loop
+  // Animation loop with browser compatibility
   useEffect(() => {
-    if (!isMobile) return // Disable animation on mobile for better performance
+    if (!isMobile || !isClient) return // Disable animation on mobile for better performance
     
-    const interval = setInterval(() => {
+    // Use requestAnimationFrame for better browser compatibility
+    let animationFrameId: number
+    let lastUpdateTime = Date.now()
+    
+    const animate = () => {
+      const currentTime = Date.now()
+      const deltaTime = (currentTime - lastUpdateTime) / 1000 // Convert to seconds
+      lastUpdateTime = currentTime
+      
+      // Only update if positions exist
+      if (positionsRef.current.length === 0) {
+        animationFrameId = requestAnimationFrame(animate)
+        return
+      }
+      
       const newPositions = positionsRef.current.map(pos => {
         let newX = pos.x + pos.vx
         let newY = pos.y + pos.vy
@@ -107,7 +131,7 @@ export default function FloatingButtons() {
         const padding = 10
 
         // Bounce off right edge
-        if (newX + buttonSize > window.innerWidth - padding) {
+        if (typeof window !== 'undefined' && newX + buttonSize > window.innerWidth - padding) {
           newX = window.innerWidth - buttonSize - padding
           newVx = -Math.abs(newVx) * 0.95
         }
@@ -118,7 +142,7 @@ export default function FloatingButtons() {
         }
 
         // Bounce off bottom edge
-        if (newY + buttonSize > window.innerHeight - padding) {
+        if (typeof window !== 'undefined' && newY + buttonSize > window.innerHeight - padding) {
           newY = window.innerHeight - buttonSize - padding
           newVy = -Math.abs(newVy) * 0.95
         }
@@ -148,11 +172,22 @@ export default function FloatingButtons() {
 
       positionsRef.current = newPositions
       setPositions(newPositions)
-    }, 30) // Update every 30ms for smooth animation
+      
+      animationFrameId = requestAnimationFrame(animate)
+    }
+    
+    animationFrameId = requestAnimationFrame(animate)
+    
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [isMobile, isClient])
 
-    return () => clearInterval(interval)
-  }, [isMobile])
-
+  // Don't render on client-side before hydration
+  if (!isClient) return null
+  
   // Don't render full animation on mobile - show simplified grid instead
   if (isMobile) {
     return (
@@ -170,7 +205,7 @@ export default function FloatingButtons() {
       </div>
     )
   }
-
+  
   return (
     <div 
       ref={containerRef}

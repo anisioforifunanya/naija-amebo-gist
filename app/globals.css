@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Browser Compatibility Fixes */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix for older browsers */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+/* IE11 and older browser fixes */
+@supports (-ms-ime-align:auto) {
+  button, input, select, textarea {
+    font-family: inherit;
+  }
+}
+
 @layer utilities {
   @keyframes gradient {
     0% {
@@ -33,6 +59,18 @@
   .animate-slideDown {
     animation: slideDown 0.3s ease-out;
   }
+
+  /* Smooth transitions for all interactive elements */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Clearfix for older browsers */
+  .clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 }
 
 /* Mobile-first responsive enhancements */
@@ -55,5 +93,51 @@
   input, textarea, select {
     font-size: 16px;
     min-height: 44px;
+  }
+}
+
+/* Print styles for all browsers */
+@media print {
+  body {
+    background: white;
+  }
+  
+  a, a:visited {
+    text-decoration: underline;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  
+  img {
+    max-width: 100%;
+  }
+}
+
+/* High contrast mode support for accessibility */
+@media (prefers-contrast: more) {
+  * {
+    border-width: 1px;
+  }
+}
+
+/* Dark mode preferences */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #111827;
+    color: #f3f4f6;
+  }
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
