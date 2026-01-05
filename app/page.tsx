@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
+import FloatingButtons from '../components/FloatingButtons';
 
 interface UserData {
   id: string;
@@ -271,6 +272,9 @@ export default function Home() {
         </section>
 
       </div>
+
+      {/* Floating Action Buttons */}
+      <FloatingButtons />
     </div>
   )
 }
