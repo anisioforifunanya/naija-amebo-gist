@@ -324,35 +324,39 @@ export default function AdminDashboard() {
         return
       }
 
-      // Get admins from localStorage
-      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
-
-      // Find admin by email
-      const admin = admins.find((a: AdminData) =>
-        a.email === loginForm.email && a.password === loginForm.password
-      )
-
-      if (admin) {
-        // Verify admin object has required fields before storing
-        if (!admin.id || !admin.role) {
-          alert('Admin account is invalid. Please contact support.')
-          return
-        }
+      try {
+        // Try Firebase authentication first
+        const { loginUserWithEmail } = await import('@/lib/firebaseUtils')
+        const authUser = await loginUserWithEmail(loginForm.email, loginForm.password)
         
-        // Ensure isSuperAdmin is explicitly set
-        const adminWithSuperAdminFlag = {
-          ...admin,
-          isSuperAdmin: admin.isSuperAdmin === true
-        }
+        // Get admin data from Firestore
+        const { db } = await import('@/lib/firebase')
+        const { doc, getDoc } = await import('firebase/firestore')
+        const adminDocRef = doc(db, 'admins', authUser.uid)
+        const adminDocSnap = await getDoc(adminDocRef)
         
-        console.log('[Login] Admin logged in with isSuperAdmin:', adminWithSuperAdminFlag.isSuperAdmin)
-        setCurrentAdmin(adminWithSuperAdminFlag)
-        setIsLoggedIn(true)
-        setLoginStep('email') // Reset for next session
-        localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(adminWithSuperAdminFlag))
-        loadAllData()
-      } else {
-        alert('Invalid password. Please try again.')
+        if (adminDocSnap.exists()) {
+          const adminData = adminDocSnap.data()
+          const adminWithSuperAdminFlag = {
+            id: authUser.uid,
+            email: authUser.email,
+            ...adminData,
+            isSuperAdmin: adminData.isSuperAdmin === true
+          }
+          
+          console.log('[Login] Admin logged in with isSuperAdmin:', adminWithSuperAdminFlag.isSuperAdmin)
+          setCurrentAdmin(adminWithSuperAdminFlag)
+          setIsLoggedIn(true)
+          setLoginStep('email') // Reset for next session
+          localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(adminWithSuperAdminFlag))
+          loadAllData()
+        } else {
+          alert('Admin profile not found. Please contact support.')
+          setLoginForm({ ...loginForm, password: '' })
+        }
+      } catch (error: any) {
+        console.error('Login error:', error)
+        alert('Invalid email or password. Please try again.')
         // Clear the password field for security
         setLoginForm({ ...loginForm, password: '' })
       }
