@@ -303,7 +303,7 @@ export default function AdminDashboard() {
     }
   }, [activeTab, isLoggedIn, currentAdmin?.email])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // Step 1: Email/Username validation
@@ -336,12 +336,20 @@ export default function AdminDashboard() {
         const adminDocSnap = await getDoc(adminDocRef)
         
         if (adminDocSnap.exists()) {
-          const adminData = adminDocSnap.data()
-          const adminWithSuperAdminFlag = {
+          const adminData = adminDocSnap.data() as any
+          const adminWithSuperAdminFlag: AdminData = {
             id: authUser.uid,
-            email: authUser.email,
-            ...adminData,
-            isSuperAdmin: adminData.isSuperAdmin === true
+            email: authUser.email || '',
+            password: '', // Firebase handles password, not stored in Firestore
+            firstName: adminData?.firstName || '',
+            lastName: adminData?.lastName || '',
+            phone: adminData?.phone || '',
+            bio: adminData?.bio || '',
+            avatar: adminData?.avatar,
+            role: 'admin',
+            createdAt: adminData?.createdAt || new Date().toISOString(),
+            isSuperAdmin: adminData?.isSuperAdmin === true,
+            permissions: adminData?.permissions || []
           }
           
           console.log('[Login] Admin logged in with isSuperAdmin:', adminWithSuperAdminFlag.isSuperAdmin)
