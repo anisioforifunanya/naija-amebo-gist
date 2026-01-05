@@ -20,19 +20,14 @@ interface ButtonPosition {
 
 export default function FloatingButtons() {
   const [positions, setPositions] = useState<ButtonPosition[]>([])
-  const [isMobile, setIsMobile] = useState<boolean | null>(null) // null = not determined yet
+  const [isMobile, setIsMobile] = useState<boolean>(true) // Default to true (mobile) to show mobile buttons initially
   const containerRef = useRef<HTMLDivElement>(null)
   const positionsRef = useRef<ButtonPosition[]>([])
   
-  // Determine if mobile using useLayoutEffect (runs before paint)
+  // Determine if mobile - runs synchronously before first render
   useLayoutEffect(() => {
-    if (typeof window === 'undefined') {
-      setIsMobile(false)
-      return
-    }
-    
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768
+      const mobile = typeof window !== 'undefined' ? window.innerWidth < 768 : true
       setIsMobile(mobile)
     }
     
@@ -106,7 +101,7 @@ export default function FloatingButtons() {
 
   // Animation loop with browser compatibility
   useEffect(() => {
-    if (isMobile || isMobile === null) return // Disable animation on mobile for better performance
+    if (isMobile) return // Disable animation on mobile for better performance
     
     // Use requestAnimationFrame for better browser compatibility
     let animationFrameId: number
@@ -187,9 +182,6 @@ export default function FloatingButtons() {
     }
   }, [isMobile])
 
-  // Don't render until we know if mobile or not (prevent hydration mismatch)
-  if (isMobile === null) return null
-  
   // Don't render full animation on mobile - show simplified grid instead
   if (isMobile) {
     return (
