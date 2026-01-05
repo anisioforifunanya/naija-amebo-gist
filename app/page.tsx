@@ -6,6 +6,7 @@ import Link from 'next/link';
 import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
 import FeaturesWidget from '../components/FeaturesWidget';
+import HomepageEnhancements from '../components/HomepageEnhancements';
 
 interface UserData {
   id: string;
@@ -202,6 +203,9 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Homepage Enhancements - All Interactive Features */}
+      <HomepageEnhancements allNews={Object.values(newsData).flat()} />
 
       {/* News Sections */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
