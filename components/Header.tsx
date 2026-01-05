@@ -133,47 +133,6 @@ export default function Header() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
             </Link>
-            <Link href="/private-messages" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">💬 Messages</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/group-chats" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">👥 Groups</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/channels" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10"># Channels</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            {/* NEW FEATURES */}
-            <Link href="/interviews" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">🎤 Interviews</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/gossip" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">💬 Gossip</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/galleries" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">📸 Photos</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/polls" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">🗳️ Polls</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/feedback" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">📮 Tip-Off</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
           </nav>
 
           {/* Right Section - Search + Action Buttons */}
@@ -337,14 +296,6 @@ export default function Header() {
                   <circle cx="4" cy="4" r="3" />
                 </svg>
                 <span>Viral Content</span>
-              </span>
-            </Link>
-            <Link href="/private-messages" className="relative block px-4 py-3 text-gray-700 dark:text-gray-300 font-semibold rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-2 group" onClick={() => setIsMenuOpen(false)}>
-              <span className="flex items-center space-x-2">
-                <svg className="w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
-                <span>💬 Private Messages</span>
               </span>
             </Link>
 

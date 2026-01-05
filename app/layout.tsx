@@ -3,6 +3,7 @@ import './globals.css'
 import 'leaflet/dist/leaflet.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import BottomNav from '../components/BottomNav'
 import { BrowserCompatibilityInit } from '../components/BrowserCompatibilityInit'
 import { ThemeProvider } from '../lib/theme'
 import ClientSideFeatures from '../components/ClientSideFeatures'
@@ -132,8 +133,9 @@ export default function RootLayout({
         <ThemeProvider>
           <BrowserCompatibilityInit />
           <Header />
-          <main className="pt-20">{children}</main>
+          <main className="pt-20 pb-32">{children}</main>
           <Footer />
+          <BottomNav />
           <ClientSideFeatures />
         </ThemeProvider>
       </body>
