@@ -63,7 +63,22 @@ export default function Login() {
       const authUser = await loginUserWithEmail(formData.email, formData.password);
       
       // Get user data from Firestore (using UID)
-      const userData = await getUser(authUser.uid);
+      let userData = await getUser(authUser.uid);
+      
+      // If not found in users collection, try admins collection
+      if (!userData) {
+        try {
+          const { doc, getDoc } = await import('firebase/firestore');
+          const { db } = await import('@/lib/firebase');
+          const adminDocRef = doc(db, 'admins', authUser.uid);
+          const adminDocSnap = await getDoc(adminDocRef);
+          if (adminDocSnap.exists()) {
+            userData = { id: adminDocSnap.id, ...adminDocSnap.data() };
+          }
+        } catch (adminError) {
+          console.log('Not an admin account');
+        }
+      }
       
       if (!userData) {
         throw new Error('User profile not found in database');
