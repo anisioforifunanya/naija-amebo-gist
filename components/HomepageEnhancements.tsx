@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
 interface NewsItem {
   id: string;
@@ -11,10 +13,12 @@ interface NewsItem {
   category: string;
   status: 'approved' | 'pending' | 'rejected';
   author?: string;
+  submittedBy?: string;
   views?: number;
   shares?: number;
   reactions?: number;
   image?: string;
+  hashtags?: string[];
 }
 
 interface HomepageEnhancementsProps {
@@ -29,37 +33,68 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
   const [trendingHashtags, setTrendingHashtags] = useState<string[]>([]);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [autoScroll, setAutoScroll] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // Generate mock metrics for stories
-  const getMetrics = (index: number) => ({
-    views: Math.floor(Math.random() * 50000) + 1000,
-    shares: Math.floor(Math.random() * 5000) + 100,
-    reactions: Math.floor(Math.random() * 10000) + 500,
+  // Get real metrics from data or fallback
+  const getMetrics = (story: NewsItem) => ({
+    views: story.views || Math.floor(Math.random() * 50000) + 1000,
+    shares: story.shares || Math.floor(Math.random() * 5000) + 100,
+    reactions: story.reactions || Math.floor(Math.random() * 10000) + 500,
   });
 
-  // Initialize data
+  // Extract trending hashtags from all stories
+  const extractTrendingHashtags = (stories: NewsItem[]) => {
+    const hashtagMap: { [key: string]: number } = {};
+    stories.forEach((story) => {
+      if (story.hashtags && Array.isArray(story.hashtags)) {
+        story.hashtags.forEach((tag) => {
+          hashtagMap[tag] = (hashtagMap[tag] || 0) + 1;
+        });
+      }
+    });
+    return Object.entries(hashtagMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([tag]) => tag);
+  };
+
+  // Initialize data from real approved news
   useEffect(() => {
-    if (allNews.length > 0) {
-      // Breaking news - most recent
-      setBreakingNews(allNews[0]);
+    try {
+      // Filter only approved news for public display
+      const approvedNews = allNews.filter((news) => news.status === 'approved');
 
-      // Hero carousel - top 5 stories
-      setHeroStories(allNews.slice(0, 5));
+      if (approvedNews.length > 0) {
+        // Breaking news - most recent approved
+        setBreakingNews(approvedNews[0]);
 
-      // Most shared - sorted by shares
-      const sorted = [...allNews].sort((a, b) => {
-        const metricsA = getMetrics(allNews.indexOf(a));
-        const metricsB = getMetrics(allNews.indexOf(b));
-        return metricsB.shares - metricsA.shares;
-      });
-      setMostShared(sorted.slice(0, 5));
+        // Hero carousel - top 5 approved stories
+        setHeroStories(approvedNews.slice(0, 5));
 
-      // Trending hashtags
-      const hashtags = ['#CelebDrama', '#ViralTok', '#EntertainmentGossip', '#BreakingNews', '#TrendingNow', '#NaijaAmebo'];
-      setTrendingHashtags(hashtags);
+        // Most shared - sorted by real shares metric
+        const sorted = [...approvedNews].sort((a, b) => {
+          const metricsA = getMetrics(a);
+          const metricsB = getMetrics(b);
+          return metricsB.shares - metricsA.shares;
+        });
+        setMostShared(sorted.slice(0, 5));
 
-      // All news for infinite scroll
-      setDisplayedNews(allNews.slice(0, 10));
+        // Extract trending hashtags from real data
+        const hashtags = extractTrendingHashtags(approvedNews);
+        if (hashtags.length > 0) {
+          setTrendingHashtags(hashtags);
+        } else {
+          // Fallback hashtags if none found
+          setTrendingHashtags(['#CelebDrama', '#ViralTok', '#EntertainmentGossip', '#BreakingNews', '#TrendingNow', '#NaijaAmebo']);
+        }
+
+        // All approved news for infinite scroll
+        setDisplayedNews(approvedNews.slice(0, 10));
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error initializing homepage data:', error);
+      setLoading(false);
     }
   }, [allNews]);
 
@@ -227,7 +262,7 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
         </h3>
         <div className="space-y-3">
           {mostShared.slice(0, 5).map((story, idx) => {
-            const metrics = getMetrics(idx);
+            const metrics = getMetrics(story);
             return (
               <Link
                 key={story.id}
@@ -286,7 +321,7 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
         </h3>
         <div className="space-y-4">
           {displayedNews.slice(1, 10).map((story, idx) => {
-            const metrics = getMetrics(idx);
+            const metrics = getMetrics(story);
             const badge = getTimeAgo(story.date);
 
             return (

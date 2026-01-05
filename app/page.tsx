@@ -172,6 +172,12 @@ export default function Home() {
     return newsData[category]?.slice(0, limit) || [];
   };
 
+  // Get all approved news combined
+  const getAllApprovedNews = () => {
+    const allNews = Object.values(newsData).flat();
+    return allNews.filter((item) => item.status === 'approved');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
@@ -205,7 +211,7 @@ export default function Home() {
       </section>
 
       {/* Homepage Enhancements - All Interactive Features */}
-      <HomepageEnhancements allNews={Object.values(newsData).flat()} />
+      <HomepageEnhancements allNews={getAllApprovedNews()} />
 
       {/* News Sections */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">

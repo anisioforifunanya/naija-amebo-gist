@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { recordShare } from '../lib/metricsTracker';
 
 interface NewsItem {
+  id?: string;
   title: string;
   description: string;
   date: string;
@@ -84,7 +86,16 @@ export default function NewsCard({ item, index }: NewsCardProps) {
     document.body.removeChild(link);
   };
 
-  const shareToSocial = (platform: string) => {
+  const shareToSocial = async (platform: string) => {
+    // Record share metric if story has an ID
+    if (item.id) {
+      try {
+        await recordShare(item.id, platform);
+      } catch (error) {
+        console.error('Error recording share metric:', error);
+      }
+    }
+
     const url = encodeURIComponent(window.location.href);
     const text = encodeURIComponent(`${item.title} - ${item.description}`);
     let shareUrl = '';
