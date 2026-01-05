@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 
 interface FloatingButton {
   icon: string
@@ -20,27 +20,29 @@ interface ButtonPosition {
 
 export default function FloatingButtons() {
   const [positions, setPositions] = useState<ButtonPosition[]>([])
-  const [isMobile, setIsMobile] = useState(false)
-  const [isClient, setIsClient] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null) // null = not determined yet
   const containerRef = useRef<HTMLDivElement>(null)
   const positionsRef = useRef<ButtonPosition[]>([])
   
-  // Check if we're on client side (for SSR compatibility)
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-  
-  // Check if mobile on mount
-  useEffect(() => {
-    if (!isClient) return
+  // Determine if mobile using useLayoutEffect (runs before paint)
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') {
+      setIsMobile(false)
+      return
+    }
     
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
     }
+    
+    // Check immediately
     checkMobile()
+    
+    // Listen for resize
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
-  }, [isClient])
+  }, [])
 
   const buttons: FloatingButton[] = [
     {
@@ -89,7 +91,7 @@ export default function FloatingButtons() {
 
   // Initialize positions
   useEffect(() => {
-    if (!isClient || typeof window === 'undefined') return
+    if (typeof window === 'undefined') return
     
     const buttonSize = isMobile ? 70 : 110
     const initialPositions = buttons.map((_, index) => ({
@@ -100,11 +102,11 @@ export default function FloatingButtons() {
     }))
     positionsRef.current = initialPositions
     setPositions(initialPositions)
-  }, [isMobile, isClient])
+  }, [isMobile])
 
   // Animation loop with browser compatibility
   useEffect(() => {
-    if (isMobile || !isClient) return // Disable animation on mobile for better performance
+    if (isMobile || isMobile === null) return // Disable animation on mobile for better performance
     
     // Use requestAnimationFrame for better browser compatibility
     let animationFrameId: number
@@ -183,10 +185,10 @@ export default function FloatingButtons() {
         cancelAnimationFrame(animationFrameId)
       }
     }
-  }, [isMobile, isClient])
+  }, [isMobile])
 
-  // Don't render on client-side before hydration
-  if (!isClient) return null
+  // Don't render until we know if mobile or not (prevent hydration mismatch)
+  if (isMobile === null) return null
   
   // Don't render full animation on mobile - show simplified grid instead
   if (isMobile) {
