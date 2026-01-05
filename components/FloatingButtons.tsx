@@ -104,7 +104,7 @@ export default function FloatingButtons() {
 
   // Animation loop with browser compatibility
   useEffect(() => {
-    if (!isMobile || !isClient) return // Disable animation on mobile for better performance
+    if (isMobile || !isClient) return // Disable animation on mobile for better performance
     
     // Use requestAnimationFrame for better browser compatibility
     let animationFrameId: number
@@ -127,7 +127,7 @@ export default function FloatingButtons() {
         let newVx = pos.vx
         let newVy = pos.vy
 
-        const buttonSize = 70 // approximate size of button on mobile
+        const buttonSize = 110 // approximate size of button on desktop
         const padding = 10
 
         // Bounce off right edge
