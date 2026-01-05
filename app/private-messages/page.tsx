@@ -471,15 +471,17 @@ export default function PrivateMessages() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/community"
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 mb-4"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Community
-          </Link>
+          {currentUser && (
+            <Link
+              href={currentUser.isSuperAdmin || currentUser.role === 'admin' ? '/admin' : '/community'}
+              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 mb-4"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              {currentUser.isSuperAdmin || currentUser.role === 'admin' ? 'Back to Admin Dashboard' : 'Back to Community'}
+            </Link>
+          )}
 
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white shadow-xl">
             <h1 className="text-4xl font-bold mb-2 flex items-center">
