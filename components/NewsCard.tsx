@@ -207,7 +207,7 @@ export default function NewsCard({ item, index }: NewsCardProps) {
       <div className="flex flex-wrap gap-2 mb-4">
         <button
           onClick={handleLike}
-          className={`px-3 py-1 rounded ${isLiked ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'} hover:bg-opacity-80`}
+          className={`px-3 sm:px-4 py-2 sm:py-3 rounded text-sm sm:text-base font-medium min-h-[44px] transition ${isLiked ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
         >
           👍 {likes}
         </button>
@@ -215,18 +215,18 @@ export default function NewsCard({ item, index }: NewsCardProps) {
         <div className="relative">
           <button
             onClick={() => setShowReactions(!showReactions)}
-            className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-opacity-80"
+            className="px-3 sm:px-4 py-2 sm:py-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm sm:text-base font-medium min-h-[44px]"
           >
             😊
           </button>
           {showReactions && (
-            <div className="absolute bottom-full mb-2 bg-white border rounded shadow-lg p-4 w-80">
-              <div className="flex flex-wrap justify-center gap-3">
+            <div className="absolute bottom-full mb-2 bg-white border rounded shadow-lg p-2 sm:p-4 w-64 sm:w-80 z-10">
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
                 {emojis.map(emoji => (
                   <button
                     key={emoji}
                     onClick={() => handleReaction(emoji)}
-                    className={`w-12 h-12 flex items-center justify-center text-2xl hover:bg-gray-100 rounded-lg transition-colors border-2 ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-lg sm:text-2xl hover:bg-gray-100 rounded-lg transition-colors border-2 ${
                       userReactions.has(emoji)
                         ? 'bg-blue-100 border-blue-300'
                         : 'border-transparent hover:border-gray-300'
@@ -243,7 +243,7 @@ export default function NewsCard({ item, index }: NewsCardProps) {
 
         <button
           onClick={() => setShowComments(!showComments)}
-          className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-opacity-80"
+          className="px-3 sm:px-4 py-2 sm:py-3 bg-gray-200 text-gray-700 rounded hover:bg-opacity-80 text-sm sm:text-base font-medium transition min-h-[44px]"
         >
           💬 {comments.length}
         </button>
@@ -252,7 +252,7 @@ export default function NewsCard({ item, index }: NewsCardProps) {
         <div className="flex gap-2">
           <button
             onClick={() => shareToSocial('whatsapp')}
-            className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
+            className="p-2 sm:p-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             title="Share on WhatsApp"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -261,10 +261,10 @@ export default function NewsCard({ item, index }: NewsCardProps) {
           </button>
           <button
             onClick={() => shareToSocial('telegram')}
-            className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+            className="p-2 sm:p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             title="Share on Telegram"
           >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
             </svg>
           </button>

@@ -20,8 +20,19 @@ interface ButtonPosition {
 
 export default function FloatingButtons() {
   const [positions, setPositions] = useState<ButtonPosition[]>([])
+  const [isMobile, setIsMobile] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const positionsRef = useRef<ButtonPosition[]>([])
+  
+  // Check if mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const buttons: FloatingButton[] = [
     {
@@ -70,18 +81,21 @@ export default function FloatingButtons() {
 
   // Initialize positions
   useEffect(() => {
+    const buttonSize = isMobile ? 70 : 110
     const initialPositions = buttons.map((_, index) => ({
-      x: Math.random() * (window.innerWidth - 150),
-      y: Math.random() * (window.innerHeight - 150),
-      vx: (Math.random() - 0.5) * 3,
-      vy: (Math.random() - 0.5) * 3
+      x: Math.random() * Math.max(100, window.innerWidth - buttonSize - 20),
+      y: Math.random() * Math.max(100, window.innerHeight - buttonSize - 20),
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2
     }))
     positionsRef.current = initialPositions
     setPositions(initialPositions)
-  }, [])
+  }, [isMobile])
 
   // Animation loop
   useEffect(() => {
+    if (!isMobile) return // Disable animation on mobile for better performance
+    
     const interval = setInterval(() => {
       const newPositions = positionsRef.current.map(pos => {
         let newX = pos.x + pos.vx
@@ -89,7 +103,7 @@ export default function FloatingButtons() {
         let newVx = pos.vx
         let newVy = pos.vy
 
-        const buttonSize = 110 // approximate size of button
+        const buttonSize = 70 // approximate size of button on mobile
         const padding = 10
 
         // Bounce off right edge
@@ -137,7 +151,25 @@ export default function FloatingButtons() {
     }, 30) // Update every 30ms for smooth animation
 
     return () => clearInterval(interval)
-  }, [])
+  }, [isMobile])
+
+  // Don't render full animation on mobile - show simplified grid instead
+  if (isMobile) {
+    return (
+      <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2">
+        {buttons.slice(0, 3).map((button) => (
+          <Link
+            key={button.id}
+            href={button.href}
+            className={`bg-gradient-to-br ${button.bgColor} text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110 active:scale-95 flex items-center justify-center w-14 h-14 text-lg`}
+            title={button.label}
+          >
+            {button.icon}
+          </Link>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div 

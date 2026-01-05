@@ -6,24 +6,24 @@ export default function Footer() {
     <footer className="bg-gray-800 text-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">About Us</h3>
-            <p className="text-gray-300">
+          <div className="mb-4 sm:mb-0">
+            <h3 className="text-base sm:text-lg font-semibold mb-4">About Us</h3>
+            <p className="text-sm sm:text-base text-gray-300">
               Your ultimate source for celebrity news, gossip, and viral stories from Nigeria and beyond.
             </p>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+          <div className="mb-4 sm:mb-0">
+            <h3 className="text-base sm:text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/privacy-policy" className="text-gray-300 hover:text-white">Privacy Policy</Link></li>
-              <li><Link href="/faq" className="text-gray-300 hover:text-white">FAQ</Link></li>
-              <li><Link href="/terms" className="text-gray-300 hover:text-white">Terms & Copyright</Link></li>
-              <li><Link href="/about" className="text-gray-300 hover:text-white">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-300 hover:text-white">Contact</Link></li>
+              <li><Link href="/privacy-policy" className="text-sm sm:text-base text-gray-300 hover:text-white transition">Privacy Policy</Link></li>
+              <li><Link href="/faq" className="text-sm sm:text-base text-gray-300 hover:text-white transition">FAQ</Link></li>
+              <li><Link href="/terms" className="text-sm sm:text-base text-gray-300 hover:text-white transition">Terms & Copyright</Link></li>
+              <li><Link href="/about" className="text-sm sm:text-base text-gray-300 hover:text-white transition">About Us</Link></li>
+              <li><Link href="/contact" className="text-sm sm:text-base text-gray-300 hover:text-white transition">Contact</Link></li>
             </ul>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+          <div className="mb-4 sm:mb-0">
+            <h3 className="text-base sm:text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex flex-col space-y-2">
               <a href="https://chat.whatsapp.com/DOHmbRW1PlNHMtB8ijVLFC" className="text-gray-300 hover:text-white flex items-center space-x-2" target="_blank" rel="noopener noreferrer">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
