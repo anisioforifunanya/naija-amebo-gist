@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "title": "Wizkid's New Album Breaks Streaming Records",
+    "slug": "wizkid-new-album-breaking-records",
+    "category": "Music",
+    "tags": ["#Afrobeats", "#Music", "#Nigeria", "#Wizkid"],
+    "content": "Afrobeats king Wizkid has done it again with his latest album...",
+    "excerpt": "Breaking: Wizkid's album hits 100M streams in 24 hours",
+    "image": "/images/wizkid-album.jpg",
+    "author": {
+      "id": 1,
+      "name": "Chidi Okafor",
+      "bio": "Entertainment journalist with 10+ years experience",
+      "avatar": "/avatars/chidi.jpg",
+      "verified": true,
+      "credibilityScore": 95
+    },
+    "publishedAt": "2026-01-05T10:30:00Z",
+    "updatedAt": "2026-01-05T10:30:00Z",
+    "contentType": "article",
+    "isVerified": true,
+    "isBreakinNews": true,
+    "isFeatured": true,
+    "views": 45230,
+    "likes": 3420,
+    "comments": 156,
+    "shares": 892,
+    "archived": false,
+    "source": "Official Press Release",
+    "sourceUrl": "https://wizkid.com/press",
+    "videoUrl": "https://youtube.com/watch?v=...",
+    "socialMediaEmbeds": [
+      {
+        "platform": "instagram",
+        "embedUrl": "https://instagram.com/p/...",
+        "caption": "Check out the album teaser"
+      }
+    ],
+    "relatedStories": [2, 5, 8],
+    "newsletter": true
+  },
+  {
+    "id": 2,
+    "title": "Tiwa Savage Spotted with Mystery Man in Lagos",
+    "slug": "tiwa-savage-mystery-man",
+    "category": "Gossip",
+    "tags": ["#Gossip", "#Celebrity", "#Tiwa", "#Dating"],
+    "content": "Unconfirmed reports suggest Tiwa Savage is dating...",
+    "excerpt": "RUMORS: Tiwa Savage's new romance?",
+    "image": "/images/tiwa-mystery.jpg",
+    "author": {
+      "id": 2,
+      "name": "Zainab Adesina",
+      "bio": "Celebrity lifestyle correspondent",
+      "avatar": "/avatars/zainab.jpg",
+      "verified": false,
+      "credibilityScore": 72
+    },
+    "publishedAt": "2026-01-04T15:45:00Z",
+    "updatedAt": "2026-01-04T15:45:00Z",
+    "contentType": "gossip",
+    "isVerified": false,
+    "isRumor": true,
+    "isBreakinNews": false,
+    "isFeatured": false,
+    "views": 12340,
+    "likes": 892,
+    "comments": 324,
+    "shares": 567,
+    "archived": false,
+    "warningLabels": ["Unconfirmed Report", "Celebrity Gossip"],
+    "misinformationWarning": "This story contains unconfirmed rumors. Please verify before sharing.",
+    "relatedStories": [3, 6]
+  },
+  {
+    "id": 3,
+    "title": "Exclusive Interview: Rema Opens Up About Success",
+    "slug": "rema-exclusive-interview",
+    "category": "Interviews",
+    "tags": ["#Interview", "#Rema", "#Music", "#Afrobeats"],
+    "content": "In this exclusive sit-down, rising star Rema talks about...",
+    "excerpt": "Rema reveals secrets to his meteoric rise in music",
+    "image": "/images/rema-interview.jpg",
+    "author": {
+      "id": 1,
+      "name": "Chidi Okafor",
+      "bio": "Entertainment journalist with 10+ years experience",
+      "avatar": "/avatars/chidi.jpg",
+      "verified": true,
+      "credibilityScore": 95
+    },
+    "publishedAt": "2026-01-03T12:00:00Z",
+    "updatedAt": "2026-01-03T12:00:00Z",
+    "contentType": "interview",
+    "isVerified": true,
+    "isBreakinNews": false,
+    "isFeatured": true,
+    "videoUrl": "https://youtube.com/watch?v=rema-interview",
+    "views": 67890,
+    "likes": 5234,
+    "comments": 432,
+    "shares": 1203,
+    "archived": false,
+    "interviewee": {
+      "name": "Rema",
+      "image": "/images/rema.jpg",
+      "role": "Musician, Afrobeats Artist"
+    }
+  },
+  {
+    "id": 4,
+    "title": "AMVCA Red Carpet: Biggest Fashion Moments",
+    "slug": "amvca-red-carpet-fashion",
+    "category": "Fashion & Lifestyle",
+    "tags": ["#Fashion", "#RedCarpet", "#Events", "#AMVCA"],
+    "content": "The biggest fashion statements from this year's AMVCA...",
+    "excerpt": "Stars served looks at the prestigious awards ceremony",
+    "image": "/images/amvca-red-carpet.jpg",
+    "author": {
+      "id": 3,
+      "name": "Nneka Obi",
+      "bio": "Fashion & style expert",
+      "avatar": "/avatars/nneka.jpg",
+      "verified": true,
+      "credibilityScore": 88
+    },
+    "publishedAt": "2026-01-02T18:20:00Z",
+    "updatedAt": "2026-01-02T18:20:00Z",
+    "contentType": "photo-gallery",
+    "isVerified": true,
+    "isBreakinNews": false,
+    "isFeatured": true,
+    "views": 89320,
+    "likes": 7643,
+    "comments": 567,
+    "shares": 2134,
+    "archived": false,
+    "gallery": [
+      {
+        "image": "/images/gallery/amvca-1.jpg",
+        "caption": "Actress A in stunning designer gown",
+        "credit": "Getty Images"
+      },
+      {
+        "image": "/images/gallery/amvca-2.jpg",
+        "caption": "Actor B's classic black tuxedo",
+        "credit": "Getty Images"
+      }
+    ],
+    "event": {
+      "name": "AMVCA Awards",
+      "date": "2025-12-28",
+      "location": "Lagos, Nigeria"
+    }
+  },
+  {
+    "id": 5,
+    "title": "BBNaija Season 8 Grand Finale Highlights",
+    "slug": "bbnaija-s8-finale",
+    "category": "Events",
+    "tags": ["#BBNaija", "#Reality TV", "#Nigeria", "#Entertainment"],
+    "content": "The most dramatic moments from BBNaija Season 8...",
+    "excerpt": "Who won? All the drama from the live finale",
+    "image": "/images/bbnaija-finale.jpg",
+    "author": {
+      "id": 4,
+      "name": "Tunde Adeyemi",
+      "bio": "Reality TV correspondent",
+      "avatar": "/avatars/tunde.jpg",
+      "verified": true,
+      "credibilityScore": 92
+    },
+    "publishedAt": "2026-01-01T22:15:00Z",
+    "updatedAt": "2026-01-01T22:15:00Z",
+    "contentType": "video",
+    "isVerified": true,
+    "isBreakinNews": true,
+    "isFeatured": true,
+    "videoUrl": "https://youtube.com/watch?v=bbnaija-finale",
+    "videoType": "long-form",
+    "views": 234567,
+    "likes": 18932,
+    "comments": 4523,
+    "shares": 5234,
+    "archived": false,
+    "liveStreamUrl": "https://youtube.com/live/bbnaija-finale",
+    "liveStreamArchived": true
+  }
+]

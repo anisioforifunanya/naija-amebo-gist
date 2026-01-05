@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "title": "Who Wore It Better: Drake vs The Weeknd",
+    "description": "Choose your favorite look from these two icons",
+    "image1": "/images/drake-look.jpg",
+    "image2": "/images/weeknd-look.jpg",
+    "label1": "Drake",
+    "label2": "The Weeknd",
+    "votes1": 4523,
+    "votes2": 3421,
+    "publishedAt": "2026-01-05T10:00:00Z",
+    "expiresAt": "2026-01-12T10:00:00Z",
+    "active": true,
+    "votes": [
+      { "userId": "user123", "choice": 1 }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Best Artist of 2025",
+    "description": "Vote for your favorite artist that dominated 2025",
+    "options": [
+      { "id": 1, "label": "Wizkid", "votes": 8932 },
+      { "id": 2, "label": "Tiwa Savage", "votes": 7621 },
+      { "id": 3, "label": "Burna Boy", "votes": 9234 },
+      { "id": 4, "label": "Rema", "votes": 6789 }
+    ],
+    "publishedAt": "2025-12-20T00:00:00Z",
+    "expiresAt": "2026-01-10T00:00:00Z",
+    "active": true,
+    "totalVotes": 32576,
+    "votes": []
+  },
+  {
+    "id": 3,
+    "title": "Best Movie of 2025",
+    "description": "Which movie left the biggest impact?",
+    "options": [
+      { "id": 1, "label": "Anikulapo", "votes": 5432 },
+      { "id": 2, "label": "Funky Nigger", "votes": 4521 },
+      { "id": 3, "label": "Gangs of Lagos", "votes": 6789 },
+      { "id": 4, "label": "Battle on Bhalandira", "votes": 3456 }
+    ],
+    "publishedAt": "2025-12-15T00:00:00Z",
+    "expiresAt": "2026-01-08T00:00:00Z",
+    "active": true,
+    "totalVotes": 20198
+  }
+]

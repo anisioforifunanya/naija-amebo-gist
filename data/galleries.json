@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Zendaya's Dior Haute Couture Look at Cannes 2025",
+    "description": "A stunning custom Dior gown worth $500k",
+    "category": "Red Carpet",
+    "images": [
+      {
+        "url": "/images/zendaya-dior-1.jpg",
+        "caption": "Full length shot of the stunning gown",
+        "credit": "Getty Images"
+      },
+      {
+        "url": "/images/zendaya-dior-2.jpg",
+        "caption": "Close-up of the intricate beadwork",
+        "credit": "Getty Images"
+      }
+    ],
+    "event": "Cannes Film Festival 2025",
+    "designer": "Dior",
+    "publishedAt": "2025-05-20T14:30:00Z",
+    "views": 234567,
+    "likes": 18932
+  },
+  {
+    "id": 2,
+    "title": "BBNaija Contestants Best Looks Week 5",
+    "description": "The hottest fashion moments from the house",
+    "category": "Reality TV Fashion",
+    "images": [
+      {
+        "url": "/images/bbn-look-1.jpg",
+        "caption": "Contestant A in custom African wear",
+        "credit": "Multichoice"
+      }
+    ],
+    "event": "BBNaija Season 8",
+    "publishedAt": "2025-12-10T20:00:00Z",
+    "views": 145230,
+    "likes": 9842
+  }
+]

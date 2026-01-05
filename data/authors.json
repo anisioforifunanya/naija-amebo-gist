@@ -1,0 +1,85 @@
+[
+  {
+    "id": 1,
+    "name": "Chidi Okafor",
+    "email": "chidi@naijaamebogist.com",
+    "bio": "Entertainment journalist with 10+ years of experience covering African celebrity news and entertainment",
+    "avatar": "/avatars/chidi.jpg",
+    "verified": true,
+    "credibilityScore": 95,
+    "articlesCount": 342,
+    "followersCount": 45230,
+    "specializations": ["Music", "Interviews", "Breaking News"],
+    "socialProfiles": {
+      "twitter": "https://twitter.com/chidi_okafor",
+      "instagram": "https://instagram.com/chidi_okafor",
+      "linkedin": "https://linkedin.com/in/chidiokafor"
+    },
+    "joinedAt": "2020-01-15",
+    "isActive": true,
+    "canPublish": true,
+    "earnings": 12450.50
+  },
+  {
+    "id": 2,
+    "name": "Zainab Adesina",
+    "email": "zainab@naijaamebogist.com",
+    "bio": "Celebrity lifestyle correspondent with a passion for African pop culture and entertainment",
+    "avatar": "/avatars/zainab.jpg",
+    "verified": false,
+    "credibilityScore": 72,
+    "articlesCount": 156,
+    "followersCount": 23450,
+    "specializations": ["Gossip", "Lifestyle", "Dating News"],
+    "socialProfiles": {
+      "twitter": "https://twitter.com/zainab_adesina",
+      "instagram": "https://instagram.com/zainab_adesina"
+    },
+    "joinedAt": "2021-06-20",
+    "isActive": true,
+    "canPublish": true,
+    "earnings": 5230.75
+  },
+  {
+    "id": 3,
+    "name": "Nneka Obi",
+    "email": "nneka@naijaamebogist.com",
+    "bio": "Fashion & style expert covering red carpet looks and African fashion trends",
+    "avatar": "/avatars/nneka.jpg",
+    "verified": true,
+    "credibilityScore": 88,
+    "articlesCount": 267,
+    "followersCount": 67890,
+    "specializations": ["Fashion", "Lifestyle", "Events"],
+    "socialProfiles": {
+      "twitter": "https://twitter.com/nneka_obi",
+      "instagram": "https://instagram.com/nneka_obi_style",
+      "tiktok": "https://tiktok.com/@nneka_obi"
+    },
+    "joinedAt": "2019-03-10",
+    "isActive": true,
+    "canPublish": true,
+    "earnings": 18760.25
+  },
+  {
+    "id": 4,
+    "name": "Tunde Adeyemi",
+    "email": "tunde@naijaamebogist.com",
+    "bio": "Reality TV specialist covering BBNaija, Married at First Sight Africa, and reality competitions",
+    "avatar": "/avatars/tunde.jpg",
+    "verified": true,
+    "credibilityScore": 92,
+    "articlesCount": 289,
+    "followersCount": 54320,
+    "specializations": ["Reality TV", "Events", "Breaking News"],
+    "socialProfiles": {
+      "twitter": "https://twitter.com/tunde_adeyemi",
+      "instagram": "https://instagram.com/tunde_adeyemi",
+      "youtube": "https://youtube.com/@tundeadeyemi"
+    },
+    "joinedAt": "2020-08-05",
+    "isActive": true,
+    "canPublish": true,
+    "earnings": 15340.00
+  }
+]
