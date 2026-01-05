@@ -20,23 +20,23 @@ interface ButtonPosition {
 
 export default function FloatingButtons() {
   const [positions, setPositions] = useState<ButtonPosition[]>([])
-  const [isMobile, setIsMobile] = useState<boolean>(true) // Default to true (mobile) to show mobile buttons initially
+  const [buttonSize, setButtonSize] = useState<number>(70) // Mobile: 70px, Desktop: 110px
   const containerRef = useRef<HTMLDivElement>(null)
   const positionsRef = useRef<ButtonPosition[]>([])
   
-  // Determine if mobile - runs synchronously before first render
+  // Determine button size based on viewport - runs synchronously before first render
   useLayoutEffect(() => {
-    const checkMobile = () => {
-      const mobile = typeof window !== 'undefined' ? window.innerWidth < 768 : true
-      setIsMobile(mobile)
+    const checkButtonSize = () => {
+      const size = typeof window !== 'undefined' ? (window.innerWidth < 500 ? 70 : 110) : 70
+      setButtonSize(size)
     }
     
     // Check immediately
-    checkMobile()
+    checkButtonSize()
     
     // Listen for resize
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    window.addEventListener('resize', checkButtonSize)
+    return () => window.removeEventListener('resize', checkButtonSize)
   }, [])
 
   const buttons: FloatingButton[] = [
@@ -88,21 +88,19 @@ export default function FloatingButtons() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     
-    const buttonSize = isMobile ? 70 : 110
+    const size = buttonSize || 70
     const initialPositions = buttons.map((_, index) => ({
-      x: Math.max(0, Math.min(Math.random() * (window.innerWidth - buttonSize - 20), window.innerWidth - buttonSize)),
-      y: Math.max(0, Math.min(Math.random() * (window.innerHeight - buttonSize - 20), window.innerHeight - buttonSize)),
+      x: Math.max(0, Math.min(Math.random() * (window.innerWidth - size - 20), window.innerWidth - size)),
+      y: Math.max(0, Math.min(Math.random() * (window.innerHeight - size - 20), window.innerHeight - size)),
       vx: (Math.random() - 0.5) * 2,
       vy: (Math.random() - 0.5) * 2
     }))
     positionsRef.current = initialPositions
     setPositions(initialPositions)
-  }, [isMobile])
+  }, [buttonSize])
 
   // Animation loop with browser compatibility
   useEffect(() => {
-    if (isMobile) return // Disable animation on mobile for better performance
-    
     // Use requestAnimationFrame for better browser compatibility
     let animationFrameId: number
     let lastUpdateTime = Date.now()
@@ -118,18 +116,18 @@ export default function FloatingButtons() {
         return
       }
       
+      const size = buttonSize || 70
       const newPositions = positionsRef.current.map(pos => {
         let newX = pos.x + pos.vx
         let newY = pos.y + pos.vy
         let newVx = pos.vx
         let newVy = pos.vy
 
-        const buttonSize = 110 // approximate size of button on desktop
         const padding = 10
 
         // Bounce off right edge
-        if (typeof window !== 'undefined' && newX + buttonSize > window.innerWidth - padding) {
-          newX = window.innerWidth - buttonSize - padding
+        if (typeof window !== 'undefined' && newX + size > window.innerWidth - padding) {
+          newX = window.innerWidth - size - padding
           newVx = -Math.abs(newVx) * 0.95
         }
         // Bounce off left edge
@@ -139,8 +137,8 @@ export default function FloatingButtons() {
         }
 
         // Bounce off bottom edge
-        if (typeof window !== 'undefined' && newY + buttonSize > window.innerHeight - padding) {
-          newY = window.innerHeight - buttonSize - padding
+        if (typeof window !== 'undefined' && newY + size > window.innerHeight - padding) {
+          newY = window.innerHeight - size - padding
           newVy = -Math.abs(newVy) * 0.95
         }
         // Bounce off top edge
@@ -180,10 +178,10 @@ export default function FloatingButtons() {
         cancelAnimationFrame(animationFrameId)
       }
     }
-  }, [isMobile])
+  }, [buttonSize])
 
   // Don't render full animation on mobile - show simplified grid instead
-  if (isMobile) {
+  if (buttonSize < 100) {
     return (
       <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2">
         {buttons.slice(0, 3).map((button) => (
