@@ -27,7 +27,9 @@ export default function FloatingButtons() {
   // Determine button size based on viewport - runs synchronously before first render
   useLayoutEffect(() => {
     const checkButtonSize = () => {
-      const size = typeof window !== 'undefined' ? (window.innerWidth < 500 ? 70 : 110) : 70
+      // Show 6 animated buttons on all devices (smaller buttons on smaller screens)
+      // 70px for very small screens, 110px for larger screens
+      const size = typeof window !== 'undefined' ? (window.innerWidth < 300 ? 50 : window.innerWidth < 500 ? 70 : 110) : 70
       setButtonSize(size)
     }
     
@@ -181,7 +183,7 @@ export default function FloatingButtons() {
   }, [buttonSize])
 
   // Don't render full animation on mobile - show simplified grid instead
-  if (buttonSize < 100) {
+  if (buttonSize < 50) {
     return (
       <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2">
         {buttons.slice(0, 3).map((button) => (
