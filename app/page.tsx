@@ -134,10 +134,10 @@ export default function Home() {
           // Parse as array and organize by category
           const newsArray = Array.isArray(parsedNews) ? parsedNews : [];
           
-          // Create merged news object
-          const mergedNews: Record<string, NewsItem[]> = { ...defaultNews };
+          // Create news object - START EMPTY (don't merge with defaults)
+          const mergedNews: Record<string, NewsItem[]> = {};
           
-          // Organize news by category
+          // Organize ONLY APPROVED news by category
           newsArray.forEach((newsItem: NewsItem) => {
             if (newsItem.status === 'approved' && newsItem.category) {
               if (!mergedNews[newsItem.category]) {
@@ -147,11 +147,16 @@ export default function Home() {
             }
           });
           
-          setNewsData(mergedNews);
+          // If we have real approved news, use it; otherwise fallback to defaults
+          const finalNews = Object.keys(mergedNews).length > 0 ? mergedNews : defaultNews;
+          setNewsData(finalNews);
         } catch (error) {
           console.error('Error loading news from localStorage:', error);
           setNewsData(defaultNews);
         }
+      } else {
+        // No stored news, use defaults
+        setNewsData(defaultNews);
       }
     };
 
