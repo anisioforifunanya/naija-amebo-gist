@@ -22,6 +22,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setIsDark(shouldBeDark)
     applyTheme(shouldBeDark)
     setMounted(true)
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem('theme')) {
+        setIsDark(e.matches)
+        applyTheme(e.matches)
+      }
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
   }, [])
 
   const applyTheme = (dark: boolean) => {
@@ -29,9 +41,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (dark) {
       html.classList.add('dark')
       html.style.colorScheme = 'dark'
+      html.style.backgroundColor = '#111827'
+      html.style.color = '#f3f4f6'
     } else {
       html.classList.remove('dark')
       html.style.colorScheme = 'light'
+      html.style.backgroundColor = '#ffffff'
+      html.style.color = '#111827'
+    }
+    
+    // Force body update as well
+    const body = document.body
+    if (dark) {
+      body.classList.add('dark')
+      body.style.backgroundColor = '#111827'
+      body.style.color = '#f3f4f6'
+    } else {
+      body.classList.remove('dark')
+      body.style.backgroundColor = '#ffffff'
+      body.style.color = '#111827'
     }
   }
 

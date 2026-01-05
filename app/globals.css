@@ -10,15 +10,60 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Fix for older browsers */
+/* Base Light Mode Styles */
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
 }
 
 body {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  @apply bg-white text-gray-900;
+}
+
+/* Dark Mode Base Styles */
+html.dark {
+  color-scheme: dark;
+  @apply bg-gray-950 text-gray-50;
+}
+
+html.dark body {
+  @apply bg-gray-950 text-gray-50;
+}
+
+/* Ensure Text is Always Readable */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  @apply text-gray-50;
+}
+
+html.dark p {
+  @apply text-gray-300;
+}
+
+html.dark a {
+  @apply text-blue-400 hover:text-blue-300;
+}
+
+html.dark button {
+  @apply text-white;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  @apply bg-gray-800 text-gray-50 border-gray-600;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  @apply text-gray-400;
 }
 
 /* IE11 and older browser fixes */
@@ -70,6 +115,106 @@ body {
     content: "";
     display: table;
     clear: both;
+  }
+
+  /* Dark Mode Safe Text Colors */
+  .text-safe {
+    @apply text-gray-900 dark:text-gray-50;
+  }
+
+  .text-safe-secondary {
+    @apply text-gray-700 dark:text-gray-300;
+  }
+
+  .text-safe-tertiary {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .bg-safe {
+    @apply bg-white dark:bg-gray-900;
+  }
+
+  .bg-safe-secondary {
+    @apply bg-gray-50 dark:bg-gray-800;
+  }
+
+  .border-safe {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  /* Safe input styling */
+  .input-safe {
+    @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-50 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500;
+  }
+
+  /* Safe card styling */
+  .card-safe {
+    @apply bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-50;
+  }
+
+  /* Safe button styling */
+  .btn-safe-primary {
+    @apply bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white;
+  }
+
+  .btn-safe-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-50;
+  }
+
+  /* Fix for common text color issues in dark mode */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    @apply text-gray-50;
+  }
+
+  .dark p,
+  .dark span,
+  .dark div {
+    @apply text-gray-200;
+  }
+
+  .dark label {
+    @apply text-gray-300;
+  }
+
+  .dark small {
+    @apply text-gray-400;
+  }
+
+  /* Ensure all text elements are readable */
+  .dark table {
+    @apply text-gray-300;
+  }
+
+  .dark table th {
+    @apply text-gray-100 bg-gray-800;
+  }
+
+  .dark table td {
+    @apply text-gray-300;
+  }
+
+  /* Fix list styling */
+  .dark ul,
+  .dark ol {
+    @apply text-gray-300;
+  }
+
+  .dark li {
+    @apply text-gray-300;
+  }
+
+  /* Code and pre-formatted text */
+  .dark code {
+    @apply text-gray-300 bg-gray-800;
+  }
+
+  .dark pre {
+    @apply text-gray-300 bg-gray-800;
   }
 }
 
