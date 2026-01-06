@@ -23,6 +23,8 @@ interface UserData {
   isVerified: boolean;
   createdAt: string;
   lastLogin?: string;
+  accountStatus?: 'not_verified' | 'pending_verification' | 'approved' | 'rejected';
+  verificationStatus?: 'not_started' | 'pending' | 'approved' | 'rejected';
 }
 
 export default function UserRegister() {
@@ -154,8 +156,19 @@ export default function UserRegister() {
       });
       localStorage.setItem('naijaAmeboUsers', JSON.stringify(existingUsers));
 
+      // Set current user in localStorage and redirect to facial verification
+      localStorage.setItem('naijaAmeboCurrentUser', JSON.stringify({
+        id: authUser.uid,
+        ...newUser,
+      }));
+
       setSuccess(true);
       setLoading(false);
+
+      // Redirect to facial verification after 1 second
+      setTimeout(() => {
+        router.push('/facial-verification');
+      }, 1000);
     } catch (err: any) {
       console.error('Registration error:', err);
       
@@ -171,7 +184,7 @@ export default function UserRegister() {
         return;
       }
 
-      // Create new user
+      // Create new user with verification status
       const newUser: UserData = {
         id: Date.now().toString(),
         email: formData.email,
@@ -187,6 +200,8 @@ export default function UserRegister() {
         interests: formData.interests,
         role: 'user',
         isVerified: false,
+        accountStatus: 'not_verified',
+        verificationStatus: 'not_started',
         createdAt: new Date().toISOString()
       };
 
@@ -194,8 +209,16 @@ export default function UserRegister() {
       existingUsers.push(newUser);
       localStorage.setItem('naijaAmeboUsers', JSON.stringify(existingUsers));
 
+      // Set current user and redirect to facial verification
+      localStorage.setItem('naijaAmeboCurrentUser', JSON.stringify(newUser));
+
       setSuccess(true);
       setLoading(false);
+
+      // Redirect to facial verification after 1 second
+      setTimeout(() => {
+        router.push('/facial-verification');
+      }, 1000);
     }
   };
 
@@ -217,21 +240,12 @@ export default function UserRegister() {
             </div>
             <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">Registration Successful!</h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Your account has been created successfully. You can now join the community!
+              Your account has been created. Redirecting to facial verification...
             </p>
-            <div className="mt-6 space-y-4">
-              <Link
-                href="/community"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              >
-                Join Community Chat
-              </Link>
-              <Link
-                href="/login"
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                Go to Login
-              </Link>
+            <div className="mt-6">
+              <div className="flex justify-center">
+                <div className="animate-spin h-8 w-8 border-4 border-purple-600 border-t-purple-300 rounded-full"></div>
+              </div>
             </div>
           </div>
         </div>
