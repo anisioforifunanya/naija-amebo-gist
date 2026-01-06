@@ -116,7 +116,7 @@
     "tags": ["#Fashion", "#RedCarpet", "#Events", "#AMVCA"],
     "content": "The biggest fashion statements from this year's AMVCA...",
     "excerpt": "Stars served looks at the prestigious awards ceremony",
-    "image": "/images/amvca-red-carpet.jpg",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
     "author": {
       "id": 3,
       "name": "Nneka Obi",
