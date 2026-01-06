@@ -91,7 +91,7 @@ export default function FacialVerificationPage() {
             .then(() => {
               console.log('✅ Video playing successfully')
               setCameraActive(true)
-              setStep('camera')
+              // Stay on initial step, just activate camera flag
               setPermissionStatus('granted')
               toast.success('Camera opened successfully', {
                 position: 'bottom-right',
@@ -319,16 +319,31 @@ export default function FacialVerificationPage() {
               </p>
             </div>
 
-            {/* Picture Preview */}
+            {/* Picture Preview / Camera Area */}
             <div className="flex flex-col items-center mb-8">
-              <div className="w-full max-w-xs h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 flex items-center justify-center">
+              <div className="w-full max-w-xs h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 flex items-center justify-center relative">
+                {/* Show captured photo if available */}
                 {capturedPhoto ? (
                   <img
                     src={capturedPhoto}
-                    alt="Picture preview"
+                    alt="Captured photo"
                     className="w-full h-full object-cover"
                   />
+                ) : cameraActive && step !== 'initial' ? (
+                  // Show camera feed
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover"
+                    style={{ 
+                      transform: 'scaleX(-1)',
+                      display: 'block'
+                    }}
+                  />
                 ) : (
+                  // Show placeholder
                   <img
                     src="https://placehold.co/600x400/EEE/31343C?font=raleway&text=Picture%20preview"
                     alt="Picture preview"
@@ -336,123 +351,106 @@ export default function FacialVerificationPage() {
                   />
                 )}
               </div>
-            </div>
-
-            {/* Permission Status Display */}
-            {permissionStatus === 'denied' && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
-                <p className="text-red-700 dark:text-red-300 text-sm font-semibold">
-                  ❌ Camera Permission Denied
-                </p>
-                <p className="text-red-600 dark:text-red-400 text-xs mt-2">
-                  Please enable camera permissions in your browser settings to use facial verification.
-                </p>
-                <p className="text-red-600 dark:text-red-400 text-xs mt-2">
-                  <strong>Instructions:</strong> Click the camera icon or lock icon in your browser address bar, find "Camera" in permissions, and select "Allow".
-                </p>
-              </div>
-            )}
-
-            {/* Open Camera Button */}
-            <button
-              onClick={openCamera}
-              disabled={isLoading}
-              className={`w-full font-bold py-3 px-4 rounded-lg shadow-lg transition-all flex items-center justify-center gap-2 ${
-                isLoading
-                  ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
-                  : permissionStatus === 'denied'
-                  ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
-                  : 'bg-blue-500 hover:bg-blue-600 hover:scale-105 text-white'
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <span className="animate-spin">⏳</span>
-                  Initializing Camera...
-                </>
-              ) : permissionStatus === 'denied' ? (
-                <>
-                  🚫 Camera Blocked
-                </>
-              ) : (
-                <>
-                  📷 Open Camera
-                </>
-              )}
-            </button>
-
-            <p className="text-center text-gray-500 dark:text-gray-400 text-sm mt-4">
-              Ensure you're in a well-lit area with your face clearly visible
-            </p>
-
-            {permissionStatus === 'denied' && (
-              <div className="mt-4 text-center">
-                <button
-                  onClick={resetCamera}
-                  className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg transition-all mb-4"
-                >
-                  🔄 Reset & Retry
-                </button>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                  Still not working? Try these steps:
-                </p>
-                <ol className="text-xs text-gray-600 dark:text-gray-400 list-decimal list-inside text-left max-w-sm mx-auto space-y-1">
-                  <li>Refresh your browser page (F5 or Ctrl+R)</li>
-                  <li>Check browser permissions in Settings</li>
-                  <li>Try a different browser</li>
-                  <li>Ensure your device has a working camera</li>
-                  <li>Check if camera is used by another app</li>
-                </ol>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Camera Step */}
-        {step === 'camera' && cameraActive && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">
-              📸 Take Your Photo
-            </h2>
-
-            <div className="relative mb-6">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="w-full rounded-2xl border-4 border-blue-500 object-cover"
-                style={{ 
-                  maxWidth: '100%', 
-                  maxHeight: '500px',
-                  transform: 'scaleX(-1)',
-                  display: 'block'
-                }}
-              />
               <canvas ref={canvasRef} className="hidden" />
             </div>
 
-            {/* Camera Controls */}
-            <div className="flex gap-4 justify-center mb-6">
-              <button
-                onClick={snapPhoto}
-                className="bg-green-500 hover:bg-green-600 hover:scale-105 transition-all text-white font-bold py-3 px-8 rounded-lg shadow-lg"
-              >
-                ✓ Snap
-              </button>
-              <button
-                onClick={cancelCamera}
-                className="bg-red-500 hover:bg-red-600 hover:scale-105 transition-all text-white font-bold py-3 px-8 rounded-lg shadow-lg"
-              >
-                ✕ Cancel
-              </button>
-            </div>
+            {/* Camera Instructions */}
+            {cameraActive && step !== 'initial' && (
+              <div className="bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-500 p-4 rounded mb-6">
+                <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
+                  Position your face clearly in the center and press Snap
+                </p>
+              </div>
+            )}
 
-            <div className="bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-500 p-4 rounded">
-              <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
-                Position your face clearly in the center and press Snap
-              </p>
-            </div>
+            {/* Camera Controls - Show Snap/Cancel when camera is active */}
+            {cameraActive && step !== 'initial' ? (
+              <div className="flex gap-4 justify-center mb-6">
+                <button
+                  onClick={snapPhoto}
+                  className="bg-green-500 hover:bg-green-600 hover:scale-105 transition-all text-white font-bold py-3 px-8 rounded-lg shadow-lg"
+                >
+                  ✓ Snap Photo
+                </button>
+                <button
+                  onClick={cancelCamera}
+                  className="bg-red-500 hover:bg-red-600 hover:scale-105 transition-all text-white font-bold py-3 px-8 rounded-lg shadow-lg"
+                >
+                  ✕ Cancel
+                </button>
+              </div>
+            ) : step === 'initial' ? (
+              // Show open camera button on initial step
+              <>
+                {/* Permission Status Display */}
+                {permissionStatus === 'denied' && (
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                    <p className="text-red-700 dark:text-red-300 text-sm font-semibold">
+                      ❌ Camera Permission Denied
+                    </p>
+                    <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                      Please enable camera permissions in your browser settings to use facial verification.
+                    </p>
+                    <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                      <strong>Instructions:</strong> Click the camera icon or lock icon in your browser address bar, find "Camera" in permissions, and select "Allow".
+                    </p>
+                  </div>
+                )}
+
+                {/* Open Camera Button */}
+                <button
+                  onClick={openCamera}
+                  disabled={isLoading}
+                  className={`w-full font-bold py-3 px-4 rounded-lg shadow-lg transition-all flex items-center justify-center gap-2 ${
+                    isLoading
+                      ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                      : permissionStatus === 'denied'
+                      ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                      : 'bg-blue-500 hover:bg-blue-600 hover:scale-105 text-white'
+                  }`}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      Initializing Camera...
+                    </>
+                  ) : permissionStatus === 'denied' ? (
+                    <>
+                      🚫 Camera Blocked
+                    </>
+                  ) : (
+                    <>
+                      📷 Open Camera
+                    </>
+                  )}
+                </button>
+
+                <p className="text-center text-gray-500 dark:text-gray-400 text-sm mt-4">
+                  Ensure you're in a well-lit area with your face clearly visible
+                </p>
+
+                {permissionStatus === 'denied' && (
+                  <div className="mt-4 text-center">
+                    <button
+                      onClick={resetCamera}
+                      className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg transition-all mb-4"
+                    >
+                      🔄 Reset & Retry
+                    </button>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                      Still not working? Try these steps:
+                    </p>
+                    <ol className="text-xs text-gray-600 dark:text-gray-400 list-decimal list-inside text-left max-w-sm mx-auto space-y-1">
+                      <li>Refresh your browser page (F5 or Ctrl+R)</li>
+                      <li>Check browser permissions in Settings</li>
+                      <li>Try a different browser</li>
+                      <li>Ensure your device has a working camera</li>
+                      <li>Check if camera is used by another app</li>
+                    </ol>
+                  </div>
+                )}
+              </>
+            ) : null}
           </div>
         )}
 
