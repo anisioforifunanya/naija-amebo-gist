@@ -12,6 +12,7 @@ export default function FacialVerificationPage() {
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
   const [cameraActive, setCameraActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
@@ -28,6 +29,18 @@ export default function FacialVerificationPage() {
 
     // Check initial camera permission status
     checkCameraPermission()
+
+    // Cleanup: stop stream when component unmounts
+    return () => {
+      if (streamRef.current) {
+        console.log('🛑 Stopping stream on unmount')
+        streamRef.current.getTracks().forEach(track => {
+          console.log('Stopping track:', track.kind)
+          track.stop()
+        })
+        streamRef.current = null
+      }
+    }
   }, [])
 
   // Check camera permission status
@@ -81,33 +94,55 @@ export default function FacialVerificationPage() {
       console.log('Stream active:', stream.active)
       console.log('Video tracks:', stream.getVideoTracks().length)
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        
-        // Ensure video plays with proper error handling
-        const playPromise = videoRef.current.play()
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log('✅ Video playing successfully')
-              setCameraActive(true)
-              // Stay on initial step, just activate camera flag
-              setPermissionStatus('granted')
-              toast.success('Camera opened successfully', {
-                position: 'bottom-right',
-                autoClose: 3000,
-              })
-            })
-            .catch((err: any) => {
-              console.error('❌ Error playing video:', err)
-              toast.error(`Video playback error: ${err?.message || 'Unknown error'}`, {
-                position: 'bottom-right',
-                autoClose: 5000,
-              })
-              // Stop the stream if play fails
-              stream.getTracks().forEach(track => track.stop())
-            })
+      // Store stream in ref so it doesn't get garbage collected
+      streamRef.current = stream
+
+      // Monitor stream tracks
+      stream.getTracks().forEach(track => {
+        track.onended = () => {
+          console.log('⚠️ Track ended:', track.kind)
+          setCameraActive(false)
+          streamRef.current = null
         }
+      })
+
+      if (videoRef.current) {
+        // Wait a tiny bit to ensure video element is ready
+        setTimeout(() => {
+          if (videoRef.current && streamRef.current) {
+            console.log('Setting video stream...')
+            videoRef.current.srcObject = streamRef.current
+            
+            // Ensure video plays with proper error handling
+            const playPromise = videoRef.current.play()
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  console.log('✅ Video playing successfully')
+                  console.log('Video element dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight)
+                  setCameraActive(true)
+                  setPermissionStatus('granted')
+                  toast.success('Camera opened successfully', {
+                    position: 'bottom-right',
+                    autoClose: 3000,
+                  })
+                })
+                .catch((err: any) => {
+                  console.error('❌ Error playing video:', err)
+                  toast.error(`Video playback error: ${err?.message || 'Unknown error'}`, {
+                    position: 'bottom-right',
+                    autoClose: 5000,
+                  })
+                  // Stop the stream if play fails
+                  if (streamRef.current) {
+                    streamRef.current.getTracks().forEach(track => track.stop())
+                    streamRef.current = null
+                  }
+                  setCameraActive(false)
+                })
+            }
+          }
+        }, 100)
       }
     } catch (err: any) {
       console.error('Camera error:', err)
@@ -139,15 +174,37 @@ export default function FacialVerificationPage() {
   // Reset camera and permission status
   const resetCamera = () => {
     console.log('Resetting camera...')
-    if (videoRef.current?.srcObject) {
-      const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
-      tracks.forEach(track => track.stop())
+    if (streamRef.current) {
+      console.log('Stopping all tracks...')
+      streamRef.current.getTracks().forEach(track => {
+        console.log('Stopping track:', track.kind)
+        track.stop()
+      })
+      streamRef.current = null
+    }
+    if (videoRef.current) {
       videoRef.current.srcObject = null
     }
     setCameraActive(false)
     setStep('initial')
     setPermissionStatus('prompt')
     checkCameraPermission()
+  }
+
+  // Cancel camera (stop stream without resetting permission)
+  const cancelCamera = () => {
+    console.log('Canceling camera...')
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => {
+        console.log('Stopping track:', track.kind)
+        track.stop()
+      })
+      streamRef.current = null
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null
+    }
+    setCameraActive(false)
   }
 
   // Capture photo from video stream
@@ -174,9 +231,15 @@ export default function FacialVerificationPage() {
         setCapturedPhoto(photoData)
 
         // Stop camera stream
-        if (videoRef.current.srcObject) {
-          const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
-          tracks.forEach(track => track.stop())
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(track => {
+            console.log('Stopping track after capture:', track.kind)
+            track.stop()
+          })
+          streamRef.current = null
+        }
+        if (videoRef.current) {
+          videoRef.current.srcObject = null
         }
         setCameraActive(false)
         setStep('review')
@@ -186,16 +249,6 @@ export default function FacialVerificationPage() {
         })
       }
     }
-  }
-
-  // Cancel camera and go back
-  const cancelCamera = () => {
-    if (videoRef.current?.srcObject) {
-      const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
-      tracks.forEach(track => track.stop())
-    }
-    setCameraActive(false)
-    setStep('initial')
   }
 
   // Retake photo
