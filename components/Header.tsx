@@ -133,16 +133,6 @@ export default function Header() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
             </Link>
-            <Link href="/features" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">✨ Features</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
-            <Link href="/marketplace" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
-              <span className="relative z-10">🛍️ Store</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
-            </Link>
           </nav>
 
           {/* Right Section - Search + Action Buttons */}
