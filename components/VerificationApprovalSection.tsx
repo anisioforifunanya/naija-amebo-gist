@@ -134,12 +134,12 @@ export default function VerificationApprovalSection() {
       const report = await generateDiagnosticsReport()
       
       // Add local user data to diagnostics
-      const allUsers = getAllUsers()
+      const allUsers = getAllUsers() as PendingUser[]
       const userStats = {
         total: allUsers.length,
-        pending: allUsers.filter(u => u.verificationStatus === 'pending').length,
-        approved: allUsers.filter(u => u.verificationStatus === 'approved').length,
-        rejected: allUsers.filter(u => u.verificationStatus === 'rejected').length,
+        pending: allUsers.filter((u: PendingUser) => u.verificationStatus === 'pending').length,
+        approved: allUsers.filter((u: PendingUser) => u.verificationStatus === 'approved').length,
+        rejected: allUsers.filter((u: PendingUser) => u.verificationStatus === 'rejected').length,
       }
       
       const enhancedReport = report + `
@@ -847,9 +847,9 @@ export default function VerificationApprovalSection() {
                       </tr>
                     </thead>
                     <tbody>
-                      {getAllUsers()
-                        .filter(u => !searchQuery || u.email.toLowerCase().includes(searchQuery.toLowerCase()))
-                        .map((user) => (
+                      {(getAllUsers() as PendingUser[])
+                        .filter((u: PendingUser) => !searchQuery || u.email.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .map((user: PendingUser) => (
                           <tr key={user.id} className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td className="px-4 py-2 text-gray-800 dark:text-gray-200 font-mono text-xs">{user.email}</td>
                             <td className="px-4 py-2">
@@ -874,8 +874,8 @@ export default function VerificationApprovalSection() {
               <div className="mt-6 flex gap-2">
                 <button
                   onClick={() => {
-                    const allUsers = getAllUsers()
-                    const csv = 'Email,Status,Name\n' + allUsers.map(u => 
+                    const allUsers = (getAllUsers() as PendingUser[])
+                    const csv = 'Email,Status,Name\n' + allUsers.map((u: PendingUser) => 
                       `${u.email},${u.verificationStatus},"${u.firstName} ${u.lastName}"`
                     ).join('\n')
                     navigator.clipboard.writeText(csv)
