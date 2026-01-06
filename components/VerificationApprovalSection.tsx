@@ -185,16 +185,44 @@ export default function VerificationApprovalSection() {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
           Facial Verification Approvals
         </h2>
-        <button
-          type="button"
-          onClick={() => {
-            console.log('Refresh button clicked!')
-            forceRefresh()
-          }}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer z-10"
-        >
-          🔄 Refresh Data
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={async () => {
+              console.log('Syncing from Firebase...')
+              try {
+                const { db } = await import('@/lib/firebase')
+                const { collection, getDocs } = await import('firebase/firestore')
+                const usersSnapshot = await getDocs(collection(db, 'users'))
+                const firebaseUsers = usersSnapshot.docs.map(doc => ({
+                  id: doc.id,
+                  ...doc.data()
+                })) as any[]
+                
+                console.log('Firebase users:', firebaseUsers)
+                localStorage.setItem('naijaAmeboUsers', JSON.stringify(firebaseUsers))
+                alert(`✅ Synced ${firebaseUsers.length} users from Firebase to localStorage`)
+                forceRefresh()
+              } catch (error) {
+                console.error('Sync error:', error)
+                alert('❌ Failed to sync from Firebase')
+              }
+            }}
+            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
+          >
+            🔄 Sync Firebase
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              console.log('Refresh button clicked!')
+              forceRefresh()
+            }}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer z-10"
+          >
+            🔄 Refresh Data
+          </button>
+        </div>
       </div>
 
       {/* Debug Info */}
