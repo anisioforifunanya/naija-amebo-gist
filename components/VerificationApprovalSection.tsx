@@ -831,7 +831,7 @@ export default function VerificationApprovalSection() {
               </div>
 
               <div className="max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg">
-                {getAllUsers().filter(u => 
+                {(getAllUsers() as PendingUser[]).filter((u: PendingUser) => 
                   !searchQuery || u.email.toLowerCase().includes(searchQuery.toLowerCase())
                 ).length === 0 ? (
                   <div className="p-4 text-center text-gray-500 dark:text-gray-400">
