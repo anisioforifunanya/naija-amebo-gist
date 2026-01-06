@@ -16,6 +16,7 @@ export default function FacialVerificationPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const [permissionStatus, setPermissionStatus] = useState<'prompt' | 'granted' | 'denied'>('prompt')
 
   // Check authentication on mount
   useEffect(() => {
@@ -24,11 +25,36 @@ export default function FacialVerificationPage() {
     if (user) {
       setCurrentUser(JSON.parse(user))
     }
-    // Don't redirect, allow access to this page
+
+    // Check initial camera permission status
+    checkCameraPermission()
   }, [])
+
+  // Check camera permission status
+  const checkCameraPermission = async () => {
+    try {
+      if (!navigator.permissions || !navigator.permissions.query) {
+        // Browser doesn't support Permissions API, show prompt
+        setPermissionStatus('prompt')
+        return
+      }
+
+      const result = await navigator.permissions.query({ name: 'camera' as any })
+      setPermissionStatus(result.state as any)
+
+      // Listen for permission changes
+      result.addEventListener('change', () => {
+        setPermissionStatus(result.state as any)
+      })
+    } catch (err) {
+      console.log('Permission check not available:', err)
+      setPermissionStatus('prompt')
+    }
+  }
 
   // Request camera access and start stream
   const openCamera = async () => {
+    setIsLoading(true)
     try {
       // Check if getUserMedia is available
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -36,9 +62,12 @@ export default function FacialVerificationPage() {
           position: 'bottom-right',
           autoClose: 5000,
         })
+        setIsLoading(false)
         return
       }
 
+      console.log('Requesting camera access...')
+      
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'user',
@@ -48,10 +77,26 @@ export default function FacialVerificationPage() {
         audio: false,
       })
 
+      console.log('Camera access granted, setting up video stream...')
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream
+        
+        // Ensure video plays
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().catch(err => {
+            console.error('Error playing video:', err)
+            toast.error('Failed to play camera feed', {
+              position: 'bottom-right',
+              autoClose: 5000,
+            })
+          })
+        }
+
         setCameraActive(true)
         setStep('camera')
+        setPermissionStatus('granted')
+        
         toast.success('Camera opened successfully', {
           position: 'bottom-right',
           autoClose: 3000,
@@ -59,17 +104,43 @@ export default function FacialVerificationPage() {
       }
     } catch (err: any) {
       console.error('Camera error:', err)
-      const errorMessage = err?.name === 'NotAllowedError' 
-        ? 'Camera permission was denied. Please allow camera access in your browser settings.'
-        : err?.name === 'NotFoundError'
-        ? 'No camera device found. Please check your device.'
-        : 'Failed to access camera. Please check permissions and try again.'
+      
+      let errorMessage = 'Failed to access camera.'
+      
+      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+        errorMessage = 'Camera permission was denied. Please enable camera in your browser settings and try again.'
+        setPermissionStatus('denied')
+      } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+        errorMessage = 'No camera device found on this device.'
+      } else if (err?.name === 'NotReadableError' || err?.name === 'TrackStartError') {
+        errorMessage = 'Camera is in use by another application. Please close it and try again.'
+      } else if (err?.name === 'SecurityError') {
+        errorMessage = 'Camera access is blocked for security reasons. Please check your browser settings.'
+      } else {
+        errorMessage = `Camera error: ${err?.message || 'Unknown error'}`
+      }
       
       toast.error(errorMessage, {
         position: 'bottom-right',
-        autoClose: 5000,
+        autoClose: 6000,
       })
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  // Reset camera and permission status
+  const resetCamera = () => {
+    console.log('Resetting camera...')
+    if (videoRef.current?.srcObject) {
+      const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
+      tracks.forEach(track => track.stop())
+      videoRef.current.srcObject = null
+    }
+    setCameraActive(false)
+    setStep('initial')
+    setPermissionStatus('prompt')
+    checkCameraPermission()
   }
 
   // Capture photo from video stream
@@ -260,17 +331,73 @@ export default function FacialVerificationPage() {
               </div>
             </div>
 
+            {/* Permission Status Display */}
+            {permissionStatus === 'denied' && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                <p className="text-red-700 dark:text-red-300 text-sm font-semibold">
+                  ❌ Camera Permission Denied
+                </p>
+                <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                  Please enable camera permissions in your browser settings to use facial verification.
+                </p>
+                <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                  <strong>Instructions:</strong> Click the camera icon or lock icon in your browser address bar, find "Camera" in permissions, and select "Allow".
+                </p>
+              </div>
+            )}
+
             {/* Open Camera Button */}
             <button
               onClick={openCamera}
-              className="w-full bg-blue-500 hover:bg-blue-600 hover:scale-105 transition-all text-white font-bold py-3 px-4 rounded-lg shadow-lg"
+              disabled={isLoading}
+              className={`w-full font-bold py-3 px-4 rounded-lg shadow-lg transition-all flex items-center justify-center gap-2 ${
+                isLoading
+                  ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                  : permissionStatus === 'denied'
+                  ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600 hover:scale-105 text-white'
+              }`}
             >
-              📷 Open Camera
+              {isLoading ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  Initializing Camera...
+                </>
+              ) : permissionStatus === 'denied' ? (
+                <>
+                  🚫 Camera Blocked
+                </>
+              ) : (
+                <>
+                  📷 Open Camera
+                </>
+              )}
             </button>
 
             <p className="text-center text-gray-500 dark:text-gray-400 text-sm mt-4">
               Ensure you're in a well-lit area with your face clearly visible
             </p>
+
+            {permissionStatus === 'denied' && (
+              <div className="mt-4 text-center">
+                <button
+                  onClick={resetCamera}
+                  className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg transition-all mb-4"
+                >
+                  🔄 Reset & Retry
+                </button>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                  Still not working? Try these steps:
+                </p>
+                <ol className="text-xs text-gray-600 dark:text-gray-400 list-decimal list-inside text-left max-w-sm mx-auto space-y-1">
+                  <li>Refresh your browser page (F5 or Ctrl+R)</li>
+                  <li>Check browser permissions in Settings</li>
+                  <li>Try a different browser</li>
+                  <li>Ensure your device has a working camera</li>
+                  <li>Check if camera is used by another app</li>
+                </ol>
+              </div>
+            )}
           </div>
         )}
 
