@@ -92,6 +92,41 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Admin Features
+
+### Facial Verification & User Approval System
+- Users must complete facial verification to access features
+- Admin dashboard to approve/reject verified users
+- Verification status tracking (not_started → pending → approved/rejected)
+- Manual user management tools
+- **Tools available**: 
+  - 🔄 **Sync Firebase** - Pull users from Firebase Firestore
+  - ➕ **Add User Manually** - Manually add users for verification
+  - 🔧 **Diagnostics** - Troubleshoot Firebase connection issues
+  - 🔄 **Refresh Data** - Reload local data
+
+#### Verification Workflow
+1. User registers account
+2. User completes facial verification
+3. User fills in personal details
+4. Admin reviews and approves user
+5. User gains access to community features
+
+#### Protected Features (Require Verification)
+- Community chat
+- Dashboard
+- Private messaging
+- Marketplace (partially)
+
+#### Admin Access
+Go to `/admin` → **Facial Verification** tab to manage user approvals
+
+### Firebase Integration
+- Data sync from Firestore to localStorage
+- Optional cloud backup for user data
+- **Troubleshooting**: See [FIREBASE_TROUBLESHOOTING.md](FIREBASE_TROUBLESHOOTING.md)
+- **Setup Guide**: See [FIREBASE_PRODUCTION_SETUP.md](FIREBASE_PRODUCTION_SETUP.md)
+
 ## Tech Stack
 
 - Next.js 16.1.1
