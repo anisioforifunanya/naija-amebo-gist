@@ -43,14 +43,21 @@ export default function VerificationApprovalSection() {
 
     console.log('Loading users for filter:', filter)
     console.log('All users from storage:', allUsers)
+    console.log('Total users with facialPhoto:', allUsers.filter((u: any) => u.facialPhoto).length)
     
     // Filter by verification status
     const filteredUsers = allUsers.filter(
       (u: any) => u.facialPhoto && u.verificationStatus === filter
     )
 
-    console.log('Filtered users:', filteredUsers)
+    console.log(`Filtered users for '${filter}':`, filteredUsers)
     setUsers(filteredUsers)
+  }
+
+  // Force refresh data
+  const forceRefresh = () => {
+    console.log('Force refreshing verification data...')
+    loadUsers()
   }
 
   const approveUser = async (userId: string) => {
@@ -174,9 +181,17 @@ export default function VerificationApprovalSection() {
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-        Facial Verification Approvals
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Facial Verification Approvals
+        </h2>
+        <button
+          onClick={forceRefresh}
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition text-sm"
+        >
+          🔄 Refresh
+        </button>
+      </div>
 
       {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
