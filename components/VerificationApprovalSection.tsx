@@ -203,29 +203,42 @@ export default function VerificationApprovalSection() {
           <summary className="cursor-pointer font-semibold text-yellow-900 dark:text-yellow-300">
             📊 Debug Info (Click to expand)
           </summary>
-          <pre className="mt-2 text-xs bg-white dark:bg-gray-900 p-2 rounded overflow-auto max-h-40">
-            {JSON.stringify({
-              totalUsers: (() => {
+          <div className="mt-2 space-y-4">
+            <div className="text-xs bg-white dark:bg-gray-900 p-2 rounded">
+              <p className="font-bold mb-2">Summary:</p>
+              <pre>{JSON.stringify({
+                totalUsers: (() => {
+                  const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+                  return users.length
+                })(),
+                usersWithFacialPhoto: (() => {
+                  const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+                  return users.filter((u: any) => u.facialPhoto).length
+                })(),
+                pendingVerifications: (() => {
+                  const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+                  return users.filter((u: any) => u.facialPhoto && u.verificationStatus === 'pending').length
+                })(),
+                stats
+              }, null, 2)}</pre>
+            </div>
+
+            <div className="text-xs bg-white dark:bg-gray-900 p-2 rounded overflow-auto max-h-60">
+              <p className="font-bold mb-2">All Users in localStorage:</p>
+              <pre>{JSON.stringify((() => {
                 const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
-                return users.length
-              })(),
-              usersWithFacialPhoto: (() => {
-                const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
-                return users.filter((u: any) => u.facialPhoto).length
-              })(),
-              pendingVerifications: (() => {
-                const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
-                return users.filter((u: any) => u.facialPhoto && u.verificationStatus === 'pending').map((u: any) => ({
+                return users.map((u: any) => ({
                   id: u.id,
                   name: `${u.firstName} ${u.lastName}`,
                   email: u.email,
-                  verificationStatus: u.verificationStatus,
-                  hasFacialPhoto: !!u.facialPhoto
+                  verificationStatus: u.verificationStatus || 'not_set',
+                  facialPhoto: u.facialPhoto ? '✓ YES' : '✗ NO',
+                  accountStatus: u.accountStatus || 'not_set',
+                  personalDetailsCompletedAt: u.personalDetailsCompletedAt ? 'YES' : 'NO'
                 }))
-              })(),
-              stats
-            }, null, 2)}
-          </pre>
+              })(), null, 2)}</pre>
+            </div>
+          </div>
         </details>
       </div>
 
