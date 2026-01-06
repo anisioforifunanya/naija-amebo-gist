@@ -9,6 +9,7 @@ export default function PersonalDetailsPage() {
   const router = useRouter()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
 
   // Form fields
@@ -34,25 +35,24 @@ export default function PersonalDetailsPage() {
 
   // Check authentication on mount
   useEffect(() => {
+    setIsMounted(true)
     const user = localStorage.getItem('naijaAmeboCurrentUser')
-    if (!user) {
-      router.push('/login')
-      return
+    if (user) {
+      const userData = JSON.parse(user)
+      setCurrentUser(userData)
+      setDisplayName(userData.firstName || '')
+      setUsername(userData.username || '')
+      setEmail(userData.email || '')
+      setPhotoPreview(userData.facialPhoto || null)
+
+      // Load states
+      const allStates = getAllStates()
+      setStates(allStates)
+
+      // Try to get geolocation
+      tryGeolocation()
     }
-    const userData = JSON.parse(user)
-    setCurrentUser(userData)
-    setDisplayName(userData.firstName || '')
-    setUsername(userData.username || '')
-    setEmail(userData.email || '')
-    setPhotoPreview(userData.facialPhoto || null)
-
-    // Load states
-    const allStates = getAllStates()
-    setStates(allStates)
-
-    // Try to get geolocation
-    tryGeolocation()
-  }, [router])
+  }, [])
 
   // Update LGAs when state changes
   useEffect(() => {
@@ -229,8 +229,24 @@ export default function PersonalDetailsPage() {
     }
   }
 
-  if (!currentUser) {
+  if (!isMounted) {
     return null // Loading state
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">Please complete facial verification first</p>
+          <button
+            onClick={() => router.push('/facial-verification')}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Go to Facial Verification
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

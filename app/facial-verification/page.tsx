@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -16,16 +15,17 @@ export default function FacialVerificationPage() {
   const [cameraActive, setCameraActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Check authentication on mount
   useEffect(() => {
+    setIsMounted(true)
     const user = localStorage.getItem('naijaAmeboCurrentUser')
-    if (!user) {
-      router.push('/login')
-      return
+    if (user) {
+      setCurrentUser(JSON.parse(user))
     }
-    setCurrentUser(JSON.parse(user))
-  }, [router])
+    // Don't redirect, allow access to this page
+  }, [])
 
   // Request camera access and start stream
   const openCamera = async () => {
@@ -170,8 +170,24 @@ export default function FacialVerificationPage() {
     }
   }
 
-  if (!currentUser) {
+  if (!isMounted) {
     return null // Loading state
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">Please log in to continue</p>
+          <button
+            onClick={() => router.push('/login')}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

@@ -6,14 +6,14 @@ export default function VerificationPendingPage() {
   const router = useRouter()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [timeWaited, setTimeWaited] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
     const user = localStorage.getItem('naijaAmeboCurrentUser')
-    if (!user) {
-      router.push('/login')
-      return
+    if (user) {
+      setCurrentUser(JSON.parse(user))
     }
-    setCurrentUser(JSON.parse(user))
 
     // Update time waited every second
     const interval = setInterval(() => {
@@ -37,8 +37,24 @@ export default function VerificationPendingPage() {
     }
   }
 
-  if (!currentUser) {
+  if (!isMounted) {
     return null
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">No user found. Please register first.</p>
+          <button
+            onClick={() => router.push('/register')}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Go to Register
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
