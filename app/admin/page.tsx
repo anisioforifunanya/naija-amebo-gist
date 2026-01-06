@@ -394,6 +394,39 @@ export default function AdminDashboard() {
     localStorage.removeItem('naijaAmeboCurrentAdmin')
   }
 
+  // Cleanup unverified users
+  const cleanupUnverifiedUsers = () => {
+    if (!confirm('⚠️ This will delete all users who haven\'t completed facial verification. This cannot be undone. Continue?')) {
+      return
+    }
+
+    try {
+      const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      
+      // Get all admin IDs
+      const adminIds = new Set(admins.map((a: any) => a.id))
+
+      // Filter users: keep only those with facialPhoto OR those who are admins
+      const verifiedUsers = users.filter((u: any) => 
+        u.facialPhoto || adminIds.has(u.id)
+      )
+
+      const deletedCount = users.length - verifiedUsers.length
+
+      // Save cleaned up users
+      localStorage.setItem('naijaAmeboUsers', JSON.stringify(verifiedUsers))
+
+      alert(`✅ Cleaned up successfully!\n\nDeleted: ${deletedCount} unverified users\nRemaining: ${verifiedUsers.length} users`)
+      
+      // Reload data
+      loadAllData()
+    } catch (error) {
+      console.error('Error during cleanup:', error)
+      alert('❌ Error during cleanup. Please try again.')
+    }
+  }
+
   // Helper function to convert file to base64
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -1758,6 +1791,19 @@ export default function AdminDashboard() {
             <div className="px-4 py-5 sm:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-6">Admin Settings</h2>
               <div className="space-y-6">
+                <div className="border-b pb-6">
+                  <h3 className="text-md font-medium mb-2 text-red-600">⚠️ Cleanup Unverified Users</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Remove all users who haven't completed facial verification. Admin accounts will be preserved.
+                  </p>
+                  <button
+                    onClick={cleanupUnverifiedUsers}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium"
+                  >
+                    🗑️ Delete Unverified Users
+                  </button>
+                </div>
+
                 <div>
                   <h3 className="text-md font-medium mb-2">Anonymous Mode</h3>
                   <p className="text-sm text-gray-600 mb-4">
