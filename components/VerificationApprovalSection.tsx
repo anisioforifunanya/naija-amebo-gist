@@ -26,6 +26,16 @@ export default function VerificationApprovalSection() {
   const [rejectingUserId, setRejectingUserId] = useState<string | null>(null)
   const [rejectReason, setRejectReason] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [newUserForm, setNewUserForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    location: '',
+    dateOfBirth: '',
+    gender: '',
+  })
 
   // Load pending users
   useEffect(() => {
@@ -58,6 +68,62 @@ export default function VerificationApprovalSection() {
   const forceRefresh = () => {
     console.log('Force refreshing verification data...')
     loadUsers()
+  }
+
+  // Manually add a user for verification
+  const addUserManually = () => {
+    if (!newUserForm.firstName.trim() || !newUserForm.lastName.trim() || !newUserForm.email.trim()) {
+      toast.error('Please fill in at least First Name, Last Name, and Email', { position: 'bottom-right' })
+      return
+    }
+
+    try {
+      const usersData = localStorage.getItem('naijaAmeboUsers')
+      const allUsers = usersData ? JSON.parse(usersData) : []
+
+      // Create a dummy facial photo (placeholder)
+      const dummyPhoto = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" font-size="12" text-anchor="middle" dy=".3em" fill="%23999"%3ENo Photo%3C/text%3E%3C/svg%3E'
+
+      const newUser: PendingUser = {
+        id: `user_manual_${Date.now()}`,
+        firstName: newUserForm.firstName,
+        lastName: newUserForm.lastName,
+        email: newUserForm.email,
+        phone: newUserForm.phone || undefined,
+        location: newUserForm.location || undefined,
+        dateOfBirth: newUserForm.dateOfBirth || undefined,
+        gender: newUserForm.gender || undefined,
+        facialPhoto: dummyPhoto, // Add placeholder photo so it appears in verification list
+        verificationStatus: 'pending',
+        verificationSubmittedAt: new Date().toISOString(),
+      }
+
+      allUsers.push(newUser)
+      localStorage.setItem('naijaAmeboUsers', JSON.stringify(allUsers))
+
+      toast.success(`✅ User ${newUserForm.firstName} ${newUserForm.lastName} added for verification`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      })
+
+      // Reset form
+      setNewUserForm({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        location: '',
+        dateOfBirth: '',
+        gender: '',
+      })
+      setShowAddUserModal(false)
+
+      // Reload
+      loadUsers()
+    } catch (error) {
+      console.error('Error adding user:', error)
+      toast.error('Failed to add user', { position: 'bottom-right' })
+    }
   }
 
   const approveUser = async (userId: string) => {
@@ -188,29 +254,10 @@ export default function VerificationApprovalSection() {
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={async () => {
-              console.log('Syncing from Firebase...')
-              try {
-                const { db } = await import('@/lib/firebase')
-                const { collection, getDocs } = await import('firebase/firestore')
-                const usersSnapshot = await getDocs(collection(db, 'users'))
-                const firebaseUsers = usersSnapshot.docs.map(doc => ({
-                  id: doc.id,
-                  ...doc.data()
-                })) as any[]
-                
-                console.log('Firebase users:', firebaseUsers)
-                localStorage.setItem('naijaAmeboUsers', JSON.stringify(firebaseUsers))
-                alert(`✅ Synced ${firebaseUsers.length} users from Firebase to localStorage`)
-                forceRefresh()
-              } catch (error) {
-                console.error('Sync error:', error)
-                alert('❌ Failed to sync from Firebase')
-              }
-            }}
-            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
+            onClick={() => setShowAddUserModal(true)}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
           >
-            🔄 Sync Firebase
+            ➕ Add User Manually
           </button>
           <button
             type="button"
@@ -470,6 +517,113 @@ export default function VerificationApprovalSection() {
                 className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition"
               >
                 {isLoading ? '⏳ Rejecting...' : 'Reject'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add User Manually Modal */}
+      {showAddUserModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 max-h-96 overflow-y-auto">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+              ➕ Add User for Verification
+            </h3>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name *</label>
+                <input
+                  type="text"
+                  value={newUserForm.firstName}
+                  onChange={(e) => setNewUserForm({...newUserForm, firstName: e.target.value})}
+                  placeholder="First name"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name *</label>
+                <input
+                  type="text"
+                  value={newUserForm.lastName}
+                  onChange={(e) => setNewUserForm({...newUserForm, lastName: e.target.value})}
+                  placeholder="Last name"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email *</label>
+                <input
+                  type="email"
+                  value={newUserForm.email}
+                  onChange={(e) => setNewUserForm({...newUserForm, email: e.target.value})}
+                  placeholder="user@example.com"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
+                <input
+                  type="tel"
+                  value={newUserForm.phone}
+                  onChange={(e) => setNewUserForm({...newUserForm, phone: e.target.value})}
+                  placeholder="+234 123 456 7890"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
+                <input
+                  type="text"
+                  value={newUserForm.location}
+                  onChange={(e) => setNewUserForm({...newUserForm, location: e.target.value})}
+                  placeholder="City, Country"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Birth</label>
+                <input
+                  type="date"
+                  value={newUserForm.dateOfBirth}
+                  onChange={(e) => setNewUserForm({...newUserForm, dateOfBirth: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gender</label>
+                <select
+                  value={newUserForm.gender}
+                  onChange={(e) => setNewUserForm({...newUserForm, gender: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddUserModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={addUserManually}
+                className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
+              >
+                ➕ Add User
               </button>
             </div>
           </div>
