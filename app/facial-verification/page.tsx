@@ -77,30 +77,37 @@ export default function FacialVerificationPage() {
         audio: false,
       })
 
-      console.log('Camera access granted, setting up video stream...')
+      console.log('✅ Camera permission granted')
+      console.log('Stream active:', stream.active)
+      console.log('Video tracks:', stream.getVideoTracks().length)
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
         
-        // Ensure video plays
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play().catch(err => {
-            console.error('Error playing video:', err)
-            toast.error('Failed to play camera feed', {
-              position: 'bottom-right',
-              autoClose: 5000,
+        // Ensure video plays with proper error handling
+        const playPromise = videoRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('✅ Video playing successfully')
+              setCameraActive(true)
+              setStep('camera')
+              setPermissionStatus('granted')
+              toast.success('Camera opened successfully', {
+                position: 'bottom-right',
+                autoClose: 3000,
+              })
             })
-          })
+            .catch((err: any) => {
+              console.error('❌ Error playing video:', err)
+              toast.error(`Video playback error: ${err?.message || 'Unknown error'}`, {
+                position: 'bottom-right',
+                autoClose: 5000,
+              })
+              // Stop the stream if play fails
+              stream.getTracks().forEach(track => track.stop())
+            })
         }
-
-        setCameraActive(true)
-        setStep('camera')
-        setPermissionStatus('granted')
-        
-        toast.success('Camera opened successfully', {
-          position: 'bottom-right',
-          autoClose: 3000,
-        })
       }
     } catch (err: any) {
       console.error('Camera error:', err)
@@ -414,8 +421,13 @@ export default function FacialVerificationPage() {
                 autoPlay
                 playsInline
                 muted
-                className="w-full rounded-2xl border-4 border-blue-500 scale-x-[-1] object-cover"
-                style={{ maxWidth: '100%', maxHeight: '500px' }}
+                className="w-full rounded-2xl border-4 border-blue-500 object-cover"
+                style={{ 
+                  maxWidth: '100%', 
+                  maxHeight: '500px',
+                  transform: 'scaleX(-1)',
+                  display: 'block'
+                }}
               />
               <canvas ref={canvasRef} className="hidden" />
             </div>
