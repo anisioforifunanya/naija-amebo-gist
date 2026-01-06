@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import LiveRecorder from '../../components/LiveRecorder'
+import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
 
 interface AdminData {
   id: string;
@@ -116,7 +117,7 @@ export default function AdminDashboard() {
   const [adminRequests, setAdminRequests] = useState<AdminRequestData[]>([])
   const [allUsers, setAllUsers] = useState<UserData[]>([])
   const [allMessages, setAllMessages] = useState<ChatMessage[]>([])
-  const [activeTab, setActiveTab] = useState<'news' | 'admins' | 'users' | 'moderation' | 'settings'>('news')
+  const [activeTab, setActiveTab] = useState<'news' | 'admins' | 'users' | 'marketplace' | 'moderation' | 'settings'>('news')
   const [isAnonymousMode, setIsAnonymousMode] = useState(false)
   const [showAddAdminForm, setShowAddAdminForm] = useState(false)
   const [adminCreationMode, setAdminCreationMode] = useState<'create' | 'promote'>('create')
@@ -972,6 +973,7 @@ export default function AdminDashboard() {
                 { id: 'news', label: 'News Management', icon: '📰' },
                 { id: 'admins', label: 'Admin Management', icon: '👑' },
                 { id: 'users', label: 'User Moderation', icon: '👥' },
+                { id: 'marketplace', label: 'Product Approvals', icon: '🛍️' },
                 { id: 'moderation', label: 'Content Moderation', icon: '🛡️' },
                 { id: 'settings', label: 'Settings', icon: '⚙️' }
               ].map((tab) => (
@@ -1739,6 +1741,10 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
+        )}
+
+        {activeTab === 'marketplace' && (
+          <MarketplaceApprovalSection />
         )}
 
         {activeTab === 'settings' && (

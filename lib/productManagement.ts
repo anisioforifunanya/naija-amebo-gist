@@ -52,6 +52,15 @@ export interface Product {
     description: string;
     keywords: string[];
   };
+  // User-generated product fields
+  status?: 'approved' | 'pending' | 'rejected'; // Approval status
+  vendorId?: string; // User who listed the product
+  phoneNumber?: string; // Seller contact
+  email?: string; // Seller email
+  location?: string; // Seller location
+  createdAt?: Date; // When product was listed
+  updatedAt?: Date; // Last updated
+  adminNotes?: string; // Admin comments on rejection/changes
 }
 
 export interface ProductFilter {
@@ -326,4 +335,236 @@ export function updateInventory(productId: string, quantitySold: number): void {
       product.inStock = false;
     }
   }
+}
+
+/**
+ * Get all products (both sample and approved user products)
+ */
+export function getAllProductsWithUserListings(): Product[] {
+  const sampleProducts = getAllProducts();
+  const approvedUserProducts = getApprovedUserProducts();
+  return [...sampleProducts, ...approvedUserProducts];
+}
+
+/**
+ * Send notification to seller (email structure ready for backend)
+ */
+export function notifySellerAboutApproval(
+  productId: string,
+  sellerEmail: string,
+  approved: boolean,
+  reason?: string
+): void {
+  // Structure ready for backend email service
+  const notification = {
+    to: sellerEmail,
+    subject: approved
+      ? 'Your Product Has Been Approved! 🎉'
+      : 'Your Product Needs Revision ⚠️',
+    template: approved ? 'product-approved' : 'product-rejected',
+    data: {
+      productId,
+      approved,
+      reason: reason || 'Thank you for your submission',
+      dashboardUrl: '/marketplace/my-products',
+      supportEmail: 'support@naija-amebo-gist.com'
+    }
+  };
+
+  // In production, this would send via backend
+  console.log('📧 Notification:', notification);
+
+  // For now, store notification
+  if (typeof window !== 'undefined') {
+    try {
+      const notifications = JSON.parse(localStorage.getItem('seller_notifications') || '[]');
+      notifications.push({ ...notification, sentAt: new Date() });
+      localStorage.setItem('seller_notifications', JSON.stringify(notifications));
+    } catch (error) {
+      console.error('Error storing notification:', error);
+    }
+  }
+}
+
+/**
+ * Get all pending user product submissions (for admin review)
+ */
+export function getPendingUserProducts(): Product[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    return submissions.filter((p: Product) => p.status === 'pending');
+  } catch (error) {
+    console.error('Error retrieving pending products:', error);
+    return [];
+  }
+}
+
+/**
+ * Get all approved user products
+ */
+export function getApprovedUserProducts(): Product[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    return submissions.filter((p: Product) => p.status === 'approved');
+  } catch (error) {
+    console.error('Error retrieving approved products:', error);
+    return [];
+  }
+}
+
+/**
+ * Get all rejected user products
+ */
+export function getRejectedUserProducts(): Product[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    return submissions.filter((p: Product) => p.status === 'rejected');
+  } catch (error) {
+    console.error('Error retrieving rejected products:', error);
+    return [];
+  }
+}
+
+/**
+ * Approve a user product submission
+ */
+export function approveUserProduct(productId: string, adminNotes?: string): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    const product = submissions.find((p: Product) => p.id === productId);
+    
+    if (product) {
+      product.status = 'approved';
+      product.updatedAt = new Date();
+      if (adminNotes) product.adminNotes = adminNotes;
+      
+      localStorage.setItem('marketplace_submissions', JSON.stringify(submissions));
+      
+      // Notify seller
+      if (product.email) {
+        notifySellerAboutApproval(productId, product.email, true, adminNotes || 'Your product has been approved and is now live!');
+      }
+      
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error approving product:', error);
+    return false;
+  }
+}
+
+/**
+ * Reject a user product submission
+ */
+export function rejectUserProduct(productId: string, reason: string): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    const product = submissions.find((p: Product) => p.id === productId);
+    
+    if (product) {
+      product.status = 'rejected';
+      product.updatedAt = new Date();
+      product.adminNotes = reason;
+      
+      localStorage.setItem('marketplace_submissions', JSON.stringify(submissions));
+      
+      // Notify seller
+      if (product.email) {
+        notifySellerAboutApproval(productId, product.email, false, reason);
+      }
+      
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error rejecting product:', error);
+    return false;
+  }
+}
+
+/**
+ * Get user's products by vendor ID
+ */
+export function getUserProducts(vendorId: string): Product[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    return submissions.filter((p: Product) => p.vendorId === vendorId);
+  } catch (error) {
+    console.error('Error retrieving user products:', error);
+    return [];
+  }
+}
+
+/**
+ * Edit a user product
+ */
+export function editUserProduct(productId: string, updates: Partial<Product>): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    const product = submissions.find((p: Product) => p.id === productId);
+    
+    if (product) {
+      // Only allow editing of pending products
+      if (product.status !== 'pending') {
+        console.warn('Can only edit pending products');
+        return false;
+      }
+      
+      Object.assign(product, updates);
+      product.updatedAt = new Date();
+      
+      localStorage.setItem('marketplace_submissions', JSON.stringify(submissions));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error editing product:', error);
+    return false;
+  }
+}
+
+/**
+ * Delete a user product
+ */
+export function deleteUserProduct(productId: string): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const submissions = JSON.parse(localStorage.getItem('marketplace_submissions') || '[]');
+    const filtered = submissions.filter((p: Product) => p.id !== productId);
+    
+    if (filtered.length < submissions.length) {
+      localStorage.setItem('marketplace_submissions', JSON.stringify(filtered));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return false;
+  }
+}
+
+/**
+ * Get product statistics (for admin dashboard)
+ */
+export function getProductStatistics() {
+  const pending = getPendingUserProducts().length;
+  const approved = getApprovedUserProducts().length;
+  const rejected = getRejectedUserProducts().length;
+  const total = pending + approved + rejected;
+
+  return {
+    pending,
+    approved,
+    rejected,
+    total,
+    percentageApproved: total > 0 ? Math.round((approved / total) * 100) : 0
+  };
 }
