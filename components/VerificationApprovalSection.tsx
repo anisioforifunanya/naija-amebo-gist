@@ -29,6 +29,8 @@ export default function VerificationApprovalSection() {
   const [showAddUserModal, setShowAddUserModal] = useState(false)
   const [showDiagnostics, setShowDiagnostics] = useState(false)
   const [diagnosticsReport, setDiagnosticsReport] = useState<string>('')
+  const [showDataViewer, setShowDataViewer] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [newUserForm, setNewUserForm] = useState({
     firstName: '',
     lastName: '',
@@ -130,11 +132,52 @@ export default function VerificationApprovalSection() {
     try {
       const { generateDiagnosticsReport } = await import('@/lib/firebaseDiagnostics')
       const report = await generateDiagnosticsReport()
-      setDiagnosticsReport(report)
+      
+      // Add local user data to diagnostics
+      const allUsers = getAllUsers()
+      const userStats = {
+        total: allUsers.length,
+        pending: allUsers.filter(u => u.verificationStatus === 'pending').length,
+        approved: allUsers.filter(u => u.verificationStatus === 'approved').length,
+        rejected: allUsers.filter(u => u.verificationStatus === 'rejected').length,
+      }
+      
+      const enhancedReport = report + `
+        <div style="margin-top: 12px; padding: 12px; background: #f0f7ff; border-left: 4px solid #2196f3;">
+          <strong style="color: #1976d2;">📊 Local Users Summary:</strong>
+          <div style="margin-top: 8px; font-size: 12px;">
+            <div>Total Users: <strong>${userStats.total}</strong></div>
+            <div>⏳ Pending: <strong>${userStats.pending}</strong></div>
+            <div>✅ Approved: <strong>${userStats.approved}</strong></div>
+            <div>❌ Rejected: <strong>${userStats.rejected}</strong></div>
+          </div>
+          <div style="margin-top: 8px; font-size: 11px; color: #666;">
+            💡 Click "📊 View Data" button to see all users with search functionality
+          </div>
+        </div>
+      `
+      
+      setDiagnosticsReport(enhancedReport)
       setShowDiagnostics(true)
     } catch (error: any) {
       alert(`❌ Failed to run diagnostics: ${error.message}`)
     }
+  }
+
+  const getAllUsers = () => {
+    try {
+      const usersData = localStorage.getItem('naijaAmeboUsers')
+      const allUsers = usersData ? JSON.parse(usersData) : []
+      return allUsers
+    } catch (error) {
+      console.error('Error loading users:', error)
+      return []
+    }
+  }
+
+  const openDataViewer = () => {
+    setShowDataViewer(true)
+    setSearchQuery('')
   }
 
   const addUserManually = () => {
@@ -348,6 +391,13 @@ export default function VerificationApprovalSection() {
             className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
           >
             🔧 Diagnostics
+          </button>
+          <button
+            type="button"
+            onClick={openDataViewer}
+            className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
+          >
+            📊 View Data
           </button>
         </div>
       </div>
@@ -733,6 +783,110 @@ export default function VerificationApprovalSection() {
                 </button>
                 <button
                   onClick={() => setShowDiagnostics(false)}
+                  className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Data Viewer Modal */}
+      {showDataViewer && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+                📊 Users Data Viewer
+              </h3>
+              
+              <div className="mb-4 flex gap-2">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Search by email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    const allUsers = getAllUsers()
+                    loadUsers()
+                    toast.success(`Refreshed! Found ${allUsers.length} total users`, { position: 'bottom-right' })
+                  }}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+                >
+                  🔄 Refresh
+                </button>
+              </div>
+
+              <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  📈 Total Users: <span className="text-lg font-bold text-blue-600">{getAllUsers().length}</span>
+                </p>
+              </div>
+
+              <div className="max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg">
+                {getAllUsers().filter(u => 
+                  !searchQuery || u.email.toLowerCase().includes(searchQuery.toLowerCase())
+                ).length === 0 ? (
+                  <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                    No users found
+                  </div>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0">
+                      <tr className="border-b border-gray-200 dark:border-gray-600">
+                        <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300 font-semibold">Email</th>
+                        <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300 font-semibold">Status</th>
+                        <th className="px-4 py-2 text-left text-gray-700 dark:text-gray-300 font-semibold">Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getAllUsers()
+                        .filter(u => !searchQuery || u.email.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .map((user) => (
+                          <tr key={user.id} className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="px-4 py-2 text-gray-800 dark:text-gray-200 font-mono text-xs">{user.email}</td>
+                            <td className="px-4 py-2">
+                              <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                                user.verificationStatus === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200' :
+                                user.verificationStatus === 'approved' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
+                                'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                              }`}>
+                                {user.verificationStatus === 'pending' ? '⏳ Pending' :
+                                 user.verificationStatus === 'approved' ? '✅ Approved' :
+                                 '❌ Rejected'}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2 text-gray-800 dark:text-gray-200">{user.firstName} {user.lastName}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+
+              <div className="mt-6 flex gap-2">
+                <button
+                  onClick={() => {
+                    const allUsers = getAllUsers()
+                    const csv = 'Email,Status,Name\n' + allUsers.map(u => 
+                      `${u.email},${u.verificationStatus},"${u.firstName} ${u.lastName}"`
+                    ).join('\n')
+                    navigator.clipboard.writeText(csv)
+                    toast.success('User data copied to clipboard!', { position: 'bottom-right' })
+                  }}
+                  className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
+                >
+                  📋 Copy as CSV
+                </button>
+                <button
+                  onClick={() => setShowDataViewer(false)}
                   className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition"
                 >
                   Close
