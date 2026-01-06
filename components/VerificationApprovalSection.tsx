@@ -27,6 +27,8 @@ export default function VerificationApprovalSection() {
   const [rejectReason, setRejectReason] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [showDiagnostics, setShowDiagnostics] = useState(false)
+  const [diagnosticsReport, setDiagnosticsReport] = useState<string>('')
   const [newUserForm, setNewUserForm] = useState({
     firstName: '',
     lastName: '',
@@ -70,7 +72,71 @@ export default function VerificationApprovalSection() {
     loadUsers()
   }
 
-  // Manually add a user for verification
+  // Sync from Firebase with better error handling
+  const syncFromFirebase = async () => {
+    console.log('🔄 Starting Firebase sync...')
+    try {
+      const { db } = await import('@/lib/firebase')
+      const { collection, getDocs } = await import('firebase/firestore')
+      
+      console.log('📦 Fetching users from Firestore...')
+      const usersSnapshot = await getDocs(collection(db, 'users'))
+      
+      console.log('✅ Firestore query successful')
+      console.log('📊 Number of documents:', usersSnapshot.size)
+      
+      if (usersSnapshot.size === 0) {
+        alert('⚠️ Firestore users collection is empty. No users to sync.')
+        return
+      }
+
+      const firebaseUsers = usersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as any[]
+      
+      console.log('👥 Firebase users fetched:', firebaseUsers)
+      
+      // Save to localStorage
+      localStorage.setItem('naijaAmeboUsers', JSON.stringify(firebaseUsers))
+      console.log('✅ Users saved to localStorage')
+      
+      alert(`✅ Successfully synced ${firebaseUsers.length} users from Firebase!`)
+      forceRefresh()
+    } catch (error: any) {
+      console.error('❌ Firebase sync error:', error)
+      console.error('Error code:', error.code)
+      console.error('Error message:', error.message)
+      
+      let errorMsg = 'Failed to sync from Firebase'
+      
+      if (error.code === 'failed-precondition') {
+        errorMsg = 'Firestore indexes not ready. Please retry in a moment.'
+      } else if (error.code === 'permission-denied') {
+        errorMsg = 'Firebase permission denied. Check Firestore rules.'
+      } else if (error.code === 'unavailable') {
+        errorMsg = 'Firebase service unavailable. Check your connection.'
+      } else if (error.message?.includes('app/invalid-api-key')) {
+        errorMsg = 'Invalid Firebase API key. Check configuration.'
+      } else if (error.message?.includes('Cannot read property')) {
+        errorMsg = 'Firebase not initialized properly.'
+      }
+      
+      alert(`❌ ${errorMsg}\n\nUse "➕ Add User Manually" instead.`)
+    }
+  }
+
+  const runDiagnostics = async () => {
+    try {
+      const { generateDiagnosticsReport } = await import('@/lib/firebaseDiagnostics')
+      const report = await generateDiagnosticsReport()
+      setDiagnosticsReport(report)
+      setShowDiagnostics(true)
+    } catch (error: any) {
+      alert(`❌ Failed to run diagnostics: ${error.message}`)
+    }
+  }
+
   const addUserManually = () => {
     if (!newUserForm.firstName.trim() || !newUserForm.lastName.trim() || !newUserForm.email.trim()) {
       toast.error('Please fill in at least First Name, Last Name, and Email', { position: 'bottom-right' })
@@ -251,7 +317,14 @@ export default function VerificationApprovalSection() {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
           Facial Verification Approvals
         </h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <button
+            type="button"
+            onClick={syncFromFirebase}
+            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
+          >
+            🔄 Sync Firebase
+          </button>
           <button
             type="button"
             onClick={() => setShowAddUserModal(true)}
@@ -268,6 +341,13 @@ export default function VerificationApprovalSection() {
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer z-10"
           >
             🔄 Refresh Data
+          </button>
+          <button
+            type="button"
+            onClick={runDiagnostics}
+            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer"
+          >
+            🔧 Diagnostics
           </button>
         </div>
       </div>
@@ -629,6 +709,40 @@ export default function VerificationApprovalSection() {
           </div>
         </div>
       )}
+
+      {/* Diagnostics Modal */}
+      {showDiagnostics && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+                🔧 Firebase Diagnostics Report
+              </h3>
+              
+              <div dangerouslySetInnerHTML={{ __html: diagnosticsReport }} className="dark:text-gray-300" />
+              
+              <div className="mt-6 flex gap-2">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(diagnosticsReport.replace(/<[^>]*>/g, ''));
+                    toast.success('Report copied to clipboard!', { position: 'bottom-right' })
+                  }}
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+                >
+                  📋 Copy Report
+                </button>
+                <button
+                  onClick={() => setShowDiagnostics(false)}
+                  className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+
