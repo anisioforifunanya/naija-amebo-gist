@@ -103,6 +103,15 @@ export default function Community() {
       return;
     }
 
+    // Check if user has completed facial verification and been approved (only for regular users, not admins)
+    if (userSession && user.role !== 'admin') {
+      if (user.verificationStatus !== 'approved' || user.accountStatus !== 'approved') {
+        alert('⚠️ Your account is awaiting admin verification. You cannot access community features yet.');
+        window.location.href = '/verification-pending';
+        return;
+      }
+    }
+
     // Check if user is restricted (only applicable to regular users, not admins)
     if (userSession && user.isRestricted) {
       const now = new Date();

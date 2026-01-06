@@ -36,6 +36,15 @@ export default function UserDashboard() {
     if (userSession) {
       try {
         const user = JSON.parse(userSession);
+        
+        // Check if user has been approved
+        if (user.verificationStatus !== 'approved' || user.accountStatus !== 'approved') {
+          alert('⚠️ Your account is awaiting admin verification. Redirecting...');
+          localStorage.removeItem('naijaAmeboCurrentUser');
+          router.push('/verification-pending');
+          return;
+        }
+        
         setCurrentUser(user);
         setIsLoggedIn(true);
       } catch (e) {

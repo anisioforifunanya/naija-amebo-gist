@@ -54,6 +54,17 @@ export default function PrivateMessages() {
     }
 
     const user = userSession ? JSON.parse(userSession) : JSON.parse(adminSession || '{}')
+    
+    // Check if regular user has been approved
+    if (userSession && user.role !== 'admin') {
+      if (user.verificationStatus !== 'approved' || user.accountStatus !== 'approved') {
+        alert('⚠️ Your account is awaiting admin verification. You cannot use private messaging yet.');
+        localStorage.removeItem('naijaAmeboCurrentUser');
+        window.location.href = '/verification-pending';
+        return;
+      }
+    }
+    
     setCurrentUser(user)
 
     // Anonymous users can't use private messaging
