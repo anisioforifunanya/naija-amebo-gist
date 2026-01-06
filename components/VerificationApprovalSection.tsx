@@ -238,6 +238,24 @@ export default function VerificationApprovalSection() {
                 }))
               })(), null, 2)}</pre>
             </div>
+
+            <div className="text-xs bg-white dark:bg-gray-900 p-2 rounded overflow-auto max-h-40">
+              <p className="font-bold mb-2">Currently Logged-in User (naijaAmeboCurrentUser):</p>
+              <pre>{JSON.stringify((() => {
+                const user = localStorage.getItem('naijaAmeboCurrentUser')
+                if (!user) return 'No user logged in'
+                const u = JSON.parse(user)
+                return {
+                  id: u.id,
+                  name: `${u.firstName} ${u.lastName}`,
+                  email: u.email,
+                  verificationStatus: u.verificationStatus || 'not_set',
+                  facialPhoto: u.facialPhoto ? '✓ YES' : '✗ NO',
+                  accountStatus: u.accountStatus || 'not_set',
+                  personalDetailsCompletedAt: u.personalDetailsCompletedAt ? 'YES' : 'NO'
+                }
+              })(), null, 2)}</pre>
+            </div>
           </div>
         </details>
       </div>
