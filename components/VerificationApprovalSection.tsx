@@ -186,11 +186,47 @@ export default function VerificationApprovalSection() {
           Facial Verification Approvals
         </h2>
         <button
-          onClick={forceRefresh}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition text-sm"
+          type="button"
+          onClick={() => {
+            console.log('Refresh button clicked!')
+            forceRefresh()
+          }}
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition text-sm cursor-pointer z-10"
         >
-          🔄 Refresh
+          🔄 Refresh Data
         </button>
+      </div>
+
+      {/* Debug Info */}
+      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
+        <details>
+          <summary className="cursor-pointer font-semibold text-yellow-900 dark:text-yellow-300">
+            📊 Debug Info (Click to expand)
+          </summary>
+          <pre className="mt-2 text-xs bg-white dark:bg-gray-900 p-2 rounded overflow-auto max-h-40">
+            {JSON.stringify({
+              totalUsers: (() => {
+                const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+                return users.length
+              })(),
+              usersWithFacialPhoto: (() => {
+                const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+                return users.filter((u: any) => u.facialPhoto).length
+              })(),
+              pendingVerifications: (() => {
+                const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+                return users.filter((u: any) => u.facialPhoto && u.verificationStatus === 'pending').map((u: any) => ({
+                  id: u.id,
+                  name: `${u.firstName} ${u.lastName}`,
+                  email: u.email,
+                  verificationStatus: u.verificationStatus,
+                  hasFacialPhoto: !!u.facialPhoto
+                }))
+              })(),
+              stats
+            }, null, 2)}
+          </pre>
+        </details>
       </div>
 
       {/* Statistics */}
