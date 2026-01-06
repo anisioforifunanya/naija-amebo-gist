@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { toast } from 'react-toastify'
 
 interface PendingUser {
@@ -32,15 +32,24 @@ export default function VerificationApprovalSection() {
     loadUsers()
   }, [])
 
+  // Reload users when filter changes
+  useEffect(() => {
+    loadUsers()
+  }, [filter])
+
   const loadUsers = () => {
     const usersData = localStorage.getItem('naijaAmeboUsers')
     const allUsers = usersData ? JSON.parse(usersData) : []
 
+    console.log('Loading users for filter:', filter)
+    console.log('All users from storage:', allUsers)
+    
     // Filter by verification status
     const filteredUsers = allUsers.filter(
       (u: any) => u.facialPhoto && u.verificationStatus === filter
     )
 
+    console.log('Filtered users:', filteredUsers)
     setUsers(filteredUsers)
   }
 
@@ -146,6 +155,7 @@ export default function VerificationApprovalSection() {
   const getStats = () => {
     const usersData = localStorage.getItem('naijaAmeboUsers')
     const allUsers = usersData ? JSON.parse(usersData) : []
+    console.log('getStats - all users:', allUsers)
     const verified = allUsers.filter(
       (u: any) => u.facialPhoto && u.verificationStatus === 'approved'
     ).length
@@ -156,10 +166,11 @@ export default function VerificationApprovalSection() {
       (u: any) => u.facialPhoto && u.verificationStatus === 'rejected'
     ).length
 
+    console.log('Stats - verified:', verified, 'pending:', pending, 'rejected:', rejected)
     return { verified, pending, rejected, total: verified + pending + rejected }
   }
 
-  const stats = getStats()
+  const stats = useMemo(() => getStats(), [users])
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
