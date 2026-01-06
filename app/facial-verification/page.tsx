@@ -30,25 +30,42 @@ export default function FacialVerificationPage() {
   // Request camera access and start stream
   const openCamera = async () => {
     try {
+      // Check if getUserMedia is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        toast.error('Camera API not available in your browser', {
+          position: 'bottom-right',
+          autoClose: 5000,
+        })
+        return
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'user',
           width: { ideal: 1280 },
           height: { ideal: 720 },
         },
+        audio: false,
       })
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
         setCameraActive(true)
         setStep('camera')
-        toast.info('Camera opened successfully', {
+        toast.success('Camera opened successfully', {
           position: 'bottom-right',
           autoClose: 3000,
         })
       }
-    } catch (err) {
-      toast.error('Please allow camera permissions in your browser', {
+    } catch (err: any) {
+      console.error('Camera error:', err)
+      const errorMessage = err?.name === 'NotAllowedError' 
+        ? 'Camera permission was denied. Please allow camera access in your browser settings.'
+        : err?.name === 'NotFoundError'
+        ? 'No camera device found. Please check your device.'
+        : 'Failed to access camera. Please check permissions and try again.'
+      
+      toast.error(errorMessage, {
         position: 'bottom-right',
         autoClose: 5000,
       })
@@ -269,6 +286,7 @@ export default function FacialVerificationPage() {
                 ref={videoRef}
                 autoPlay
                 playsInline
+                muted
                 className="w-full rounded-2xl border-4 border-blue-500 scale-x-[-1] object-cover"
                 style={{ maxWidth: '100%', maxHeight: '500px' }}
               />
