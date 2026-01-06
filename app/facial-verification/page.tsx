@@ -17,7 +17,15 @@ export default function FacialVerificationPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const [videoMetadataLoaded, setVideoMetadataLoaded] = useState(false)
   const [permissionStatus, setPermissionStatus] = useState<'prompt' | 'granted' | 'denied'>('prompt')
+
+  // Handle when video metadata loads (has dimensions)
+  const handleVideoMetadataLoaded = () => {
+    console.log('📹 Video metadata loaded')
+    console.log('Video dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight)
+    setVideoMetadataLoaded(true)
+  }
 
   // Check authentication on mount
   useEffect(() => {
@@ -217,49 +225,125 @@ export default function FacialVerificationPage() {
       videoRef.current.srcObject = null
     }
     setCameraActive(false)
+    setVideoMetadataLoaded(false)
   }
 
   // Capture photo from video stream
   const snapPhoto = () => {
-    if (videoRef.current && canvasRef.current) {
+    console.log('📸 Attempting to capture photo...')
+    
+    if (!videoRef.current || !canvasRef.current) {
+      console.error('❌ Missing video or canvas ref')
+      toast.error('Camera not initialized', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      })
+      return
+    }
+
+    // Check if video has valid dimensions
+    console.log('Video element state:', {
+      videoWidth: videoRef.current.videoWidth,
+      videoHeight: videoRef.current.videoHeight,
+      readyState: videoRef.current.readyState,
+      networkState: videoRef.current.networkState,
+    })
+
+    if (videoRef.current.videoWidth === 0 || videoRef.current.videoHeight === 0) {
+      console.error('❌ Video frame not ready yet')
+      toast.error('Video is still loading. Please wait a moment and try again.', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      })
+      return
+    }
+
+    try {
       const context = canvasRef.current.getContext('2d')
-      if (context) {
-        // Set canvas size to match video
-        canvasRef.current.width = videoRef.current.videoWidth
-        canvasRef.current.height = videoRef.current.videoHeight
-
-        // Mirror the image horizontally (like a selfie)
-        context.scale(-1, 1)
-        context.drawImage(
-          videoRef.current,
-          -canvasRef.current.width,
-          0,
-          canvasRef.current.width,
-          canvasRef.current.height
-        )
-
-        // Convert to base64
-        const photoData = canvasRef.current.toDataURL('image/jpeg', 0.95)
-        setCapturedPhoto(photoData)
-
-        // Stop camera stream
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach(track => {
-            console.log('Stopping track after capture:', track.kind)
-            track.stop()
-          })
-          streamRef.current = null
-        }
-        if (videoRef.current) {
-          videoRef.current.srcObject = null
-        }
-        setCameraActive(false)
-        setStep('review')
-        toast.success('Photo captured successfully', {
+      if (!context) {
+        console.error('❌ Failed to get canvas context')
+        toast.error('Canvas error - please refresh and try again', {
           position: 'bottom-right',
           autoClose: 3000,
         })
+        return
       }
+
+      // Set canvas size to match video (actual display size, not native size)
+      const displayWidth = videoRef.current.offsetWidth
+      const displayHeight = videoRef.current.offsetHeight
+      
+      console.log('Canvas dimensions - Display:', displayWidth, 'x', displayHeight, 'Native:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight)
+      
+      canvasRef.current.width = videoRef.current.videoWidth
+      canvasRef.current.height = videoRef.current.videoHeight
+
+      // Mirror the image horizontally (like a selfie)
+      context.scale(-1, 1)
+      context.drawImage(
+        videoRef.current,
+        -canvasRef.current.width,
+        0,
+        canvasRef.current.width,
+        canvasRef.current.height
+      )
+
+      console.log('✅ Frame drawn to canvas')
+
+      // Convert canvas to blob (more reliable than base64)
+      canvasRef.current.toBlob(
+        (blob) => {
+          if (blob) {
+            console.log('✅ Canvas converted to blob, size:', blob.size, 'bytes')
+            
+            // Create object URL for preview
+            const photoUrl = URL.createObjectURL(blob)
+            setCapturedPhoto(photoUrl)
+            
+            // Store blob for submission
+            localStorage.setItem('naijaAmeboPhotoBlobUrl', photoUrl)
+            localStorage.setItem('naijaAmeboPhotoBlob', JSON.stringify({
+              size: blob.size,
+              type: blob.type,
+              timestamp: new Date().toISOString(),
+            }))
+
+            console.log('✅ Photo saved to preview')
+
+            // Stop camera stream
+            if (streamRef.current) {
+              streamRef.current.getTracks().forEach(track => {
+                console.log('Stopping track after capture:', track.kind)
+                track.stop()
+              })
+              streamRef.current = null
+            }
+            if (videoRef.current) {
+              videoRef.current.srcObject = null
+            }
+            setCameraActive(false)
+            setStep('review')
+            toast.success('Photo captured successfully', {
+              position: 'bottom-right',
+              autoClose: 3000,
+            })
+          } else {
+            console.error('❌ Blob conversion failed')
+            toast.error('Failed to capture photo', {
+              position: 'bottom-right',
+              autoClose: 3000,
+            })
+          }
+        },
+        'image/jpeg',
+        0.95
+      )
+    } catch (error) {
+      console.error('❌ Error during snap:', error)
+      toast.error(`Capture error: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      })
     }
   }
 
@@ -402,6 +486,7 @@ export default function FacialVerificationPage() {
                     autoPlay
                     playsInline
                     muted
+                    onLoadedMetadata={handleVideoMetadataLoaded}
                     width={320}
                     height={320}
                     className="w-full h-full object-cover block"
@@ -433,13 +518,18 @@ export default function FacialVerificationPage() {
             )}
 
             {/* Camera Controls - Show Snap/Cancel when camera is active */}
-            {cameraActive && step !== 'initial' ? (
+            {cameraActive && step === 'initial' ? (
               <div className="flex gap-4 justify-center mb-6">
                 <button
                   onClick={snapPhoto}
-                  className="bg-green-500 hover:bg-green-600 hover:scale-105 transition-all text-white font-bold py-3 px-8 rounded-lg shadow-lg"
+                  disabled={!videoMetadataLoaded}
+                  className={`font-bold py-3 px-8 rounded-lg shadow-lg transition-all ${
+                    videoMetadataLoaded
+                      ? 'bg-green-500 hover:bg-green-600 hover:scale-105 text-white cursor-pointer'
+                      : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+                  }`}
                 >
-                  ✓ Snap Photo
+                  {videoMetadataLoaded ? '✓ Snap Photo' : '⏳ Loading...'}
                 </button>
                 <button
                   onClick={cancelCamera}
