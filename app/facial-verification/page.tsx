@@ -111,7 +111,11 @@ export default function FacialVerificationPage() {
         setTimeout(() => {
           if (videoRef.current && streamRef.current) {
             console.log('Setting video stream...')
+            console.log('Video element current:', videoRef.current)
+            console.log('Stream tracks before setting:', streamRef.current.getTracks().length)
+            
             videoRef.current.srcObject = streamRef.current
+            console.log('Video srcObject set, waiting for play...')
             
             // Ensure video plays with proper error handling
             const playPromise = videoRef.current.play()
@@ -120,6 +124,8 @@ export default function FacialVerificationPage() {
                 .then(() => {
                   console.log('✅ Video playing successfully')
                   console.log('Video element dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight)
+                  console.log('Video readyState:', videoRef.current?.readyState)
+                  console.log('Video networkState:', videoRef.current?.networkState)
                   setCameraActive(true)
                   setPermissionStatus('granted')
                   toast.success('Camera opened successfully', {
@@ -129,6 +135,12 @@ export default function FacialVerificationPage() {
                 })
                 .catch((err: any) => {
                   console.error('❌ Error playing video:', err)
+                  console.error('Video element state at error:', {
+                    readyState: videoRef.current?.readyState,
+                    networkState: videoRef.current?.networkState,
+                    videoWidth: videoRef.current?.videoWidth,
+                    videoHeight: videoRef.current?.videoHeight,
+                  })
                   toast.error(`Video playback error: ${err?.message || 'Unknown error'}`, {
                     position: 'bottom-right',
                     autoClose: 5000,
@@ -382,17 +394,21 @@ export default function FacialVerificationPage() {
                     alt="Captured photo"
                     className="w-full h-full object-cover"
                   />
-                ) : cameraActive && step !== 'initial' ? (
-                  // Show camera feed
+                ) : cameraActive ? (
+                  // Show camera feed - display as video with explicit dimensions
                   <video
+                    key="camera-feed"
                     ref={videoRef}
                     autoPlay
                     playsInline
                     muted
-                    className="w-full h-full object-cover"
+                    width={320}
+                    height={320}
+                    className="w-full h-full object-cover block"
                     style={{ 
                       transform: 'scaleX(-1)',
-                      display: 'block'
+                      display: 'block',
+                      backgroundColor: '#000000'
                     }}
                   />
                 ) : (
@@ -408,7 +424,7 @@ export default function FacialVerificationPage() {
             </div>
 
             {/* Camera Instructions */}
-            {cameraActive && step !== 'initial' && (
+            {cameraActive && (
               <div className="bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-500 p-4 rounded mb-6">
                 <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
                   Position your face clearly in the center and press Snap
