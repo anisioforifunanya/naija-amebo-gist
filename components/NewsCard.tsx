@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { recordShare } from '../lib/metricsTracker';
 
 interface NewsItem {
@@ -133,72 +134,51 @@ export default function NewsCard({ item, index }: NewsCardProps) {
   };
 
   return (
-    <article className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition">
-      <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-      <p className="text-gray-600 dark:text-gray-300 mb-4">{item.description}</p>
-
-      {/* Media Display */}
-      {item.image && (
-        <div className="mb-4">
-          <img src={item.image} alt={item.title} className="w-full h-48 object-cover rounded-lg" />
-          <button
-            onClick={() => downloadMedia(item.image!, `${item.title}.jpg`)}
-            className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
-          >
-            📥 Download Image
-          </button>
-        </div>
-      )}
-
-      {item.video && (
-        <div className="mb-4">
-          <video controls className="w-full h-48 rounded-lg">
-            <source src={item.video} type="video/mp4" />
-          </video>
-          <button
-            onClick={() => downloadMedia(item.video!, `${item.title}.mp4`)}
-            className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
-          >
-            📥 Download Video
-          </button>
-        </div>
-      )}
-
-      {item.liveVideo && (
-        <div className="mb-4">
-          <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg mb-2">
-            <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">🎥 Live Video Recording</p>
+    <article className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer group">
+      {/* Image/Video/Logo Section */}
+      <div className="mb-4 relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
+        {item.image ? (
+          <>
+            <img src={item.image} alt={item.title} className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform" />
+            <button
+              onClick={() => downloadMedia(item.image!, `${item.title}.jpg`)}
+              className="absolute bottom-2 right-2 text-blue-600 hover:text-blue-800 text-sm bg-white px-2 py-1 rounded-lg shadow-lg"
+            >
+              📥 Download
+            </button>
+          </>
+        ) : item.video ? (
+          <>
+            <video className="w-full h-48 object-cover rounded-lg" controls>
+              <source src={item.video} type="video/mp4" />
+            </video>
+            <button
+              onClick={() => downloadMedia(item.video!, `${item.title}.mp4`)}
+              className="absolute bottom-2 right-2 text-blue-600 hover:text-blue-800 text-sm bg-white px-2 py-1 rounded-lg shadow-lg"
+            >
+              📥 Download
+            </button>
+          </>
+        ) : (
+          <div className="w-full h-48 flex items-center justify-center bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/20 dark:to-blue-900/20">
+            <img src="/logo.svg" alt="Naija Amebo Gist" className="h-24 w-auto opacity-70 dark:opacity-50" />
           </div>
-          <video controls className="w-full h-48 rounded-lg">
-            <source src={item.liveVideo} type="video/webm" />
-          </video>
-          <button
-            onClick={() => downloadMedia(item.liveVideo!, `${item.title}-live-video.webm`)}
-            className="mt-2 text-purple-600 hover:text-purple-800 text-sm"
-          >
-            📥 Download Live Video
-          </button>
-        </div>
-      )}
+        )}
+      </div>
 
-      {item.liveAudio && (
-        <div className="mb-4">
-          <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg mb-2">
-            <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">🎤 Live Audio Recording</p>
-          </div>
-          <audio controls className="w-full">
-            <source src={item.liveAudio} type="audio/webm" />
-          </audio>
-          <button
-            onClick={() => downloadMedia(item.liveAudio!, `${item.title}-live-audio.webm`)}
-            className="mt-2 text-purple-600 hover:text-purple-800 text-sm"
-          >
-            📥 Download Live Audio
-          </button>
-        </div>
-      )}
+      <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">{item.title}</h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{item.description}</p>
 
-      <p className="text-sm text-gray-500 mb-4">Published {item.date}</p>
+      <p className="text-sm text-gray-500 mb-4">📅 Published {item.date}</p>
+
+      {/* Read More Button */}
+      {item.id && (
+        <Link href={`/news/${item.id}`} className="inline-block mb-4">
+          <button className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all hover:scale-105">
+            📖 Read Full Story
+          </button>
+        </Link>
+      )}
 
       {/* User Uploaded Content */}
       {uploadedFiles.length > 0 && (
