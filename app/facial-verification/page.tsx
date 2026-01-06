@@ -76,6 +76,8 @@ export default function FacialVerificationPage() {
   // Request camera access and start stream
   const openCamera = async () => {
     setIsLoading(true)
+    // Render video element immediately to ensure it's in DOM
+    setCameraActive(true)
     try {
       // Check if getUserMedia is available
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -84,6 +86,7 @@ export default function FacialVerificationPage() {
           autoClose: 5000,
         })
         setIsLoading(false)
+        setCameraActive(false)
         return
       }
 
@@ -134,7 +137,6 @@ export default function FacialVerificationPage() {
                   console.log('Video element dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight)
                   console.log('Video readyState:', videoRef.current?.readyState)
                   console.log('Video networkState:', videoRef.current?.networkState)
-                  setCameraActive(true)
                   setPermissionStatus('granted')
                   toast.success('Camera opened successfully', {
                     position: 'bottom-right',
@@ -163,9 +165,13 @@ export default function FacialVerificationPage() {
             }
           }
         }, 100)
+      } else {
+        console.error('❌ Video ref not available')
+        setCameraActive(false)
       }
     } catch (err: any) {
       console.error('Camera error:', err)
+      setCameraActive(false)
       
       let errorMessage = 'Failed to access camera.'
       
