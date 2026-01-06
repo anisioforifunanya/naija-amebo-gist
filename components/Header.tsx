@@ -186,6 +186,14 @@ export default function Header() {
 
             {/* Action Buttons - Desktop */}
             <div className="hidden lg:flex items-center space-x-3">
+              {/* Super Admin News Management Button */}
+              <Link href="/super-admin/news-management" className="relative px-5 py-2 text-sm font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700">
+                <span className="relative z-10 flex items-center space-x-1">
+                  <span>📰</span>
+                  <span>News Management</span>
+                </span>
+              </Link>
+
               <Link href="/submit-news" className="relative px-5 py-2 text-sm font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-transform duration-300 group-hover:scale-110"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -309,6 +317,15 @@ export default function Header() {
 
             {/* Mobile Action Links */}
             <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700 space-y-2 px-2">
+              <Link href="/super-admin/news-management" className="relative block px-5 py-3 text-white text-center rounded-lg font-bold overflow-hidden group transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl" onClick={() => setIsMenuOpen(false)}>
+                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 flex items-center justify-center space-x-2">
+                  <span>📰</span>
+                  <span>News Management</span>
+                </span>
+              </Link>
+
               <Link href="/submit-news" className="relative block px-5 py-3 text-white text-center rounded-lg font-bold overflow-hidden group transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl" onClick={() => setIsMenuOpen(false)}>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
