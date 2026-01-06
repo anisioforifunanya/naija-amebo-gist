@@ -470,16 +470,16 @@ export default function FacialVerificationPage() {
 
             {/* Picture Preview / Camera Area */}
             <div className="flex flex-col items-center mb-8">
-              <div className="w-full max-w-xs h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 flex items-center justify-center relative">
+              <div className="w-full max-w-xs h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 flex items-center justify-center relative" style={{ position: 'relative' }}>
                 {/* Show captured photo if available */}
                 {capturedPhoto ? (
                   <img
                     src={capturedPhoto}
                     alt="Captured photo"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover absolute inset-0"
                   />
                 ) : cameraActive ? (
-                  // Show camera feed - display as video with explicit dimensions
+                  // Show camera feed - live video stream filling the container
                   <video
                     key="camera-feed"
                     ref={videoRef}
@@ -487,13 +487,19 @@ export default function FacialVerificationPage() {
                     playsInline
                     muted
                     onLoadedMetadata={handleVideoMetadataLoaded}
-                    width={320}
-                    height={320}
-                    className="w-full h-full object-cover block"
+                    className="absolute inset-0 w-full h-full object-cover"
                     style={{ 
                       transform: 'scaleX(-1)',
                       display: 'block',
-                      backgroundColor: '#000000'
+                      backgroundColor: '#000000',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
                     }}
                   />
                 ) : (
@@ -501,7 +507,7 @@ export default function FacialVerificationPage() {
                   <img
                     src="https://placehold.co/600x400/EEE/31343C?font=raleway&text=Picture%20preview"
                     alt="Picture preview"
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 )}
               </div>
