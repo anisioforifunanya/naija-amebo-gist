@@ -468,84 +468,76 @@ export default function FacialVerificationPage() {
               </p>
             </div>
 
-            {/* Picture Preview / Camera Area */}
-            <div className="flex flex-col items-center mb-8">
-              <div className="w-full max-w-xs h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 flex items-center justify-center relative" style={{ position: 'relative' }}>
-                {/* Show captured photo if available */}
-                {capturedPhoto ? (
-                  <img
-                    src={capturedPhoto}
-                    alt="Captured photo"
-                    className="w-full h-full object-cover absolute inset-0"
-                  />
-                ) : cameraActive ? (
-                  // Show camera feed - live video stream filling the container
-                  <video
-                    key="camera-feed"
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    onLoadedMetadata={handleVideoMetadataLoaded}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    style={{ 
-                      transform: 'scaleX(-1)',
-                      display: 'block',
-                      backgroundColor: '#000000',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                ) : (
-                  // Show placeholder
-                  <img
-                    src="https://placehold.co/600x400/EEE/31343C?font=raleway&text=Picture%20preview"
-                    alt="Picture preview"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                )}
+            {/* Camera Container - Simple white card with video */}
+            {cameraActive ? (
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl max-w-md mx-auto mb-8">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  onLoadedMetadata={handleVideoMetadataLoaded}
+                  className="w-full rounded-2xl border-4 border-blue-500"
+                  style={{ 
+                    maxWidth: '100%',
+                    transform: 'scaleX(-1)',
+                    backgroundColor: '#000000',
+                    display: 'block'
+                  }}
+                />
+                <canvas ref={canvasRef} className="hidden" />
+                
+                {/* Snap and Cancel Buttons */}
+                <div className="flex justify-center gap-4 mt-4">
+                  <button
+                    onClick={snapPhoto}
+                    disabled={!videoMetadataLoaded}
+                    className={`font-bold py-2 px-4 rounded-lg transition-all ${
+                      videoMetadataLoaded
+                        ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                        : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    {videoMetadataLoaded ? '✓ Snap' : '⏳ Loading...'}
+                  </button>
+                  <button
+                    onClick={cancelCamera}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                  >
+                    ✕ Cancel
+                  </button>
+                </div>
+                
+                {/* Instructions */}
+                <div className="bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-500 p-3 rounded mt-4">
+                  <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
+                    Position your face clearly and click Snap
+                  </p>
+                </div>
               </div>
-              <canvas ref={canvasRef} className="hidden" />
-            </div>
-
-            {/* Camera Instructions */}
-            {cameraActive && (
-              <div className="bg-blue-50 dark:bg-gray-700 border-l-4 border-blue-500 p-4 rounded mb-6">
-                <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
-                  Position your face clearly in the center and press Snap
-                </p>
+            ) : (
+              /* Picture Preview Area when camera is not active */
+              <div className="flex flex-col items-center mb-8">
+                <div className="w-full max-w-xs h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 flex items-center justify-center">
+                  {capturedPhoto ? (
+                    <img
+                      src={capturedPhoto}
+                      alt="Captured photo"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src="https://placehold.co/600x400/EEE/31343C?font=raleway&text=Picture%20preview"
+                      alt="Picture preview"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Camera Controls - Show Snap/Cancel when camera is active */}
-            {cameraActive && step === 'initial' ? (
-              <div className="flex gap-4 justify-center mb-6">
-                <button
-                  onClick={snapPhoto}
-                  disabled={!videoMetadataLoaded}
-                  className={`font-bold py-3 px-8 rounded-lg shadow-lg transition-all ${
-                    videoMetadataLoaded
-                      ? 'bg-green-500 hover:bg-green-600 hover:scale-105 text-white cursor-pointer'
-                      : 'bg-gray-400 text-white cursor-not-allowed opacity-50'
-                  }`}
-                >
-                  {videoMetadataLoaded ? '✓ Snap Photo' : '⏳ Loading...'}
-                </button>
-                <button
-                  onClick={cancelCamera}
-                  className="bg-red-500 hover:bg-red-600 hover:scale-105 transition-all text-white font-bold py-3 px-8 rounded-lg shadow-lg"
-                >
-                  ✕ Cancel
-                </button>
-              </div>
-            ) : step === 'initial' ? (
-              // Show open camera button on initial step
+            {/* Open Camera Button - Only show when not in camera mode */}
+            {!cameraActive && step === 'initial' ? (
               <>
                 {/* Permission Status Display */}
                 {permissionStatus === 'denied' && (
