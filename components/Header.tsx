@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import AlternatingLogo from './AlternatingLogo'
 import SearchComponent from './SearchComponent'
+import SocialBar from './SocialBar'
 import { debugAddSampleUsers, debugAddSampleGroupChats } from './DebugComponent'
 
 export default function Header() {
@@ -398,6 +399,9 @@ export default function Header() {
 
       {/* Search Component Modal */}
       <SearchComponent isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+      {/* Social Media Bar */}
+      <SocialBar />
     </header>
   )
 }
