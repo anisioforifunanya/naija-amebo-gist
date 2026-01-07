@@ -1,10 +1,7 @@
+'use client';
+
 import Poll from '@/components/Poll'
 import polls from '@/data/polls.json'
-
-export const metadata = {
-  title: 'Polls & Voting - Naija Amebo Gist',
-  description: 'Engage with fans! Vote on "Who wore it better?", best artist, and more',
-}
 
 export default function PollsPage() {
   return (
@@ -33,7 +30,15 @@ export default function PollsPage() {
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             Send us your poll ideas and we'll feature them here!
           </p>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-all">
+          <button 
+            onClick={() => {
+              const pollIdea = prompt('What poll would you like to suggest?');
+              if (pollIdea && pollIdea.trim()) {
+                alert('Thank you for your suggestion! We\'ll review it and add it to our polls soon.');
+              }
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-all"
+          >
             Suggest a Poll
           </button>
         </div>

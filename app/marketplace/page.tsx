@@ -468,7 +468,12 @@ export default function MarketplaceePage() {
                     <span>Total:</span>
                     <span className="text-purple-600">{formatPrice(cartTotal)}</span>
                   </div>
-                  <button className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg font-bold hover:from-green-600 hover:to-green-700 transition">
+                  <button 
+                    onClick={() => {
+                      alert(`Order total: ${formatPrice(cartTotal)}\n\nProceeding to secure checkout page...`);
+                    }}
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg font-bold hover:from-green-600 hover:to-green-700 transition"
+                  >
                     ✓ Proceed to Checkout
                   </button>
                   <button

@@ -347,7 +347,24 @@ export default function IntelligenceHub() {
 
       {/* Export Report */}
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-lg text-white text-center">
-        <button className="px-6 py-2 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition">
+        <button 
+          onClick={() => {
+            if (!report) {
+              toast.error('Generate a report first');
+              return;
+            }
+            const reportData = JSON.stringify(report, null, 2);
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(reportData));
+            element.setAttribute('download', `intelligence-report-${new Date().toISOString()}.json`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            toast.success('Report downloaded successfully');
+          }}
+          className="px-6 py-2 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition"
+        >
           📥 Download Full Report (PDF)
         </button>
       </div>

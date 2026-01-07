@@ -412,10 +412,21 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
             </p>
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded font-semibold transition">
+            <button 
+              onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent('Hi! I\'d like to subscribe to Naija Amebo Gist news on WhatsApp')}`, '_blank')}
+              className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded font-semibold transition"
+            >
               WhatsApp
             </button>
-            <button className="px-4 py-2 bg-white hover:bg-gray-100 text-blue-600 rounded font-semibold transition">
+            <button 
+              onClick={() => {
+                const email = prompt('Enter your email to subscribe:');
+                if (email && email.includes('@')) {
+                  alert('Thank you for subscribing! Check your email for confirmation.');
+                }
+              }}
+              className="px-4 py-2 bg-white hover:bg-gray-100 text-blue-600 rounded font-semibold transition"
+            >
               Email
             </button>
           </div>

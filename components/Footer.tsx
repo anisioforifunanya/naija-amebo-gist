@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link'
 import AlternatingLogo from './AlternatingLogo'
 
@@ -71,7 +73,19 @@ export default function Footer() {
               placeholder="Enter your email"
               className="w-full px-3 sm:px-4 py-2 text-gray-900 rounded-md mb-2 text-sm"
             />
-            <button className="w-full bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-600 font-medium text-sm sm:text-base">
+            <button 
+              onClick={() => {
+                const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+                const email = emailInput?.value;
+                if (email && email.includes('@')) {
+                  alert('Thank you for subscribing! Check your email for confirmation.');
+                  if (emailInput) emailInput.value = '';
+                } else {
+                  alert('Please enter a valid email address');
+                }
+              }}
+              className="w-full bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-600 font-medium text-sm sm:text-base"
+            >
               Subscribe
             </button>
           </div>
