@@ -95,41 +95,41 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-xl backdrop-blur-md bg-opacity-95 dark:bg-opacity-95 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Navigation Bar */}
-        <div className="flex items-center justify-between h-16 gap-6">
+        <div className="flex items-center justify-between h-12 gap-4">
           {/* Logo Section */}
-          <Link href="/" className="flex items-center space-x-3 group flex-shrink-0">
+          <Link href="/" className="flex items-center space-x-2 group flex-shrink-0">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
-              <AlternatingLogo className="relative h-10 w-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 drop-shadow-lg" />
+              <AlternatingLogo className="relative h-8 w-8 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 drop-shadow-lg" />
             </div>
-            <span className="text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient group-hover:scale-105 transition-transform duration-300">
+            <span className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient group-hover:scale-105 transition-transform duration-300">
               Naija Amebo Gist
             </span>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 space-x-2">
-            <Link href="/breaking-news" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
+          <nav className="hidden lg:flex items-center justify-center flex-1 space-x-1">
+            <Link href="/breaking-news" className="relative px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
               <span className="relative z-10">Breaking News</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
             </Link>
-            <Link href="/trending-stories" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
+            <Link href="/trending-stories" className="relative px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
               <span className="relative z-10">Trending</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
             </Link>
-            <Link href="/celebrity-news" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
+            <Link href="/celebrity-news" className="relative px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
               <span className="relative z-10">Celebrity</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
             </Link>
-            <Link href="/entertainment" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
+            <Link href="/entertainment" className="relative px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
               <span className="relative z-10">Entertainment</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
             </Link>
-            <Link href="/viral-content" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
+            <Link href="/viral-content" className="relative px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:scale-105 group">
               <span className="relative z-10">Viral</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 group-hover:w-4/5 transition-all duration-300"></div>
@@ -137,7 +137,7 @@ export default function Header() {
           </nav>
 
           {/* Right Section - Search + Action Buttons */}
-          <div className="flex items-center space-x-3 flex-shrink-0">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             {/* Search Icon Button - Desktop */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -152,7 +152,7 @@ export default function Header() {
 
             {/* User Icons - Desktop (Only when logged in) */}
             {isLoggedIn && (
-              <div className="hidden lg:flex items-center space-x-2">
+              <div className="hidden lg:flex items-center space-x-1">
                 {/* Community Chat Icon */}
                 <Link
                   href="/community"
@@ -186,16 +186,16 @@ export default function Header() {
             )}
 
             {/* Action Buttons - Desktop */}
-            <div className="hidden lg:flex items-center space-x-3">
+            <div className="hidden lg:flex items-center space-x-2">
               {/* Super Admin News Management Button */}
-              <Link href="/super-admin/news-management" className="relative px-5 py-2 text-sm font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700">
+              <Link href="/super-admin/news-management" className="relative px-3 py-1 text-xs font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700">
                 <span className="relative z-10 flex items-center space-x-1">
                   <span>📰</span>
                   <span>News Management</span>
                 </span>
               </Link>
 
-              <Link href="/submit-news" className="relative px-5 py-2 text-sm font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md">
+              <Link href="/submit-news" className="relative px-3 py-1 text-xs font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-transform duration-300 group-hover:scale-110"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <span className="relative z-10 flex items-center space-x-1">
@@ -209,16 +209,16 @@ export default function Header() {
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="relative px-4 py-2 text-sm font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-md bg-red-600 hover:bg-red-700"
+                  className="relative px-3 py-1 text-xs font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-md bg-red-600 hover:bg-red-700"
                 >
                   <span className="relative z-10">Logout</span>
                 </button>
               ) : (
                 <>
-                  <Link href="/login" className="relative px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:scale-105">
+                  <Link href="/login" className="relative px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:scale-105">
                     Login
                   </Link>
-                  <Link href="/register" className="relative px-4 py-2 text-sm font-bold border-2 border-purple-600 text-purple-600 dark:text-purple-400 rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                  <Link href="/register" className="relative px-3 py-1 text-xs font-bold border-2 border-purple-600 text-purple-600 dark:text-purple-400 rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-lg">
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     <span className="relative z-10 group-hover:text-white transition-colors duration-300">Join</span>
                   </Link>
