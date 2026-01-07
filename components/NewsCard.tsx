@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { recordShare } from '../lib/metricsTracker';
+import { generateImageAlt, generateImageMetadata } from '../lib/image-seo';
 
 interface NewsItem {
   id?: string;
@@ -139,7 +140,12 @@ export default function NewsCard({ item, index }: NewsCardProps) {
       <div className="mb-4 relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
         {item.image ? (
           <>
-            <img src={item.image} alt={item.title} className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform" />
+            <img 
+              src={item.image} 
+              alt={generateImageAlt(item.title, 'news')} 
+              className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform"
+              title={item.title}
+            />
             <button
               onClick={() => downloadMedia(item.image!, `${item.title}.jpg`)}
               className="absolute bottom-2 right-2 text-blue-600 hover:text-blue-800 text-sm bg-white px-2 py-1 rounded-lg shadow-lg"
