@@ -34,6 +34,7 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [autoScroll, setAutoScroll] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [trendingOpen, setTrendingOpen] = useState(false);
 
   // Get real metrics from data or fallback
   const getMetrics = (story: NewsItem) => ({
@@ -376,31 +377,71 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
         </div>
       )}
 
-      {/* 9. SEARCH WITH TRENDING SUGGESTIONS */}
-      <div className="sticky bottom-20 right-4 z-30 hidden sm:block">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-          <h4 className="font-bold text-gray-900 dark:text-white mb-3 text-sm">
-            🔍 Trending Searches
-          </h4>
-          <div className="space-y-2">
-            {[
-              'Wizkid latest news',
-              'Nollywood drama',
-              'Celebrity breakups',
-              'Award shows',
-              'Music releases',
-            ].map((search, idx) => (
-              <Link
-                key={idx}
-                href={`/search?q=${search}`}
-                className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                {search}
-              </Link>
-            ))}
+      {/* 9. TRENDING SEARCHES - DRAWER */}
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-40">
+        {/* Open Button */}
+        <button
+          onClick={() => setTrendingOpen(true)}
+          className={`p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg transition-all duration-300 ${
+            trendingOpen ? 'hidden' : 'block'
+          }`}
+          aria-label="Open trending searches"
+        >
+          <span className="text-2xl">←</span>
+        </button>
+
+        {/* Drawer */}
+        <div
+          className={`fixed right-0 top-0 h-screen w-72 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg transform transition-transform duration-300 ease-in-out ${
+            trendingOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="h-full flex flex-col p-6">
+            {/* Close Button */}
+            <button
+              onClick={() => setTrendingOpen(false)}
+              className="self-start mb-4 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Close trending searches"
+            >
+              <span className="text-2xl">→</span>
+            </button>
+
+            {/* Header */}
+            <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm">
+              🔍 Trending Searches
+            </h4>
+
+            {/* Search Links */}
+            <div className="space-y-2">
+              {[
+                'Wizkid latest news',
+                'Nollywood drama',
+                'Celebrity breakups',
+                'Award shows',
+                'Music releases',
+              ].map((search, idx) => (
+                <Link
+                  key={idx}
+                  href={`/search?q=${search}`}
+                  onClick={() => setTrendingOpen(false)}
+                  className="block text-sm text-blue-600 dark:text-blue-400 hover:underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                >
+                  {search}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Overlay */}
+      {trendingOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-30 transition-opacity duration-300"
+          onClick={() => setTrendingOpen(false)}
+          aria-label="Close menu"
+        />
+      )}
 
       {/* 10. STICKY NEWSLETTER SUBSCRIPTION */}
       <div className="sticky bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 z-20 hidden sm:block">
