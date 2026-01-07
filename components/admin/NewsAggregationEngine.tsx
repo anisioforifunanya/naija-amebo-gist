@@ -97,14 +97,24 @@ export default function NewsAggregationEngine() {
 
     try {
       console.log('📝 Adding source:', newSource);
-      const id = await addNewsSource({
+      
+      // Build source object, only including api_key if it has a value
+      const sourceToAdd: any = {
         name: newSource.name,
         url: newSource.url,
         category: newSource.category,
-        api_key: newSource.api_key || undefined,
         is_active: true,
         last_synced: 0
-      });
+      };
+
+      // Only add api_key if it's not empty
+      if (newSource.api_key && newSource.api_key.trim()) {
+        sourceToAdd.api_key = newSource.api_key;
+      }
+
+      console.log('📝 Source object to add:', sourceToAdd);
+
+      const id = await addNewsSource(sourceToAdd);
 
       setSources(prev => [...prev, {
         id,

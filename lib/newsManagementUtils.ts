@@ -286,10 +286,23 @@ export async function publishScheduledNews(newsId: string): Promise<void> {
 
 export async function addNewsSource(sourceData: Omit<NewsSource, 'id'>): Promise<string> {
   try {
+    // Filter out undefined fields - Firebase doesn't support undefined values
+    const cleanData = Object.entries(sourceData).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    console.log('📝 Adding source with clean data:', cleanData);
+
     const docRef = await addDoc(collection(db, 'news_sources'), {
-      ...sourceData,
-      last_synced: 0
+      ...cleanData,
+      last_synced: 0,
+      created_at: Timestamp.now()
     });
+
+    console.log('✅ Source added with ID:', docRef.id);
     return docRef.id;
   } catch (error) {
     console.error('❌ Error adding source:', error);
