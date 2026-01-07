@@ -84,13 +84,19 @@ export default function NewsAggregationEngine() {
   // Add custom source
   const handleAddSource = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔴 Add Source clicked - newSource:', newSource);
     
-    if (!newSource.name.trim() || !newSource.url.trim()) {
-      toast.error('Name and URL are required');
+    if (!newSource.name.trim()) {
+      toast.error('Source name is required');
+      return;
+    }
+    if (!newSource.url.trim()) {
+      toast.error('Source URL is required');
       return;
     }
 
     try {
+      console.log('📝 Adding source:', newSource);
       const id = await addNewsSource({
         name: newSource.name,
         url: newSource.url,
@@ -108,11 +114,13 @@ export default function NewsAggregationEngine() {
         sync_frequency: 30
       }]);
 
-      toast.success(`✅ Added ${newSource.name}`);
+      console.log('✅ Source added successfully with ID:', id);
+      toast.success(`✅ Added "${newSource.name}" as news source!`);
       setNewSource({ name: '', url: '', category: 'trending', api_key: '' });
       setShowAddSource(false);
     } catch (error) {
-      toast.error('Failed to add source');
+      console.error('❌ Error adding source:', error);
+      toast.error('Failed to add source: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 
@@ -257,15 +265,23 @@ export default function NewsAggregationEngine() {
                 type="text"
                 placeholder="Source Name (e.g., BBC News)"
                 value={newSource.name}
-                onChange={(e) => setNewSource({ ...newSource, name: e.target.value })}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+                onChange={(e) => {
+                  console.log('📝 Name input changed:', e.target.value);
+                  setNewSource({ ...newSource, name: e.target.value });
+                }}
+                className="px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:border-purple-500 focus:outline-none"
+                required
               />
               <input
                 type="url"
                 placeholder="Source URL"
                 value={newSource.url}
-                onChange={(e) => setNewSource({ ...newSource, url: e.target.value })}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+                onChange={(e) => {
+                  console.log('🔗 URL input changed:', e.target.value);
+                  setNewSource({ ...newSource, url: e.target.value });
+                }}
+                className="px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:border-purple-500 focus:outline-none"
+                required
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -291,9 +307,10 @@ export default function NewsAggregationEngine() {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg transition"
+                disabled={syncing || !newSource.name.trim() || !newSource.url.trim()}
+                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ✓ Add Source
+                {syncing ? '⏳ Adding...' : '✓ Add Source'}
               </button>
               <button
                 type="button"
