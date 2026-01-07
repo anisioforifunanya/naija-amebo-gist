@@ -59,7 +59,6 @@ export default function Header() {
     localStorage.removeItem('naijaAmeboCurrentAdmin')
     setIsLoggedIn(false)
     setCurrentUserName('')
-    setIsMenuOpen(false)
     // Redirect to home
     window.location.href = '/'
   }
