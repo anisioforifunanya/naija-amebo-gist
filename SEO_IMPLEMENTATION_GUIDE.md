@@ -282,9 +282,108 @@ Your website now has **enterprise-level SEO** built in! With proper execution of
 - "Entertainment news Nigeria"
 - And 50+ related keywords
 
+---
+
+## 🎯 IMMEDIATE ACTION ITEMS (Next Steps)
+
+### Phase 1: Google Search Console Setup (DO THIS FIRST)
+
+#### Step 1: Verify Domain in GSC
+1. Go to **[Google Search Console](https://search.google.com/search-console)**
+2. Click **"Start now"** or **"Add property"**
+3. Select **"URL prefix"** option
+4. Enter: `https://amebo.org`
+5. Choose **"DNS record"** for verification
+6. Copy the **TXT record** that Google provides
+
+#### Step 2: Add TXT Record to Namecheap
+1. Go to **Namecheap Dashboard** → **Domains**
+2. Click **amebo.org** → **Manage** → **Advanced DNS**
+3. Click **"Add New Record"**
+4. Select **Type: TXT**
+5. Host: `@`
+6. Value: Paste Google's TXT record value
+7. TTL: 30 min (automatic)
+8. Click **✓ (Save)**
+
+#### Step 3: Verify & Complete
+1. Return to Google Search Console
+2. Click **"Verify"**
+3. Wait 5 minutes for DNS propagation
+4. If it says "Verified ✓", proceed to next step
+
+### Phase 2: Submit Sitemap to GSC
+1. In Search Console, select your property (amebo.org)
+2. Go to **Sitemaps** section (left menu)
+3. Enter: `https://amebo.org/sitemap.xml`
+4. Click **"Submit"**
+5. Wait 24 hours for Google to crawl and index
+
+### Phase 3: Monitor & Track Rankings
+1. **Coverage** tab - Monitor indexing status
+2. **Performance** tab - Track keyword rankings
+3. **Enhancement** tabs - Fix any issues
+
+---
+
+## 📊 Enhanced Keywords (65 Total)
+
+### Nigerian Slang Keywords (ADDED - 15 new terms)
+- "wahala Nigeria"
+- "amebo gist"
+- "online dragging"
+- "BBNaija latest news"
+- "Naija TikTok trending"
+- "Twitter gist Nigeria"
+- "Celebrity breakup news Nigeria"
+- "Wedding gist Naija"
+- "Baby mama drama"
+- "Influencer beef Nigeria"
+- "Celebrity exposed gist"
+- "Naija celebrity scandal"
+- "Gist up Nigeria"
+- "Breaking gist"
+- "Celebrity tea Nigeria"
+
+### Core Keywords (50 original terms)
+- Nigerian celebrity news
+- Nigerian gossip
+- Entertainment news Nigeria
+- Naija gist
+- Celebrity news Nigeria
+- ...and 45 more
+
+---
+
+## 🔧 Integration Complete
+
+### ✅ Image SEO Optimization (Deployed)
+- Image alt text: `[Title] - [Category] on Naija Amebo Gist`
+- Integrated into NewsCard component
+- Live: https://amebo.org
+
+### ⏳ Ready for Integration
+1. **Internal Linking** - Add "Related Stories" sections
+2. **Google Discover Optimization** - Freshness boost for breaking news
+3. **Core Web Vitals** - Optimize LCP, FID, CLS
+
+---
+
+## 📈 Success Timeline
+
+**Expected Rankings:**
+- **Month 1:** Pages indexed, 100-200 impressions/week
+- **Month 2:** Ranking page 1-2 for 5-10 keywords
+- **Month 3:** Top 50 for 20+ keywords
+- **Month 6:** Top 10 for 10-15 keywords
+- **Month 12:** #1 positions for 10-20 main keywords
+
+---
+
 **Good luck! 🚀**
 
 ---
 
 *Last Updated: January 7, 2026*
-*SEO Configuration Version: 1.0*
+*SEO Configuration Version: 2.0*
+*Status: Production Ready with Advanced Modules*
