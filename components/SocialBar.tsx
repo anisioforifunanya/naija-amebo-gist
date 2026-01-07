@@ -54,16 +54,16 @@ export default function SocialBar() {
   ]
 
   return (
-    <div className="w-full bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border-t border-gray-200 dark:border-gray-700 py-3 px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border-t border-gray-200 dark:border-gray-700 py-3 sm:py-4 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2 sm:gap-3">
           {/* Label */}
-          <div className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+          <div className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
             Follow Us On Social Media
           </div>
 
           {/* Social Links - Horizontal Scroll on Mobile, Flex on Desktop */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 md:gap-3">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
@@ -71,31 +71,16 @@ export default function SocialBar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={social.name}
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm text-gray-700 dark:text-gray-300 transition-all duration-300 hover:scale-110 ${social.bgColor} ${social.color} border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md`}
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg font-semibold text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300 transition-all duration-300 hover:scale-105 ${social.bgColor} ${social.color} border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md min-h-[44px] flex items-center justify-center`}
                 aria-label={`Visit ${social.name}`}
               >
-                <span className="text-lg">{social.icon}</span>
+                <span className="text-base sm:text-lg md:text-xl">{social.icon}</span>
                 <span className="hidden sm:inline">{social.name}</span>
               </a>
             ))}
           </div>
 
-          {/* Mobile Alternative - Icon Only Grid */}
-          <div className="sm:hidden flex flex-wrap gap-2">
-            {socialLinks.map((social) => (
-              <a
-                key={`mobile-${social.name}`}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={social.name}
-                className={`flex items-center justify-center p-3 rounded-lg text-xl transition-all duration-300 hover:scale-110 ${social.bgColor} ${social.color} border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md`}
-                aria-label={`Visit ${social.name}`}
-              >
-                {social.icon}
-              </a>
-            ))}
-          </div>
+          {/* Mobile Alternative - Icon Only Grid (if needed, currently using flex wrap above) */}
         </div>
       </div>
     </div>

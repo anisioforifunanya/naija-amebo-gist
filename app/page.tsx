@@ -209,13 +209,13 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12 sm:py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex justify-center mb-4">
-            <AlternatingLogo className="h-12 sm:h-14 md:h-16 w-auto" />
+      <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-8 sm:py-12 md:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-3 sm:mb-4 md:mb-5">
+            <AlternatingLogo className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4">Naija Amebo Gist</h1>
-          <p className="text-base sm:text-lg md:text-xl font-bold mb-6 sm:mb-8 px-2">Your ultimate source for celebrity news, entertainment updates, and viral content</p>
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-3 md:mb-4 px-2 leading-tight">Naija Amebo Gist</h1>
+          <p className="text-sm xs:text-base sm:text-lg md:text-xl font-bold mb-4 sm:mb-6 md:mb-8 px-2 leading-relaxed">Your ultimate source for celebrity news, entertainment updates, and viral content</p>
           
           {!isLoggedIn ? (
             <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
@@ -242,15 +242,15 @@ export default function Home() {
       <HomepageEnhancements allNews={getAllApprovedNews()} />
 
       {/* News Sections */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12 md:py-16 space-y-12 sm:space-y-14 md:space-y-16">
 
         {/* Breaking News */}
         <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Breaking News</h2>
-            <a href="/breaking-news" className="text-purple-600 hover:text-purple-800 font-bold">View All →</a>
+          <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2 xs:gap-3 mb-6 sm:mb-8">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">Breaking News</h2>
+            <a href="/breaking-news" className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-bold text-sm sm:text-base whitespace-nowrap">View All →</a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {getNewsForCategory('breaking-news').map((item, index) => (
               <NewsCard key={item.id} item={item} index={index} />
             ))}
@@ -259,11 +259,11 @@ export default function Home() {
 
         {/* Trending Stories */}
         <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Trending Stories</h2>
-            <a href="/trending-stories" className="text-purple-600 hover:text-purple-800 font-bold">View All →</a>
+          <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2 xs:gap-3 mb-6 sm:mb-8">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">Trending Stories</h2>
+            <a href="/trending-stories" className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-bold text-sm sm:text-base whitespace-nowrap">View All →</a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {getNewsForCategory('trending-stories').map((item, index) => (
               <NewsCard key={item.id} item={item} index={index} />
             ))}
@@ -272,11 +272,11 @@ export default function Home() {
 
         {/* Celebrity News */}
         <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Celebrity News</h2>
-            <a href="/celebrity-news" className="text-purple-600 hover:text-purple-800 font-bold">View All →</a>
+          <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2 xs:gap-3 mb-6 sm:mb-8">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">Celebrity News</h2>
+            <a href="/celebrity-news" className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-bold text-sm sm:text-base whitespace-nowrap">View All →</a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {getNewsForCategory('celebrity-news').map((item, index) => (
               <NewsCard key={item.id} item={item} index={index} />
             ))}
@@ -285,11 +285,11 @@ export default function Home() {
 
         {/* Entertainment News */}
         <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Entertainment News</h2>
-            <a href="/entertainment" className="text-purple-600 hover:text-purple-800 font-bold">View All →</a>
+          <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2 xs:gap-3 mb-6 sm:mb-8">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">Entertainment News</h2>
+            <a href="/entertainment" className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-bold text-sm sm:text-base whitespace-nowrap">View All →</a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {getNewsForCategory('entertainment').map((item, index) => (
               <NewsCard key={item.id} item={item} index={index} />
             ))}
@@ -298,11 +298,11 @@ export default function Home() {
 
         {/* Viral Content */}
         <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Viral Content</h2>
-            <a href="/viral-content" className="text-purple-600 hover:text-purple-800 font-bold">View All →</a>
+          <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2 xs:gap-3 mb-6 sm:mb-8">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">Viral Content</h2>
+            <a href="/viral-content" className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-bold text-sm sm:text-base whitespace-nowrap">View All →</a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {getNewsForCategory('viral-content').map((item, index) => (
               <NewsCard key={item.id} item={item} index={index} />
             ))}
