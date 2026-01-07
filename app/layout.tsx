@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   creator: SEO_CONFIG.organization.name,
   publisher: SEO_CONFIG.organization.name,
   icons: {
-    icon: '/logo.svg',
-    apple: '/logo.svg',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
   viewport: {
     width: 'device-width',
