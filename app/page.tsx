@@ -9,6 +9,9 @@ import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
 import FeaturesWidget from '../components/FeaturesWidget';
 import HomepageEnhancements from '../components/HomepageEnhancements';
+import AutomatedNewsDisplay from '../components/AutomatedNewsDisplay';
+import NigerianNewsSection from '../components/NigerianNewsSection';
+import WorldNewsSection from '../components/WorldNewsSection';
 import { SEOOptimizer } from '../components/SEOOptimizer';
 import { organizationSchema, localBusinessSchema, websiteSchema, createBreadcrumbSchema } from '@/lib/schema';
 import { SEO_CONFIG } from '@/lib/seo-config';
@@ -307,6 +310,15 @@ export default function Home() {
               <NewsCard key={item.id} item={item} index={index} />
             ))}
           </div>
+        </section>
+
+        {/* Automated Real-Time News Sections */}
+        <section className="py-8">
+          <NigerianNewsSection />
+        </section>
+
+        <section className="py-8">
+          <WorldNewsSection />
         </section>
 
         {/* Features Widget */}
