@@ -7,6 +7,7 @@ import BottomNav from '../components/BottomNav'
 import { BrowserCompatibilityInit } from '../components/BrowserCompatibilityInit'
 import { ThemeProvider } from '../lib/theme'
 import ClientSideFeatures from '../components/ClientSideFeatures'
+import { NewsSchedulerInit } from '../components/NewsSchedulerInit'
 import { SEO_CONFIG } from '@/lib/seo-config'
 
 export const viewport: Viewport = {
@@ -157,6 +158,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <BrowserCompatibilityInit />
+          <NewsSchedulerInit />
           <Header />
           <main className="pt-20 pb-32">{children}</main>
           <Footer />
