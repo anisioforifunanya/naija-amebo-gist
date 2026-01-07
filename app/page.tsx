@@ -3,10 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Head from 'next/head';
+import Script from 'next/script';
 import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
 import FeaturesWidget from '../components/FeaturesWidget';
 import HomepageEnhancements from '../components/HomepageEnhancements';
+import { SEOOptimizer } from '../components/SEOOptimizer';
+import { organizationSchema, localBusinessSchema, websiteSchema, createBreadcrumbSchema } from '@/lib/schema';
+import { SEO_CONFIG } from '@/lib/seo-config';
 
 interface UserData {
   id: string;
@@ -185,6 +190,24 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* SEO Optimization Component */}
+      <SEOOptimizer pageType="homepage" />
+
+      {/* Structured Data for Homepage */}
+      <Script
+        id="homepage-breadcrumb"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            createBreadcrumbSchema([
+              { name: 'Home', url: 'https://amebo.org' },
+              { name: 'News', url: 'https://amebo.org/breaking-news' },
+            ])
+          ),
+        }}
+        suppressHydrationWarning
+      />
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

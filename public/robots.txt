@@ -1,0 +1,72 @@
+# Robots.txt for Naija Amebo Gist
+# Optimized for search engine crawling and ranking
+
+# Default rules for all robots
+User-agent: *
+Allow: /
+Allow: /news/
+Allow: /trending-stories/
+Allow: /breaking-news/
+Allow: /celebrity-news/
+Allow: /entertainment/
+Allow: /gossip/
+Allow: /viral-content/
+Allow: /api/news/
+
+# Disallow private and admin pages
+Disallow: /admin/
+Disallow: /super-admin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /private/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /settings/
+
+# Allow specific paths for indexing
+Allow: /api/news/
+Allow: /api/og
+
+# Specific rules for Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Specific rules for Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Specific rules for Yahoo
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Specific rules for DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 0
+
+# Specific rules for Yandex
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 1
+
+# Prevent crawling of duplicate content
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+Disallow: /search
+
+# Sitemap location
+Sitemap: https://amebo.org/sitemap.xml
+Sitemap: https://amebo.org/sitemap-news.xml
+
+# Request rate limiting (in seconds)
+Request-rate: 30/60
+
+# Ensure crawlers respect robots.txt
+User-agent: *
+Disallow: /cgi-bin/
+Disallow: /tmp/
+Disallow: /~joe/

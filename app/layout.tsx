@@ -7,48 +7,73 @@ import BottomNav from '../components/BottomNav'
 import { BrowserCompatibilityInit } from '../components/BrowserCompatibilityInit'
 import { ThemeProvider } from '../lib/theme'
 import ClientSideFeatures from '../components/ClientSideFeatures'
+import { SEO_CONFIG } from '@/lib/seo-config'
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: SEO_CONFIG.themeColor,
 }
 
 export const metadata: Metadata = {
-  title: 'Naija Amebo Gist - Nigeria\'s Top Celebrity News & Gossip Platform',
-  description: 'Get the latest celebrity news, gossip, viral stories, and entertainment updates from Nigeria and Africa. Breaking news on actors, musicians, influencers, and more.',
-  keywords: 'celebrity news Nigeria, gossip, viral stories, entertainment, Naija gossip, celebrity scandals, African celebrities',
-  authors: [{ name: 'Naija Amebo Gist Team' }],
+  metadataBase: new URL(SEO_CONFIG.domain),
+  title: {
+    template: '%s | Naija Amebo Gist',
+    default: 'Naija Amebo Gist - Nigeria\'s #1 Celebrity News, Gossip & Entertainment Platform',
+  },
+  description: SEO_CONFIG.description,
+  keywords: SEO_CONFIG.keywords,
+  authors: [{ name: SEO_CONFIG.author }],
+  creator: SEO_CONFIG.organization.name,
+  publisher: SEO_CONFIG.organization.name,
   icons: {
     icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
   },
   formatDetection: {
     email: false,
     telephone: false,
     address: false,
   },
+  alternates: {
+    canonical: SEO_CONFIG.domain,
+    languages: {
+      'en-NG': `${SEO_CONFIG.domain}/en-NG`,
+      'en-US': `${SEO_CONFIG.domain}/en-US`,
+      'en-GB': `${SEO_CONFIG.domain}/en-GB`,
+    },
+  },
   openGraph: {
-    title: 'Naija Amebo Gist - Nigeria\'s Top Celebrity News & Gossip Platform',
-    description: 'Get the latest celebrity news, gossip, viral stories, and entertainment updates from Nigeria and Africa.',
-    url: 'https://naijaamebogist.com',
-    siteName: 'Naija Amebo Gist',
+    type: 'website',
+    locale: SEO_CONFIG.locale,
+    url: SEO_CONFIG.domain,
+    siteName: SEO_CONFIG.siteName,
+    title: 'Naija Amebo Gist - Nigeria\'s #1 Celebrity News & Gossip Platform',
+    description: SEO_CONFIG.description,
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Naija Amebo Gist',
+        alt: 'Naija Amebo Gist - Celebrity News from Nigeria',
+        type: 'image/png',
       },
     ],
-    locale: 'en_US',
-    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Naija Amebo Gist - Nigeria\'s Top Celebrity News & Gossip Platform',
-    description: 'Get the latest celebrity news, gossip, viral stories, and entertainment updates from Nigeria and Africa.',
-    images: ['/og-image.jpg'],
+    site: SEO_CONFIG.socialMedia.twitter,
+    creator: SEO_CONFIG.socialMedia.twitter,
+    title: 'Naija Amebo Gist - Nigeria\'s #1 Celebrity News Platform',
+    description: SEO_CONFIG.description,
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
