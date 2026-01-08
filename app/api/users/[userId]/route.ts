@@ -80,36 +80,11 @@ export async function GET(
       });
     }
 
-    // Fallback: Return minimal user info from caller's perspective
-    // This handles dynamically created users (created during client session)
-    // They will be returned with basic info, and the client will use localStorage
+    // For dynamically created users not in database, return 404
+    // The client will use localStorage fallback which has the complete user data
     return NextResponse.json(
-      {
-        success: true,
-        user: {
-          id: userId,
-          firstName: 'User',
-          lastName: '',
-          displayName: 'User',
-          username: userId,
-          email: '',
-          bio: '',
-          avatar: '',
-          phone: '',
-          followers: [],
-          following: [],
-          likes: 0,
-          likedBy: [],
-          subscribers: [],
-          friends: [],
-          blockedUsers: [],
-          joinedDate: new Date().toISOString().split('T')[0],
-          lastLogin: new Date().toISOString().split('T')[0],
-          role: 'user',
-          isBasicInfo: true // Flag to indicate this is basic fallback info
-        }
-      },
-      { status: 200 }
+      { error: 'User not found in database - check localStorage', isClientCreated: true },
+      { status: 404 }
     );
   } catch (error) {
     console.error('Error fetching user:', error);

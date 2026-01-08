@@ -132,13 +132,15 @@ export default function ProfilePage() {
               setIsLoading(false)
               return
             }
+          } else {
+            console.log('[ProfilePage] API returned not found (404), user likely created on client')
           }
         } catch (fetchError) {
           clearTimeout(timeoutId)
-          console.log('[ProfilePage] API timeout/failed')
+          console.log('[ProfilePage] API timeout/failed, user likely created on client')
         }
 
-        console.error('[ProfilePage] User not found:', userId)
+        console.error('[ProfilePage] User not found in localStorage or API:', userId)
       } catch (error) {
         console.error('[ProfilePage] Error loading profile:', error)
       } finally {
