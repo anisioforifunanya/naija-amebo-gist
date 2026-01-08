@@ -33,8 +33,8 @@ export default function FloatingButtons() {
   useLayoutEffect(() => {
     const checkButtonSize = () => {
       // Show 6 animated buttons on all devices (smaller buttons on smaller screens)
-      // 70px for very small screens, 110px for larger screens
-      const size = typeof window !== 'undefined' ? (window.innerWidth < 300 ? 50 : window.innerWidth < 500 ? 70 : 110) : 70
+      // 50px for very small screens, 80px for larger screens
+      const size = typeof window !== 'undefined' ? (window.innerWidth < 300 ? 40 : window.innerWidth < 500 ? 50 : 80) : 50
       setButtonSize(size)
     }
     
@@ -250,7 +250,7 @@ export default function FloatingButtons() {
           <Link
             key={button.id}
             href={button.href}
-            className={`bg-gradient-to-br ${button.bgColor} text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110 active:scale-95 flex items-center justify-center w-14 h-14 text-lg`}
+            className={`bg-gradient-to-br ${button.bgColor} text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110 active:scale-95 flex items-center justify-center w-12 h-12 text-base`}
             title={button.label}
           >
             {button.icon}
@@ -357,10 +357,10 @@ export default function FloatingButtons() {
                 flex-col
                 items-center
                 justify-center
-                gap-1
-                p-4
-                w-24
-                h-24
+                gap-0.5
+                p-2.5
+                w-20
+                h-20
                 group
                 relative
                 overflow-hidden
@@ -376,8 +376,8 @@ export default function FloatingButtons() {
               
               {/* Icon and label */}
               <div className="relative z-10 text-center">
-                <div className="text-3xl mb-1">{button.icon}</div>
-                <div className="text-xs font-bold whitespace-nowrap">{button.label}</div>
+                <div className="text-2xl mb-0.5">{button.icon}</div>
+                <div className="text-2xs font-bold whitespace-nowrap">{button.label}</div>
               </div>
             </Link>
           </div>
