@@ -11,6 +11,7 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [currentUserName, setCurrentUserName] = useState('')
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
 
   // Check if user is logged in
   useEffect(() => {
@@ -35,13 +36,17 @@ export default function Header() {
           const user = JSON.parse(userSession)
           setIsLoggedIn(true)
           setCurrentUserName(user.firstName || user.username || 'User')
+          setIsSuperAdmin(false)
         } else if (adminSession) {
           const admin = JSON.parse(adminSession)
           setIsLoggedIn(true)
           setCurrentUserName(admin.username || 'Admin')
+          // Check if admin is super admin (has isSuperAdmin flag or role is 'super-admin')
+          setIsSuperAdmin(admin.isSuperAdmin === true || admin.role === 'super-admin')
         } else {
           setIsLoggedIn(false)
           setCurrentUserName('')
+          setIsSuperAdmin(false)
         }
       }
 
@@ -80,16 +85,20 @@ export default function Header() {
           : adminSession 
           ? JSON.parse(adminSession).username || 'Admin'
           : ''
+        const newIsSuperAdmin = adminSession 
+          ? (JSON.parse(adminSession).isSuperAdmin === true || JSON.parse(adminSession).role === 'super-admin')
+          : false
 
-        if (newLoggedInState !== isLoggedIn || newUserName !== currentUserName) {
+        if (newLoggedInState !== isLoggedIn || newUserName !== currentUserName || newIsSuperAdmin !== isSuperAdmin) {
           setIsLoggedIn(newLoggedInState)
           setCurrentUserName(newUserName)
+          setIsSuperAdmin(newIsSuperAdmin)
         }
       }, 500) // Check every 500ms
 
       return () => clearInterval(interval)
     }
-  }, [isLoggedIn, currentUserName])
+  }, [isLoggedIn, currentUserName, isSuperAdmin])
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-xl backdrop-blur-md bg-opacity-95 dark:bg-opacity-95 border-b border-gray-200 dark:border-gray-700">
@@ -187,13 +196,15 @@ export default function Header() {
 
             {/* Action Buttons - Desktop */}
             <div className="hidden lg:flex items-center space-x-2">
-              {/* Super Admin News Management Button */}
-              <Link href="/super-admin/news-management" className="relative px-3 py-1 text-xs font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700">
-                <span className="relative z-10 flex items-center space-x-1">
-                  <span>📰</span>
-                  <span>News Management</span>
-                </span>
-              </Link>
+              {/* Super Admin News Management Button - Only visible to super admins */}
+              {isSuperAdmin && (
+                <Link href="/super-admin/news-management" className="relative px-3 py-1 text-xs font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700">
+                  <span className="relative z-10 flex items-center space-x-1">
+                    <span>📰</span>
+                    <span>News Management</span>
+                  </span>
+                </Link>
+              )}
 
               <Link href="/submit-news" className="relative px-3 py-1 text-xs font-bold text-white rounded-lg overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-md">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-transform duration-300 group-hover:scale-110"></div>
@@ -324,14 +335,17 @@ export default function Header() {
 
             {/* Mobile Action Links */}
             <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700 space-y-2 px-2">
-              <Link href="/super-admin/news-management" className="relative block px-5 py-3 text-white text-center rounded-lg font-bold overflow-hidden group transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl" onClick={() => setIsMenuOpen(false)}>
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <span className="relative z-10 flex items-center justify-center space-x-2">
-                  <span>📰</span>
-                  <span>News Management</span>
-                </span>
-              </Link>
+              {/* Super Admin News Management Button - Only visible to super admins */}
+              {isSuperAdmin && (
+                <Link href="/super-admin/news-management" className="relative block px-5 py-3 text-white text-center rounded-lg font-bold overflow-hidden group transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl" onClick={() => setIsMenuOpen(false)}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <span className="relative z-10 flex items-center justify-center space-x-2">
+                    <span>📰</span>
+                    <span>News Management</span>
+                  </span>
+                </Link>
+              )}
 
               <Link href="/submit-news" className="relative block px-5 py-3 text-white text-center rounded-lg font-bold overflow-hidden group transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl" onClick={() => setIsMenuOpen(false)}>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600"></div>

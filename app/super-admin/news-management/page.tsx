@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import RealtimeNewsRadar from '@/components/admin/RealtimeNewsRadar';
 import BreakingNewsMonitor from '@/components/admin/BreakingNewsMonitor';
 import IntelligenceHub from '@/components/admin/IntelligenceHub';
@@ -30,8 +31,70 @@ import NewsAggregationEngine from '@/components/admin/NewsAggregationEngine';
 type TabType = 'radar' | 'breaking' | 'intelligence' | 'trends' | 'aggregation';
 
 export default function NewsManagementDashboard() {
-  const [activeTab, setActiveTab] = useState<TabType>('radar');
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState<TabType>('radar')
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Check if user is super admin
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const adminSession = localStorage.getItem('naijaAmeboCurrentAdmin')
+      
+      if (!adminSession) {
+        // Not logged in, redirect to login
+        router.push('/login')
+        return
+      }
+
+      try {
+        const admin = JSON.parse(adminSession)
+        const isSuper = admin.isSuperAdmin === true || admin.role === 'super-admin'
+        
+        if (!isSuper) {
+          // Not a super admin, redirect to home
+          router.push('/')
+          return
+        }
+        
+        setIsSuperAdmin(true)
+        setIsLoading(false)
+      } catch (error) {
+        // Invalid session, redirect to login
+        router.push('/login')
+      }
+    }
+  }, [router])
+
+  // Show loading or unauthorized message
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isSuperAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">❌ Access Denied</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">You must be a Super Admin to access this page</p>
+          <button
+            onClick={() => router.push('/')}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const tabs: { id: TabType; name: string; icon: string; color: string }[] = [
     { id: 'radar', name: 'News Radar', icon: '📡', color: 'from-red-500 to-orange-500' },
