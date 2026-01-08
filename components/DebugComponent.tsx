@@ -132,6 +132,66 @@ export function debugAddSampleGroupChats() {
   return mergedGroups
 }
 
+/**
+ * Load admins from the API/data files
+ * This ensures admins are available in localStorage for profile lookups
+ */
+export async function debugLoadAdmins() {
+  try {
+    const existingAdmins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+    
+    // If admins already loaded, don't fetch again
+    if (existingAdmins.length > 0) {
+      console.log('✓ Admins already loaded from localStorage')
+      return existingAdmins
+    }
+    
+    // Fetch admins from API
+    const response = await fetch('/api/admins')
+    if (response.ok) {
+      const data = await response.json()
+      if (data.admins && Array.isArray(data.admins)) {
+        localStorage.setItem('naijaAmeboAdmins', JSON.stringify(data.admins))
+        console.log('✓ Admins loaded from API:', data.admins.length)
+        return data.admins
+      }
+    }
+  } catch (error) {
+    console.log('Fallback to hardcoded admins:', error)
+  }
+  
+  // Fallback: hardcoded admin data
+  const fallbackAdmins = [
+    {
+      id: 'ifunanya-admin-001',
+      firstName: 'IFUNANYA',
+      lastName: 'ANISIOFOR',
+      email: 'ifunanya.anisiofor@gmail.com',
+      username: 'ifunanya',
+      password: 'admin123',
+      bio: 'Head Admin',
+      avatar: '',
+      role: 'admin',
+      isSuperAdmin: true,
+      permissions: ['moderate_users', 'manage_content', 'manage_admins', 'manage_news', 'system_settings'],
+      followers: [],
+      following: [],
+      likes: 0,
+      likedBy: [],
+      subscribers: [],
+      friends: [],
+      blockedUsers: [],
+      joinedDate: '2026-01-01',
+      lastLogin: '2026-01-04',
+      createdAt: '2026-01-03T15:44:43.206Z'
+    }
+  ]
+  
+  localStorage.setItem('naijaAmeboAdmins', JSON.stringify(fallbackAdmins))
+  console.log('✓ Fallback admins loaded to localStorage')
+  return fallbackAdmins
+}
+
 export function debugCheckAllData() {
   const data = {
     users: JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]'),

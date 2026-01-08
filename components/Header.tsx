@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import AlternatingLogo from './AlternatingLogo'
 import SearchComponent from './SearchComponent'
 import SocialBar from './SocialBar'
-import { debugAddSampleUsers, debugAddSampleGroupChats } from './DebugComponent'
+import { debugAddSampleUsers, debugAddSampleGroupChats, debugLoadAdmins } from './DebugComponent'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -26,6 +26,9 @@ export default function Header() {
       } else {
         console.log('📦 Users found:', users.map((u: any) => `${u.firstName} ${u.lastName}`))
       }
+
+      // Load admins from localStorage or API
+      debugLoadAdmins()
 
       // Check for logged-in user
       const checkLoginStatus = () => {
