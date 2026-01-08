@@ -118,7 +118,7 @@ export default function AdminDashboard() {
   const [adminRequests, setAdminRequests] = useState<AdminRequestData[]>([])
   const [allUsers, setAllUsers] = useState<UserData[]>([])
   const [allMessages, setAllMessages] = useState<ChatMessage[]>([])
-  const [activeTab, setActiveTab] = useState<'news' | 'admins' | 'users' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
+  const [activeTab, setActiveTab] = useState<'news' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
   const [isAnonymousMode, setIsAnonymousMode] = useState(false)
   const [showAddAdminForm, setShowAddAdminForm] = useState(false)
   const [adminCreationMode, setAdminCreationMode] = useState<'create' | 'promote'>('create')
@@ -753,6 +753,24 @@ export default function AdminDashboard() {
     localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
   }
 
+  const handleDeleteUser = (userId: string, userName: string) => {
+    if (!window.confirm(`⚠️ Are you sure you want to DELETE user "${userName}"? This action cannot be undone!`)) {
+      return
+    }
+
+    try {
+      // Remove from users
+      const updatedUsers = allUsers.filter(user => user.id !== userId)
+      setAllUsers(updatedUsers)
+      localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
+
+      alert(`✅ User "${userName}" has been permanently deleted from the system.`)
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      alert('❌ Error deleting user. Please try again.')
+    }
+  }
+
   // Content Moderation Functions
   const handleDeleteMessage = (messageId: string) => {
     const updatedMessages = allMessages.map(msg =>
@@ -1007,6 +1025,7 @@ export default function AdminDashboard() {
                 { id: 'news', label: 'News Management', icon: '📰' },
                 { id: 'admins', label: 'Admin Management', icon: '👑' },
                 { id: 'users', label: 'User Moderation', icon: '👥' },
+                { id: 'all-users-admins', label: 'View All Users & Admins', icon: '📋' },
                 { id: 'verification', label: 'Face Verification', icon: '🔐' },
                 { id: 'marketplace', label: 'Product Approvals', icon: '🛍️' },
                 { id: 'moderation', label: 'Content Moderation', icon: '🛡️' },
@@ -1719,6 +1738,13 @@ export default function AdminDashboard() {
                             Unrestrict
                           </button>
                         )}
+                        <button
+                          onClick={() => handleDeleteUser(user.id, `${user.firstName} ${user.lastName}`)}
+                          className="bg-red-700 text-white px-3 py-1 rounded text-sm hover:bg-red-800 font-semibold"
+                          title="Permanently delete this user"
+                        >
+                          🗑️ Delete
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1726,6 +1752,103 @@ export default function AdminDashboard() {
                 {allUsers.length === 0 && (
                   <p className="text-center text-gray-500 py-8">No users registered yet.</p>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'all-users-admins' && (
+          <div className="bg-white shadow rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-6">📋 All Users & Admins Directory</h2>
+              
+              {/* Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Total Users</p>
+                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{allUsers.length}</p>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Total Admins</p>
+                  <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]').length}</p>
+                </div>
+                <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Verified Users</p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">{allUsers.filter(u => u.isVerified).length}</p>
+                </div>
+              </div>
+
+              {/* Users List */}
+              <div className="mb-8">
+                <h3 className="text-md font-semibold text-gray-900 mb-4">Approved Users ({allUsers.length})</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100 dark:bg-gray-700">
+                      <tr>
+                        <th className="px-4 py-2 text-left font-semibold">Name</th>
+                        <th className="px-4 py-2 text-left font-semibold">Email</th>
+                        <th className="px-4 py-2 text-left font-semibold">Username</th>
+                        <th className="px-4 py-2 text-left font-semibold">Joined</th>
+                        <th className="px-4 py-2 text-left font-semibold">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allUsers.map((user) => (
+                        <tr key={user.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td className="px-4 py-3 font-medium">{user.firstName} {user.lastName}</td>
+                          <td className="px-4 py-3">{user.email}</td>
+                          <td className="px-4 py-3">@{user.username}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">{new Date(user.createdAt).toLocaleDateString()}</td>
+                          <td className="px-4 py-3">
+                            {user.isBanned ? (
+                              <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">🚫 Banned</span>
+                            ) : user.isRestricted ? (
+                              <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-semibold">⚠️ Restricted</span>
+                            ) : (
+                              <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-semibold">✅ Active</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {allUsers.length === 0 && <p className="text-center text-gray-500 py-8">No users found</p>}
+                </div>
+              </div>
+
+              {/* Admins List */}
+              <div>
+                <h3 className="text-md font-semibold text-gray-900 mb-4">Administrator Accounts</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100 dark:bg-gray-700">
+                      <tr>
+                        <th className="px-4 py-2 text-left font-semibold">Name</th>
+                        <th className="px-4 py-2 text-left font-semibold">Email</th>
+                        <th className="px-4 py-2 text-left font-semibold">Role</th>
+                        <th className="px-4 py-2 text-left font-semibold">Created</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]').map((admin: AdminData) => (
+                        <tr key={admin.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td className="px-4 py-3 font-medium flex items-center gap-2">
+                            {admin.firstName} {admin.lastName}
+                            {admin.isSuperAdmin && <span className="text-lg">👑</span>}
+                          </td>
+                          <td className="px-4 py-3">{admin.email}</td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
+                              {admin.isSuperAdmin ? '🛡️ Super Admin' : '👑 Admin'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">{new Date(admin.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]').length === 0 && <p className="text-center text-gray-500 py-8">No admins found</p>}
+                </div>
               </div>
             </div>
           </div>
