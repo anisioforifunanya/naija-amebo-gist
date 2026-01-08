@@ -820,8 +820,7 @@ export default function ProfilePage() {
                 </div>
                 
                 {/* Follow and Subscribe Buttons (Under Stats) */}
-                {!isOwnProfile && (
-                  <div className="flex flex-wrap gap-3 justify-center mb-6">
+                <div className="flex flex-wrap gap-3 justify-center mb-6">
                     <button
                       onClick={isFollowing ? handleUnfollowUser : handleFollowUser}
                       disabled={isLoading || !profileUser}
@@ -851,12 +850,10 @@ export default function ProfilePage() {
                       </svg>
                       <span>{isLoading ? 'Loading...' : (isSubscribed ? 'Unsubscribe' : 'Subscribe')}</span>
                     </button>
-                  </div>
-                )}
+                </div>
                 
                 {/* Action Buttons */}
-                {!isOwnProfile && (
-                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                     <button
                       onClick={isFriend ? handleRemoveFriend : handleAddFriend}
                       disabled={isLoading || !profileUser}
@@ -929,7 +926,6 @@ export default function ProfilePage() {
                       <span>💬 Message</span>
                     </button>
                   </div>
-                )}
               </div>
             </div>
 
