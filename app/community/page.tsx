@@ -1179,50 +1179,57 @@ export default function Community() {
                     }
                     
                     return (
-                      <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div className="flex items-center space-x-3 flex-1">
+                      <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-750 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow">
+                        {/* User Info */}
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          {/* Avatar */}
                           <div 
-                            className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity overflow-hidden"
+                            className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity overflow-hidden flex-shrink-0 ring-2 ring-green-400"
                             onClick={() => window.location.href = `/profile/${user.id}`}
+                            title="View profile"
                           >
                             {user.avatar ? (
                               <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-white text-sm font-medium">
+                              <span className="text-white text-xs font-bold">
                                 {user.firstName[0]}{user.lastName[0]}
                               </span>
                             )}
                           </div>
-                          <div>
+                          
+                          {/* User Details */}
+                          <div className="flex-1 min-w-0">
                             <button
                               onClick={() => window.location.href = `/profile/${user.id}`}
-                              className="text-sm font-medium text-gray-900 dark:text-white hover:underline cursor-pointer text-left"
+                              className="text-sm font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer text-left transition-colors truncate"
                             >
                               {user.firstName} {user.lastName}
                             </button>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                               @{user.username}
                             </p>
                           </div>
                         </div>
+                        
+                        {/* Action Buttons */}
                         {!isCurrentUserProfile && (
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 sm:flex-nowrap flex-wrap justify-end">
                             <button
                               onClick={isFollowing ? handleUnfollow : handleFollow}
-                              className={`text-xs px-3 py-1 rounded font-semibold transition-all ${
+                              className={`text-xs px-3 py-1.5 rounded-md font-semibold transition-all whitespace-nowrap ${
                                 isFollowing
-                                  ? 'bg-purple-200 dark:bg-purple-900 text-purple-700 dark:text-purple-300'
-                                  : 'bg-purple-600 text-white hover:bg-purple-700'
+                                  ? 'bg-purple-200 dark:bg-purple-900 text-purple-700 dark:text-purple-300 hover:bg-purple-300 dark:hover:bg-purple-800'
+                                  : 'bg-purple-600 text-white hover:bg-purple-700 shadow-sm'
                               }`}
                             >
                               {isFollowing ? 'Unfollow' : 'Follow'}
                             </button>
                             <button
                               onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
-                              className={`text-xs px-3 py-1 rounded font-semibold transition-all ${
+                              className={`text-xs px-3 py-1.5 rounded-md font-semibold transition-all whitespace-nowrap ${
                                 isSubscribed
-                                  ? 'bg-green-200 dark:bg-green-900 text-green-700 dark:text-green-300'
-                                  : 'bg-green-600 text-white hover:bg-green-700'
+                                  ? 'bg-green-200 dark:bg-green-900 text-green-700 dark:text-green-300 hover:bg-green-300 dark:hover:bg-green-800'
+                                  : 'bg-green-600 text-white hover:bg-green-700 shadow-sm'
                               }`}
                             >
                               {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
@@ -1230,7 +1237,7 @@ export default function Community() {
                             <button
                               onClick={handleSendMessage}
                               title="Send Direct Message"
-                              className="text-xs px-3 py-1 rounded font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700"
+                              className="text-xs px-3 py-1.5 rounded-md font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
                             >
                               💬
                             </button>
