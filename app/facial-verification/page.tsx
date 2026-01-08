@@ -298,54 +298,40 @@ export default function FacialVerificationPage() {
 
       console.log('✅ Frame drawn to canvas')
 
-      // Convert canvas to blob (more reliable than base64)
-      canvasRef.current.toBlob(
-        (blob) => {
-          if (blob) {
-            console.log('✅ Canvas converted to blob, size:', blob.size, 'bytes')
-            
-            // Create object URL for preview
-            const photoUrl = URL.createObjectURL(blob)
-            setCapturedPhoto(photoUrl)
-            
-            // Store blob for submission
-            localStorage.setItem('naijaAmeboPhotoBlobUrl', photoUrl)
-            localStorage.setItem('naijaAmeboPhotoBlob', JSON.stringify({
-              size: blob.size,
-              type: blob.type,
-              timestamp: new Date().toISOString(),
-            }))
+      // Convert canvas to base64 data URL (persists in localStorage)
+      const photoDataUrl = canvasRef.current.toDataURL('image/jpeg', 0.9)
+      console.log('✅ Canvas converted to base64, size:', photoDataUrl.length, 'characters')
+      
+      // Set photo for preview
+      setCapturedPhoto(photoDataUrl)
+      
+      // Store base64 for submission (persists across page navigation)
+      localStorage.setItem('naijaAmeboPhotoBlobUrl', photoDataUrl)
+      localStorage.setItem('naijaAmeboPhotoBlob', JSON.stringify({
+        size: photoDataUrl.length,
+        type: 'image/jpeg',
+        timestamp: new Date().toISOString(),
+      }))
 
-            console.log('✅ Photo saved to preview')
+      console.log('✅ Photo saved to preview')
 
-            // Stop camera stream
-            if (streamRef.current) {
-              streamRef.current.getTracks().forEach(track => {
-                console.log('Stopping track after capture:', track.kind)
-                track.stop()
-              })
-              streamRef.current = null
-            }
-            if (videoRef.current) {
-              videoRef.current.srcObject = null
-            }
-            setCameraActive(false)
-            setStep('review')
-            toast.success('Photo captured successfully', {
-              position: 'bottom-right',
-              autoClose: 3000,
-            })
-          } else {
-            console.error('❌ Blob conversion failed')
-            toast.error('Failed to capture photo', {
-              position: 'bottom-right',
-              autoClose: 3000,
-            })
-          }
-        },
-        'image/jpeg',
-        0.95
-      )
+      // Stop camera stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => {
+          console.log('Stopping track after capture:', track.kind)
+          track.stop()
+        })
+        streamRef.current = null
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
+      setCameraActive(false)
+      setStep('review')
+      toast.success('Photo captured successfully', {
+        position: 'bottom-right',
+        autoClose: 3000,
+      })
     } catch (error) {
       console.error('❌ Error during snap:', error)
       toast.error(`Capture error: ${error instanceof Error ? error.message : 'Unknown error'}`, {
