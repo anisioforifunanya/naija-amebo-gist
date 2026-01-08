@@ -1,14 +1,40 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import HeadlineBanner from '@/components/HeadlineBanner'
 import NewsCard from '@/components/NewsCard'
 import extendedNews from '@/data/extended-news.json'
 
-export const metadata = {
-  title: 'Gossip & Rumors - Naija Amebo Gist',
-  description: 'Unconfirmed celebrity rumors and gossip stories from Nigeria and Africa',
-}
-
 export default function GossipPage() {
-  const gossipStories = extendedNews.filter((item: any) => item.contentType === 'gossip')
+  const [gossipStories, setGossipStories] = useState<any[]>([])
+
+  useEffect(() => {
+    // Get gossip stories from localStorage
+    const storedNews = localStorage.getItem('naijaAmeboNews')
+    const newsFromStorage = storedNews ? JSON.parse(storedNews) : []
+    
+    // Filter for gossip category and approved status
+    const localGossip = newsFromStorage.filter((item: any) => 
+      item.category?.toLowerCase() === 'gossip' && item.status === 'Approved'
+    )
+    
+    // Combine with static data
+    const allGossip = [
+      ...localGossip,
+      ...extendedNews.filter((item: any) => item.contentType === 'gossip')
+    ]
+    
+    // Remove duplicates based on title
+    const uniqueGossip = Array.from(
+      new Map(allGossip.map((item: any) => [item.title, item])).values()
+    ).sort((a: any, b: any) => {
+      const dateA = new Date(a.publishedAt || a.date || 0).getTime()
+      const dateB = new Date(b.publishedAt || b.date || 0).getTime()
+      return dateB - dateA
+    })
+    
+    setGossipStories(uniqueGossip)
+  }, [])
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-950">
