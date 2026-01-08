@@ -53,28 +53,6 @@ export default function ProfilePage() {
   useEffect(() => {
     console.log('[ProfilePage] Loading profile for userId:', userId)
     
-    // Ensure admins are loaded to localStorage
-    const ensureAdminsLoaded = async () => {
-      const existingAdmins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
-      if (existingAdmins.length === 0) {
-        console.log('[ProfilePage] Admins not in localStorage, fetching...')
-        try {
-          const response = await fetch('/api/admins')
-          if (response.ok) {
-            const data = await response.json()
-            if (data.admins && Array.isArray(data.admins)) {
-              localStorage.setItem('naijaAmeboAdmins', JSON.stringify(data.admins))
-              console.log('[ProfilePage] Admins loaded from API:', data.admins.length)
-            }
-          }
-        } catch (error) {
-          console.log('[ProfilePage] Fallback admins load:', error)
-        }
-      }
-    }
-    
-    ensureAdminsLoaded()
-    
     // Load current user from localStorage FIRST (check both user and admin sessions)
     const userSession = localStorage.getItem('naijaAmeboCurrentUser')
     const adminSession = localStorage.getItem('naijaAmeboCurrentAdmin')
@@ -100,56 +78,80 @@ export default function ProfilePage() {
       console.log('[ProfilePage] No current user or admin session found')
     }
 
-    // Load profile user from API
+    // Load profile user
     const loadProfileUser = async () => {
       try {
-        console.log('[ProfilePage] Fetching profile user from API:', userId)
-        const response = await fetch(`/api/users/${userId}`)
-        const data = await response.json()
-        
-        if (data.success && data.user) {
-          console.log('[ProfilePage] API returned user:', data.user.id, data.user.role)
-          setProfileUser(data.user)
-          
-          // Set follow/subscription status if user is logged in
-          if (currentUserData) {
-            setIsFriend(currentUserData.friends?.includes(userId) || false)
-            setIsBlocked(currentUserData.blockedUsers?.includes(userId) || false)
-            setIsFollowing(currentUserData.following?.includes(userId) || false)
-            setIsSubscribed(currentUserData.subscribers?.includes(userId) || false)
-            setHasLiked(data.user.likedBy?.includes(currentUserData.id) || false)
+        // Load admins from API first if not in localStorage
+        const existingAdmins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+        if (existingAdmins.length === 0) {
+          console.log('[ProfilePage] Loading admins from API...')
+          try {
+            const adminResponse = await fetch('/api/admins')
+            if (adminResponse.ok) {
+              const adminData = await adminResponse.json()
+              if (adminData.admins && Array.isArray(adminData.admins)) {
+                localStorage.setItem('naijaAmeboAdmins', JSON.stringify(adminData.admins))
+                console.log('[ProfilePage] Admins loaded:', adminData.admins.length)
+              }
+            }
+          } catch (err) {
+            console.error('[ProfilePage] Failed to load admins:', err)
           }
-          setIsLoading(false)
-          return
+        }
+
+        // Try API first with short timeout
+        console.log('[ProfilePage] Fetching profile from API:', userId)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 3000) // 3 second timeout
+        
+        try {
+          const response = await fetch(`/api/users/${userId}`, { signal: controller.signal })
+          clearTimeout(timeoutId)
+          
+          if (response.ok) {
+            const data = await response.json()
+            if (data.success && data.user) {
+              console.log('[ProfilePage] Got user from API:', data.user.id)
+              setProfileUser(data.user)
+              setRelationships(currentUserData, data.user, userId)
+              setIsLoading(false)
+              return
+            }
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId)
+          console.log('[ProfilePage] API timeout/failed, using localStorage')
+        }
+
+        // Fallback to localStorage
+        console.log('[ProfilePage] Loading from localStorage')
+        const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+        const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+        const allUsers = [...users, ...admins]
+        
+        const foundUser = allUsers.find(u => u.id === userId)
+        if (foundUser) {
+          console.log('[ProfilePage] Found in localStorage:', foundUser.id, foundUser.firstName)
+          setProfileUser(foundUser)
+          setRelationships(currentUserData, foundUser, userId)
+        } else {
+          console.error('[ProfilePage] User not found:', userId)
         }
       } catch (error) {
-        console.error('[ProfilePage] Failed to load from API:', error)
+        console.error('[ProfilePage] Error loading profile:', error)
+      } finally {
+        setIsLoading(false)
       }
+    }
 
-      // Fallback to localStorage
-      console.log('[ProfilePage] Falling back to localStorage')
-      const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
-      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
-      console.log('[ProfilePage] Admins in localStorage:', admins.length, admins.map((a: any) => ({ id: a.id, name: a.firstName })))
-      console.log('[ProfilePage] Users in localStorage:', users.length, users.map((u: any) => ({ id: u.id, name: u.firstName })))
-      
-      const allUsers = [...users, ...admins]
-      
-      const foundUser = allUsers.find(u => u.id === userId)
-      if (foundUser) {
-        console.log('[ProfilePage] Found user in localStorage:', foundUser.id, foundUser.firstName, foundUser.role)
-        setProfileUser(foundUser)
-        if (currentUserData) {
-          setIsFriend(currentUserData.friends?.includes(userId) || false)
-          setIsBlocked(currentUserData.blockedUsers?.includes(userId) || false)
-          setIsFollowing(currentUserData.following?.includes(userId) || false)
-          setIsSubscribed(currentUserData.subscribers?.includes(userId) || false)
-          setHasLiked(foundUser.likedBy?.includes(currentUserData.id) || false)
-        }
-      } else {
-        console.error('[ProfilePage] User not found in any storage:', userId)
-      }
-      setIsLoading(false)
+    // Helper function to set relationships
+    const setRelationships = (currentUser: UserProfile | null, profileUser: UserProfile, userId: string) => {
+      if (!currentUser) return
+      setIsFriend(currentUser.friends?.includes(userId) || false)
+      setIsBlocked(currentUser.blockedUsers?.includes(userId) || false)
+      setIsFollowing(currentUser.following?.includes(userId) || false)
+      setIsSubscribed(currentUser.subscribers?.includes(userId) || false)
+      setHasLiked(profileUser.likedBy?.includes(currentUser.id) || false)
     }
 
     loadProfileUser()
