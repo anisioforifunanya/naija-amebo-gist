@@ -213,8 +213,10 @@ export default function FacialVerificationPage() {
     }
     setCameraActive(false)
     setStep('initial')
+    // Don't reset permission status - just try to open camera anyway
     setPermissionStatus('prompt')
-    checkCameraPermission()
+    // Try opening camera immediately
+    setTimeout(() => openCamera(), 500)
   }
 
   // Cancel camera (stop stream without resetting permission)
@@ -567,8 +569,6 @@ export default function FacialVerificationPage() {
                   className={`w-full font-bold py-3 px-4 rounded-lg shadow-lg transition-all flex items-center justify-center gap-2 ${
                     isLoading
                       ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
-                      : permissionStatus === 'denied'
-                      ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
                       : 'bg-blue-500 hover:bg-blue-600 hover:scale-105 text-white'
                   }`}
                 >
@@ -579,7 +579,7 @@ export default function FacialVerificationPage() {
                     </>
                   ) : permissionStatus === 'denied' ? (
                     <>
-                      🚫 Camera Blocked
+                      📷 Open Camera (Try Again)
                     </>
                   ) : (
                     <>
@@ -594,22 +594,38 @@ export default function FacialVerificationPage() {
 
                 {permissionStatus === 'denied' && (
                   <div className="mt-4 text-center">
+                    <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg p-4 mb-4">
+                      <p className="text-sm text-red-800 dark:text-red-200 font-semibold mb-2">
+                        📷 Camera permission was previously denied
+                      </p>
+                      <p className="text-xs text-red-700 dark:text-red-300 mb-3">
+                        To use the camera, you need to allow access in your browser settings.
+                      </p>
+                    </div>
+                    
                     <button
                       onClick={resetCamera}
                       className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg transition-all mb-4"
                     >
-                      🔄 Reset & Retry
+                      🔄 Try Again
                     </button>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                      Still not working? Try these steps:
-                    </p>
-                    <ol className="text-xs text-gray-600 dark:text-gray-400 list-decimal list-inside text-left max-w-sm mx-auto space-y-1">
-                      <li>Refresh your browser page (F5 or Ctrl+R)</li>
-                      <li>Check browser permissions in Settings</li>
-                      <li>Try a different browser</li>
-                      <li>Ensure your device has a working camera</li>
-                      <li>Check if camera is used by another app</li>
-                    </ol>
+                    
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg p-4 text-left text-xs text-gray-700 dark:text-gray-300">
+                      <p className="font-semibold mb-2">How to fix camera permissions:</p>
+                      <ol className="list-decimal list-inside space-y-1 ml-2">
+                        <li>Look for a camera icon in the address bar (right side)</li>
+                        <li>Click the icon and select "Allow"</li>
+                        <li>Refresh the page (F5 or Ctrl+R)</li>
+                        <li>Click "Open Camera" again</li>
+                      </ol>
+                      <p className="mt-3 font-semibold">If that doesn't work:</p>
+                      <ol className="list-decimal list-inside space-y-1 ml-2 mt-1">
+                        <li>Try a different browser (Chrome, Firefox, Safari, Edge)</li>
+                        <li>Clear your browser cache and cookies</li>
+                        <li>Check if your device has a working camera</li>
+                        <li>Make sure no other app is using the camera</li>
+                      </ol>
+                    </div>
                   </div>
                 )}
               </>
