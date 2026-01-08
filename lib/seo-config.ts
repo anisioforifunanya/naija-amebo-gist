@@ -100,7 +100,7 @@ export const SEO_CONFIG = {
   organization: {
     name: 'Naija Amebo Gist',
     url: 'https://amebo.org',
-    logo: 'https://amebo.org/logo.svg',
+    logo: 'https://amebo.org/logo.png',
     description: 'Your ultimate source for Nigerian celebrity news, gossip, gist, entertainment updates, trending stories, and viral content',
     foundingDate: '2024',
     email: 'ifunanya.anisiofor@gmail.com',
