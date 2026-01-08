@@ -18,7 +18,7 @@ export async function GET(
       );
     }
 
-    // Search in users
+    // Search in file-based users
     const users = readData('users.json');
     const user = users.find((u: any) => u.id === userId);
 
@@ -29,11 +29,12 @@ export async function GET(
           id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
-          displayName: user.displayName,
+          displayName: user.displayName || user.firstName,
           username: user.username,
           email: user.email,
           bio: user.bio,
           avatar: user.avatar,
+          phone: user.phone || '',
           followers: user.followers || [],
           following: user.following || [],
           likes: user.likes || 0,
@@ -48,7 +49,7 @@ export async function GET(
       });
     }
 
-    // Search in admins
+    // Search in file-based admins
     const admins = readData('admins.json');
     const admin = admins.find((a: any) => a.id === userId);
 
@@ -59,10 +60,12 @@ export async function GET(
           id: admin.id,
           firstName: admin.firstName || admin.username,
           lastName: admin.lastName || '',
+          displayName: admin.displayName || admin.firstName || admin.username,
           username: admin.username,
           email: admin.email,
           bio: admin.bio || 'Administrator',
           avatar: admin.avatar,
+          phone: admin.phone || '',
           followers: admin.followers || [],
           following: admin.following || [],
           likes: admin.likes || 0,
@@ -77,9 +80,36 @@ export async function GET(
       });
     }
 
+    // Fallback: Return minimal user info from caller's perspective
+    // This handles dynamically created users (created during client session)
+    // They will be returned with basic info, and the client will use localStorage
     return NextResponse.json(
-      { error: 'User not found' },
-      { status: 404 }
+      {
+        success: true,
+        user: {
+          id: userId,
+          firstName: 'User',
+          lastName: '',
+          displayName: 'User',
+          username: userId,
+          email: '',
+          bio: '',
+          avatar: '',
+          phone: '',
+          followers: [],
+          following: [],
+          likes: 0,
+          likedBy: [],
+          subscribers: [],
+          friends: [],
+          blockedUsers: [],
+          joinedDate: new Date().toISOString().split('T')[0],
+          lastLogin: new Date().toISOString().split('T')[0],
+          role: 'user',
+          isBasicInfo: true // Flag to indicate this is basic fallback info
+        }
+      },
+      { status: 200 }
     );
   } catch (error) {
     console.error('Error fetching user:', error);

@@ -99,8 +99,23 @@ export default function ProfilePage() {
           }
         }
 
-        // Try API first with short timeout
-        console.log('[ProfilePage] Fetching profile from API:', userId)
+        // Check localStorage FIRST (for dynamically created users)
+        console.log('[ProfilePage] Checking localStorage for user:', userId)
+        const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+        const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+        const allUsers = [...users, ...admins]
+        
+        let foundUser = allUsers.find(u => u.id === userId)
+        if (foundUser) {
+          console.log('[ProfilePage] Found in localStorage:', foundUser.id, foundUser.firstName)
+          setProfileUser(foundUser)
+          setRelationships(currentUserData, foundUser, userId)
+          setIsLoading(false)
+          return
+        }
+
+        // Try API as fallback with short timeout
+        console.log('[ProfilePage] Not in localStorage, fetching from API:', userId)
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 3000) // 3 second timeout
         
@@ -120,23 +135,10 @@ export default function ProfilePage() {
           }
         } catch (fetchError) {
           clearTimeout(timeoutId)
-          console.log('[ProfilePage] API timeout/failed, using localStorage')
+          console.log('[ProfilePage] API timeout/failed')
         }
 
-        // Fallback to localStorage
-        console.log('[ProfilePage] Loading from localStorage')
-        const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
-        const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
-        const allUsers = [...users, ...admins]
-        
-        const foundUser = allUsers.find(u => u.id === userId)
-        if (foundUser) {
-          console.log('[ProfilePage] Found in localStorage:', foundUser.id, foundUser.firstName)
-          setProfileUser(foundUser)
-          setRelationships(currentUserData, foundUser, userId)
-        } else {
-          console.error('[ProfilePage] User not found:', userId)
-        }
+        console.error('[ProfilePage] User not found:', userId)
       } catch (error) {
         console.error('[ProfilePage] Error loading profile:', error)
       } finally {
