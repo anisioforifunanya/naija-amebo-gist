@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 
 interface FloatingButton {
@@ -21,8 +22,10 @@ interface ButtonPosition {
 export default function FloatingButtons() {
   const [positions, setPositions] = useState<ButtonPosition[]>([])
   const [buttonSize, setButtonSize] = useState<number>(70) // Mobile: 70px, Desktop: 110px
+  const [showLogoId, setShowLogoId] = useState<number | null>(null) // Track which button shows logo
   const containerRef = useRef<HTMLDivElement>(null)
   const positionsRef = useRef<ButtonPosition[]>([])
+  const logoTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const dragStateRef = useRef<{ draggingId: number | null; offsetX: number; offsetY: number }>({
     draggingId: null,
     offsetX: 0,
@@ -309,6 +312,32 @@ export default function FloatingButtons() {
     }
   }
   
+  // Handle button click to show logo
+  const handleButtonClick = (buttonId: number) => {
+    // Clear existing timeout if any
+    if (logoTimeoutRef.current) {
+      clearTimeout(logoTimeoutRef.current)
+    }
+    
+    // Show logo
+    setShowLogoId(buttonId)
+    
+    // Set timeout to hide logo after 3 seconds
+    logoTimeoutRef.current = setTimeout(() => {
+      setShowLogoId(null)
+      logoTimeoutRef.current = null
+    }, 3000)
+  }
+  
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (logoTimeoutRef.current) {
+        clearTimeout(logoTimeoutRef.current)
+      }
+    }
+  }, [])
+  
   return (
     <div 
       ref={containerRef}
@@ -340,6 +369,9 @@ export default function FloatingButtons() {
                 // Prevent navigation if dragging
                 if (isDragging) {
                   e.preventDefault()
+                } else {
+                  // Show logo on click
+                  handleButtonClick(button.id)
                 }
               }}
               className={`
@@ -376,7 +408,19 @@ export default function FloatingButtons() {
               
               {/* Icon and label */}
               <div className="relative z-10 text-center">
-                <div className="text-2xl mb-0.5">{button.icon}</div>
+                {showLogoId === button.id ? (
+                  <div className="flex items-center justify-center h-8">
+                    <Image 
+                      src="/logo.png" 
+                      alt="Amebo Logo" 
+                      width={32} 
+                      height={32}
+                      className="w-8 h-8 object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="text-2xl mb-0.5">{button.icon}</div>
+                )}
                 <div className="text-2xs font-bold whitespace-nowrap">{button.label}</div>
               </div>
             </Link>
