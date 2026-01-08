@@ -131,7 +131,9 @@ export default function AdminDashboard() {
     category: 'breaking-news',
     status: 'approved' as const,
     hashtags: '',
-    image: '',
+    imageUrl: '',
+    imageFile: null as File | null,
+    videoFile: null as File | null,
   })
   const [activeTab, setActiveTab] = useState<'news' | 'news-management' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
   const [isAnonymousMode, setIsAnonymousMode] = useState(false)
@@ -797,13 +799,27 @@ export default function AdminDashboard() {
   }
 
   // News Control Center Functions
-  const handleAddNewsArticle = () => {
+  const handleAddNewsArticle = async () => {
     if (!newNewsForm.title.trim() || !newNewsForm.description.trim()) {
       alert('❌ Please fill in title and description')
       return
     }
 
     const currentAdmin = JSON.parse(localStorage.getItem('naijaAmeboCurrentAdmin') || '{}')
+    
+    // Convert image file to base64 if provided
+    let imageBase64: string | undefined = undefined
+    if (newNewsForm.imageFile) {
+      imageBase64 = await fileToBase64(newNewsForm.imageFile)
+    } else if (newNewsForm.imageUrl.trim()) {
+      imageBase64 = newNewsForm.imageUrl
+    }
+
+    // Convert video file to base64 if provided
+    let videoBase64: string | undefined = undefined
+    if (newNewsForm.videoFile) {
+      videoBase64 = await fileToBase64(newNewsForm.videoFile)
+    }
     
     const newArticle: NewsItem = {
       id: Date.now().toString(),
@@ -813,7 +829,8 @@ export default function AdminDashboard() {
       status: newNewsForm.status,
       date: new Date().toLocaleString(),
       hashtags: newNewsForm.hashtags ? newNewsForm.hashtags.split(',').map(h => h.trim()) : [],
-      image: newNewsForm.image || undefined,
+      image: imageBase64,
+      video: videoBase64,
       submittedBy: currentAdmin.firstName ? `${currentAdmin.firstName} ${currentAdmin.lastName}` : 'Admin',
       submitterEmail: currentAdmin.email,
       socialCaption: '',
@@ -829,7 +846,9 @@ export default function AdminDashboard() {
       category: 'breaking-news',
       status: 'approved',
       hashtags: '',
-      image: '',
+      imageUrl: '',
+      imageFile: null,
+      videoFile: null,
     })
     setShowAddNewsForm(false)
     alert('✅ News article added successfully!')
@@ -2034,13 +2053,72 @@ export default function AdminDashboard() {
                         onChange={(e) => setNewNewsForm({ ...newNewsForm, hashtags: e.target.value })}
                         className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
                       />
-                      <input
-                        type="url"
-                        placeholder="Image URL (optional)"
-                        value={newNewsForm.image}
-                        onChange={(e) => setNewNewsForm({ ...newNewsForm, image: e.target.value })}
-                        className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
-                      />
+                      
+                      {/* Image Upload */}
+                      <div className="border-2 border-dashed border-blue-300 rounded-lg p-4 bg-blue-50 dark:bg-blue-900/20">
+                        <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-200">
+                          📸 Upload Image
+                        </label>
+                        <div className="space-y-2">
+                          {newNewsForm.imageFile ? (
+                            <div className="flex items-center justify-between bg-white dark:bg-gray-700 p-2 rounded">
+                              <span className="text-sm">📷 {newNewsForm.imageFile.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => setNewNewsForm({ ...newNewsForm, imageFile: null })}
+                                className="text-red-500 hover:text-red-700 text-sm font-semibold"
+                              >
+                                ✕ Remove
+                              </button>
+                            </div>
+                          ) : (
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => setNewNewsForm({ ...newNewsForm, imageFile: e.target.files?.[0] || null })}
+                              className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                            />
+                          )}
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            Or paste image URL below:
+                          </p>
+                          <input
+                            type="url"
+                            placeholder="Image URL (optional)"
+                            value={newNewsForm.imageUrl}
+                            onChange={(e) => setNewNewsForm({ ...newNewsForm, imageUrl: e.target.value })}
+                            disabled={!!newNewsForm.imageFile}
+                            className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Video Upload */}
+                      <div className="border-2 border-dashed border-purple-300 rounded-lg p-4 bg-purple-50 dark:bg-purple-900/20">
+                        <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-200">
+                          🎥 Upload Video (Optional)
+                        </label>
+                        {newNewsForm.videoFile ? (
+                          <div className="flex items-center justify-between bg-white dark:bg-gray-700 p-2 rounded">
+                            <span className="text-sm">🎬 {newNewsForm.videoFile.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => setNewNewsForm({ ...newNewsForm, videoFile: null })}
+                              className="text-red-500 hover:text-red-700 text-sm font-semibold"
+                            >
+                              ✕ Remove
+                            </button>
+                          </div>
+                        ) : (
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => setNewNewsForm({ ...newNewsForm, videoFile: e.target.files?.[0] || null })}
+                            className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                          />
+                        )}
+                      </div>
+
                       <div className="flex gap-2">
                         <button
                           onClick={handleAddNewsArticle}
