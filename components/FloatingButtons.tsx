@@ -370,9 +370,13 @@ export default function FloatingButtons() {
                 if (isDragging) {
                   e.preventDefault()
                 } else {
-                  // Show logo on click
+                  // Show logo on click but still navigate
                   handleButtonClick(button.id)
                 }
+              }}
+              onMouseDown={(e) => {
+                // Don't trigger drag on link content
+                e.stopPropagation()
               }}
               className={`
                 bg-gradient-to-br ${button.bgColor}
