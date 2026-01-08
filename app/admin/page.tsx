@@ -118,7 +118,22 @@ export default function AdminDashboard() {
   const [adminRequests, setAdminRequests] = useState<AdminRequestData[]>([])
   const [allUsers, setAllUsers] = useState<UserData[]>([])
   const [allMessages, setAllMessages] = useState<ChatMessage[]>([])
-  const [activeTab, setActiveTab] = useState<'news' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
+  const [allNews, setAllNews] = useState<NewsItem[]>([])
+  const [newsSearchTerm, setNewsSearchTerm] = useState('')
+  const [newsCategoryFilter, setNewsCategoryFilter] = useState('')
+  const [newsStatusFilter, setNewsStatusFilter] = useState('')
+  const [editingNewsId, setEditingNewsId] = useState<string | null>(null)
+  const [editingNewsForm, setEditingNewsForm] = useState<Partial<NewsItem>>({})
+  const [showAddNewsForm, setShowAddNewsForm] = useState(false)
+  const [newNewsForm, setNewNewsForm] = useState({
+    title: '',
+    description: '',
+    category: 'breaking-news',
+    status: 'approved' as const,
+    hashtags: '',
+    image: '',
+  })
+  const [activeTab, setActiveTab] = useState<'news' | 'news-management' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
   const [isAnonymousMode, setIsAnonymousMode] = useState(false)
   const [showAddAdminForm, setShowAddAdminForm] = useState(false)
   const [adminCreationMode, setAdminCreationMode] = useState<'create' | 'promote'>('create')
@@ -238,6 +253,7 @@ export default function AdminDashboard() {
     const savedNews = localStorage.getItem('naijaAmeboNews')
     if (savedNews) {
       setNews(JSON.parse(savedNews))
+      setAllNews(JSON.parse(savedNews))
     }
 
     // Check if admin is logged in - must have valid admin session
@@ -780,6 +796,107 @@ export default function AdminDashboard() {
     localStorage.setItem('naijaAmeboChatMessages', JSON.stringify(updatedMessages))
   }
 
+  // News Control Center Functions
+  const handleAddNewsArticle = () => {
+    if (!newNewsForm.title.trim() || !newNewsForm.description.trim()) {
+      alert('❌ Please fill in title and description')
+      return
+    }
+
+    const currentAdmin = JSON.parse(localStorage.getItem('naijaAmeboCurrentAdmin') || '{}')
+    
+    const newArticle: NewsItem = {
+      id: Date.now().toString(),
+      title: newNewsForm.title,
+      description: newNewsForm.description,
+      category: newNewsForm.category,
+      status: newNewsForm.status,
+      date: new Date().toLocaleString(),
+      hashtags: newNewsForm.hashtags ? newNewsForm.hashtags.split(',').map(h => h.trim()) : [],
+      image: newNewsForm.image || undefined,
+      submittedBy: currentAdmin.firstName ? `${currentAdmin.firstName} ${currentAdmin.lastName}` : 'Admin',
+      submitterEmail: currentAdmin.email,
+      socialCaption: '',
+    }
+
+    const updatedNews = [...allNews, newArticle]
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+
+    setNewNewsForm({
+      title: '',
+      description: '',
+      category: 'breaking-news',
+      status: 'approved',
+      hashtags: '',
+      image: '',
+    })
+    setShowAddNewsForm(false)
+    alert('✅ News article added successfully!')
+  }
+
+  const handleEditNewsArticle = (newsId: string) => {
+    const newsItem = allNews.find(n => n.id === newsId)
+    if (newsItem) {
+      setEditingNewsId(newsId)
+      setEditingNewsForm(newsItem)
+    }
+  }
+
+  const handleSaveNewsArticleEdit = () => {
+    if (!editingNewsForm.title?.trim() || !editingNewsForm.description?.trim()) {
+      alert('❌ Please fill in title and description')
+      return
+    }
+
+    const updatedNews = allNews.map(n =>
+      n.id === editingNewsId ? { ...n, ...editingNewsForm } : n
+    )
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    setEditingNewsId(null)
+    setEditingNewsForm({})
+    alert('✅ News article updated successfully!')
+  }
+
+  const handleDeleteNewsArticle = (newsId: string, newsTitle: string) => {
+    if (!window.confirm(`⚠️ Are you sure you want to DELETE the article "${newsTitle}"? This action cannot be undone!`)) {
+      return
+    }
+
+    const updatedNews = allNews.filter(n => n.id !== newsId)
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    alert('✅ News article deleted successfully!')
+  }
+
+  const handleApproveNewsArticle = (newsId: string) => {
+    const updatedNews = allNews.map(n =>
+      n.id === newsId ? { ...n, status: 'approved' as const } : n
+    )
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    alert('✅ Article approved!')
+  }
+
+  const handleRejectNewsArticle = (newsId: string) => {
+    const updatedNews = allNews.map(n =>
+      n.id === newsId ? { ...n, status: 'rejected' as const } : n
+    )
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    alert('✅ Article rejected!')
+  }
+
+  const handlePendingNewsArticle = (newsId: string) => {
+    const updatedNews = allNews.map(n =>
+      n.id === newsId ? { ...n, status: 'pending' as const } : n
+    )
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    alert('✅ Article set to pending!')
+  }
+
   const handleToggleAnonymousMode = () => {
     const newMode = !isAnonymousMode
     setIsAnonymousMode(newMode)
@@ -1023,6 +1140,7 @@ export default function AdminDashboard() {
             <nav className="flex space-x-4 overflow-x-auto flex-1">
               {[
                 { id: 'news', label: 'News Management', icon: '📰' },
+                { id: 'news-management', label: 'News Control Center', icon: '🎛️' },
                 { id: 'admins', label: 'Admin Management', icon: '👑' },
                 { id: 'users', label: 'User Moderation', icon: '👥' },
                 { id: 'all-users-admins', label: 'View All Users & Admins', icon: '📋' },
@@ -1849,6 +1967,306 @@ export default function AdminDashboard() {
                   </table>
                   {JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]').length === 0 && <p className="text-center text-gray-500 py-8">No admins found</p>}
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'news-management' && (
+          <div className="bg-white shadow rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900">🎛️ News Control Center</h2>
+                  <button
+                    onClick={() => setShowAddNewsForm(!showAddNewsForm)}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 font-semibold"
+                  >
+                    ➕ Add News Article
+                  </button>
+                </div>
+
+                {/* Add News Form */}
+                {showAddNewsForm && (
+                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-6 border-l-4 border-green-500">
+                    <h3 className="text-lg font-semibold mb-4">Create New Article</h3>
+                    <div className="space-y-4">
+                      <input
+                        type="text"
+                        placeholder="Article Title"
+                        value={newNewsForm.title}
+                        onChange={(e) => setNewNewsForm({ ...newNewsForm, title: e.target.value })}
+                        className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                      />
+                      <textarea
+                        placeholder="Article Description"
+                        value={newNewsForm.description}
+                        onChange={(e) => setNewNewsForm({ ...newNewsForm, description: e.target.value })}
+                        rows={4}
+                        className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                      />
+                      <div className="grid grid-cols-2 gap-4">
+                        <select
+                          value={newNewsForm.category}
+                          onChange={(e) => setNewNewsForm({ ...newNewsForm, category: e.target.value })}
+                          className="p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                        >
+                          <option value="breaking-news">Breaking News</option>
+                          <option value="trending-stories">Trending Stories</option>
+                          <option value="celebrity-news">Celebrity News</option>
+                          <option value="entertainment">Entertainment</option>
+                          <option value="gossip">Gossip</option>
+                        </select>
+                        <select
+                          value={newNewsForm.status}
+                          onChange={(e) => setNewNewsForm({ ...newNewsForm, status: e.target.value as any })}
+                          className="p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                        >
+                          <option value="approved">Approved</option>
+                          <option value="pending">Pending</option>
+                          <option value="rejected">Rejected</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Hashtags (comma-separated, e.g: #news,#breaking)"
+                        value={newNewsForm.hashtags}
+                        onChange={(e) => setNewNewsForm({ ...newNewsForm, hashtags: e.target.value })}
+                        className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                      />
+                      <input
+                        type="url"
+                        placeholder="Image URL (optional)"
+                        value={newNewsForm.image}
+                        onChange={(e) => setNewNewsForm({ ...newNewsForm, image: e.target.value })}
+                        className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleAddNewsArticle}
+                          className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 font-semibold"
+                        >
+                          ✅ Publish Article
+                        </button>
+                        <button
+                          onClick={() => setShowAddNewsForm(false)}
+                          className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 font-semibold"
+                        >
+                          ❌ Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Filters */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <input
+                    type="text"
+                    placeholder="🔍 Search articles..."
+                    value={newsSearchTerm}
+                    onChange={(e) => setNewsSearchTerm(e.target.value)}
+                    className="p-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                  />
+                  <select
+                    value={newsCategoryFilter}
+                    onChange={(e) => setNewsCategoryFilter(e.target.value)}
+                    className="p-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">All Categories</option>
+                    <option value="breaking-news">Breaking News</option>
+                    <option value="trending-stories">Trending Stories</option>
+                    <option value="celebrity-news">Celebrity News</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="gossip">Gossip</option>
+                  </select>
+                  <select
+                    value={newsStatusFilter}
+                    onChange={(e) => setNewsStatusFilter(e.target.value)}
+                    className="p-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">All Status</option>
+                    <option value="approved">Approved ✅</option>
+                    <option value="pending">Pending ⏳</option>
+                    <option value="rejected">Rejected ❌</option>
+                  </select>
+                  <button
+                    onClick={() => {
+                      setNewsSearchTerm('')
+                      setNewsCategoryFilter('')
+                      setNewsStatusFilter('')
+                    }}
+                    className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold"
+                  >
+                    🔄 Reset Filters
+                  </button>
+                </div>
+
+                {/* Statistics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Total Articles</p>
+                    <p className="text-2xl font-bold text-blue-600">{allNews.length}</p>
+                  </div>
+                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Approved</p>
+                    <p className="text-2xl font-bold text-green-600">{allNews.filter(n => n.status === 'approved').length}</p>
+                  </div>
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Pending</p>
+                    <p className="text-2xl font-bold text-yellow-600">{allNews.filter(n => n.status === 'pending').length}</p>
+                  </div>
+                  <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Rejected</p>
+                    <p className="text-2xl font-bold text-red-600">{allNews.filter(n => n.status === 'rejected').length}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* News Articles List */}
+              <div className="space-y-4">
+                {allNews
+                  .filter(news => {
+                    const matchesSearch = news.title.toLowerCase().includes(newsSearchTerm.toLowerCase()) ||
+                                        news.description.toLowerCase().includes(newsSearchTerm.toLowerCase())
+                    const matchesCategory = !newsCategoryFilter || news.category === newsCategoryFilter
+                    const matchesStatus = !newsStatusFilter || news.status === newsStatusFilter
+                    return matchesSearch && matchesCategory && matchesStatus
+                  })
+                  .map((newsItem) => (
+                    <div
+                      key={newsItem.id}
+                      className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    >
+                      {editingNewsId === newsItem.id ? (
+                        // Edit Mode
+                        <div className="space-y-3">
+                          <input
+                            type="text"
+                            value={editingNewsForm.title || ''}
+                            onChange={(e) => setEditingNewsForm({ ...editingNewsForm, title: e.target.value })}
+                            className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:text-white font-bold text-lg"
+                          />
+                          <textarea
+                            value={editingNewsForm.description || ''}
+                            onChange={(e) => setEditingNewsForm({ ...editingNewsForm, description: e.target.value })}
+                            rows={3}
+                            className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                          />
+                          <div className="grid grid-cols-2 gap-4">
+                            <select
+                              value={editingNewsForm.category || ''}
+                              onChange={(e) => setEditingNewsForm({ ...editingNewsForm, category: e.target.value })}
+                              className="p-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                            >
+                              <option value="breaking-news">Breaking News</option>
+                              <option value="trending-stories">Trending Stories</option>
+                              <option value="celebrity-news">Celebrity News</option>
+                              <option value="entertainment">Entertainment</option>
+                              <option value="gossip">Gossip</option>
+                            </select>
+                            <select
+                              value={editingNewsForm.status || ''}
+                              onChange={(e) => setEditingNewsForm({ ...editingNewsForm, status: e.target.value as any })}
+                              className="p-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                            >
+                              <option value="approved">Approved</option>
+                              <option value="pending">Pending</option>
+                              <option value="rejected">Rejected</option>
+                            </select>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={handleSaveNewsArticleEdit}
+                              className="flex-1 bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 font-semibold"
+                            >
+                              ✅ Save Changes
+                            </button>
+                            <button
+                              onClick={() => {
+                                setEditingNewsId(null)
+                                setEditingNewsForm({})
+                              }}
+                              className="flex-1 bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 font-semibold"
+                            >
+                              ❌ Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        // View Mode
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex-1">
+                              <h3 className="font-bold text-lg mb-1">{newsItem.title}</h3>
+                              <div className="flex gap-2 mb-2">
+                                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">📁 {newsItem.category}</span>
+                                {newsItem.status === 'approved' && (
+                                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✅ Approved</span>
+                                )}
+                                {newsItem.status === 'pending' && (
+                                  <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">⏳ Pending</span>
+                                )}
+                                {newsItem.status === 'rejected' && (
+                                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">❌ Rejected</span>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{newsItem.description.substring(0, 150)}...</p>
+                              <p className="text-xs text-gray-500">📅 {newsItem.date}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            <button
+                              onClick={() => handleEditNewsArticle(newsItem.id)}
+                              className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 font-semibold"
+                            >
+                              ✏️ Edit
+                            </button>
+                            {newsItem.status !== 'approved' && (
+                              <button
+                                onClick={() => handleApproveNewsArticle(newsItem.id)}
+                                className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 font-semibold"
+                              >
+                                ✅ Approve
+                              </button>
+                            )}
+                            {newsItem.status !== 'pending' && (
+                              <button
+                                onClick={() => handlePendingNewsArticle(newsItem.id)}
+                                className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600 font-semibold"
+                              >
+                                ⏳ Pending
+                              </button>
+                            )}
+                            {newsItem.status !== 'rejected' && (
+                              <button
+                                onClick={() => handleRejectNewsArticle(newsItem.id)}
+                                className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600 font-semibold"
+                              >
+                                🚫 Reject
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleDeleteNewsArticle(newsItem.id, newsItem.title)}
+                              className="bg-red-700 text-white px-3 py-1 rounded text-sm hover:bg-red-800 font-semibold"
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                {allNews.filter(n => {
+                  const matchesSearch = n.title.toLowerCase().includes(newsSearchTerm.toLowerCase()) ||
+                                      n.description.toLowerCase().includes(newsSearchTerm.toLowerCase())
+                  const matchesCategory = !newsCategoryFilter || n.category === newsCategoryFilter
+                  const matchesStatus = !newsStatusFilter || n.status === newsStatusFilter
+                  return matchesSearch && matchesCategory && matchesStatus
+                }).length === 0 && (
+                  <p className="text-center text-gray-500 py-8">No articles found matching your filters</p>
+                )}
               </div>
             </div>
           </div>
