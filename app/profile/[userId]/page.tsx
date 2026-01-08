@@ -99,7 +99,17 @@ export default function ProfilePage() {
           }
         }
 
-        // Check localStorage FIRST (for dynamically created users)
+        // Check if it's the currently logged-in user FIRST
+        console.log('[ProfilePage] Checking if viewing own profile')
+        if (currentUserData?.id === userId) {
+          console.log('[ProfilePage] Viewing own profile, using currentUserData:', currentUserData.id)
+          setProfileUser(currentUserData)
+          setRelationships(currentUserData, currentUserData, userId)
+          setIsLoading(false)
+          return
+        }
+
+        // Check localStorage (for dynamically created users and stored admins)
         console.log('[ProfilePage] Checking localStorage for user:', userId)
         const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
         const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
