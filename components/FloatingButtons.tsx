@@ -415,7 +415,7 @@ export default function FloatingButtons() {
                 {showLogoId === button.id ? (
                   <div className="flex items-center justify-center h-8">
                     <Image 
-                      src="/logo.png" 
+                      src={button.id === 1 ? "/amebo-logo.png" : "/logo.png"}
                       alt="Amebo Logo" 
                       width={32} 
                       height={32}
