@@ -180,10 +180,25 @@ export default function Header() {
                 {/* User Profile Icon */}
                 <button
                   onClick={() => {
-                    const userSession = localStorage.getItem('naijaAmeboCurrentUser')
-                    if (userSession) {
-                      const user = JSON.parse(userSession)
-                      window.location.href = `/profile/${user.id}`
+                    try {
+                      const userSession = localStorage.getItem('naijaAmeboCurrentUser')
+                      const adminSession = localStorage.getItem('naijaAmeboCurrentAdmin')
+                      
+                      if (userSession) {
+                        const user = JSON.parse(userSession)
+                        console.log('[Header] Navigating to user profile:', user.id)
+                        window.location.href = `/profile/${user.id}`
+                      } else if (adminSession) {
+                        const admin = JSON.parse(adminSession)
+                        console.log('[Header] Navigating to admin profile:', admin.id)
+                        window.location.href = `/profile/${admin.id}`
+                      } else {
+                        console.warn('[Header] No user or admin session found')
+                        alert('Please log in first to view your profile')
+                      }
+                    } catch (error) {
+                      console.error('[Header] Error navigating to profile:', error)
+                      alert('Error loading profile. Please try again.')
                     }
                   }}
                   className="flex items-center justify-center p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300 hover:scale-110"
@@ -377,12 +392,28 @@ export default function Header() {
                   </Link>
                   <button
                     onClick={() => {
-                      const userSession = localStorage.getItem('naijaAmeboCurrentUser')
-                      if (userSession) {
-                        const user = JSON.parse(userSession)
-                        window.location.href = `/profile/${user.id}`
+                      try {
+                        const userSession = localStorage.getItem('naijaAmeboCurrentUser')
+                        const adminSession = localStorage.getItem('naijaAmeboCurrentAdmin')
+                        
+                        if (userSession) {
+                          const user = JSON.parse(userSession)
+                          console.log('[Header Mobile] Navigating to user profile:', user.id)
+                          window.location.href = `/profile/${user.id}`
+                        } else if (adminSession) {
+                          const admin = JSON.parse(adminSession)
+                          console.log('[Header Mobile] Navigating to admin profile:', admin.id)
+                          window.location.href = `/profile/${admin.id}`
+                        } else {
+                          console.warn('[Header Mobile] No user or admin session found')
+                          alert('Please log in first to view your profile')
+                        }
+                        setIsMenuOpen(false)
+                      } catch (error) {
+                        console.error('[Header Mobile] Error navigating to profile:', error)
+                        alert('Error loading profile. Please try again.')
+                        setIsMenuOpen(false)
                       }
-                      setIsMenuOpen(false)
                     }}
                     className="relative block w-full px-5 py-3 bg-green-600 text-white text-center rounded-lg font-bold overflow-hidden group transition-all duration-300 hover:scale-105 hover:bg-green-700 shadow-lg hover:shadow-xl"
                   >

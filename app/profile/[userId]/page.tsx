@@ -53,8 +53,31 @@ export default function ProfilePage() {
   useEffect(() => {
     console.log('[ProfilePage] Loading profile for userId:', userId)
     
-    // Load current user from localStorage FIRST
+    // Ensure admins are loaded to localStorage
+    const ensureAdminsLoaded = async () => {
+      const existingAdmins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      if (existingAdmins.length === 0) {
+        console.log('[ProfilePage] Admins not in localStorage, fetching...')
+        try {
+          const response = await fetch('/api/admins')
+          if (response.ok) {
+            const data = await response.json()
+            if (data.admins && Array.isArray(data.admins)) {
+              localStorage.setItem('naijaAmeboAdmins', JSON.stringify(data.admins))
+              console.log('[ProfilePage] Admins loaded from API:', data.admins.length)
+            }
+          }
+        } catch (error) {
+          console.log('[ProfilePage] Fallback admins load:', error)
+        }
+      }
+    }
+    
+    ensureAdminsLoaded()
+    
+    // Load current user from localStorage FIRST (check both user and admin sessions)
     const userSession = localStorage.getItem('naijaAmeboCurrentUser')
+    const adminSession = localStorage.getItem('naijaAmeboCurrentAdmin')
     let currentUserData: UserProfile | null = null
     
     if (userSession) {
@@ -65,8 +88,16 @@ export default function ProfilePage() {
       } catch (e) {
         console.error('[ProfilePage] Error parsing currentUser:', e)
       }
+    } else if (adminSession) {
+      try {
+        currentUserData = JSON.parse(adminSession)
+        setCurrentUser(currentUserData)
+        console.log('[ProfilePage] Loaded current admin:', currentUserData?.id)
+      } catch (e) {
+        console.error('[ProfilePage] Error parsing currentAdmin:', e)
+      }
     } else {
-      console.log('[ProfilePage] No current user session found')
+      console.log('[ProfilePage] No current user or admin session found')
     }
 
     // Load profile user from API
@@ -77,7 +108,7 @@ export default function ProfilePage() {
         const data = await response.json()
         
         if (data.success && data.user) {
-          console.log('[ProfilePage] API returned user:', data.user.id)
+          console.log('[ProfilePage] API returned user:', data.user.id, data.user.role)
           setProfileUser(data.user)
           
           // Set follow/subscription status if user is logged in
@@ -99,11 +130,14 @@ export default function ProfilePage() {
       console.log('[ProfilePage] Falling back to localStorage')
       const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
       const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      console.log('[ProfilePage] Admins in localStorage:', admins.length, admins.map((a: any) => ({ id: a.id, name: a.firstName })))
+      console.log('[ProfilePage] Users in localStorage:', users.length, users.map((u: any) => ({ id: u.id, name: u.firstName })))
+      
       const allUsers = [...users, ...admins]
       
       const foundUser = allUsers.find(u => u.id === userId)
       if (foundUser) {
-        console.log('[ProfilePage] Found user in localStorage:', foundUser.id)
+        console.log('[ProfilePage] Found user in localStorage:', foundUser.id, foundUser.firstName, foundUser.role)
         setProfileUser(foundUser)
         if (currentUserData) {
           setIsFriend(currentUserData.friends?.includes(userId) || false)
@@ -113,7 +147,7 @@ export default function ProfilePage() {
           setHasLiked(foundUser.likedBy?.includes(currentUserData.id) || false)
         }
       } else {
-        console.error('[ProfilePage] User not found:', userId)
+        console.error('[ProfilePage] User not found in any storage:', userId)
       }
       setIsLoading(false)
     }
