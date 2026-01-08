@@ -114,12 +114,12 @@ export default function SocialBar() {
       {/* Open Button - Fixed on Left */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed left-4 top-1/2 -translate-y-1/2 p-3 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg transition-all duration-300 z-40 ${
+        className={`fixed left-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg transition-all duration-300 z-40 ${
           isOpen ? 'hidden' : 'block'
         }`}
         aria-label="Open social menu"
       >
-        <span className="text-2xl">→</span>
+        <span className="text-lg">→</span>
       </button>
     </>
   )

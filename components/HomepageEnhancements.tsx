@@ -382,12 +382,12 @@ export default function HomepageEnhancements({ allNews }: HomepageEnhancementsPr
         {/* Open Button */}
         <button
           onClick={() => setTrendingOpen(true)}
-          className={`p-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg transition-all duration-300 ${
+          className={`p-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg transition-all duration-300 ${
             trendingOpen ? 'hidden' : 'block'
           }`}
           aria-label="Open trending searches"
         >
-          <span className="text-2xl">←</span>
+          <span className="text-lg">←</span>
         </button>
 
         {/* Drawer */}
