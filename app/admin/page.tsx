@@ -4,6 +4,7 @@ import Link from 'next/link'
 import LiveRecorder from '../../components/LiveRecorder'
 import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
 import VerificationApprovalSection from '@/components/VerificationApprovalSection'
+import extendedNews from '@/data/extended-news.json'
 
 interface AdminData {
   id: string;
@@ -196,11 +197,37 @@ export default function AdminDashboard() {
     const messages = JSON.parse(localStorage.getItem('naijaAmeboChatMessages') || '[]')
     setAllMessages(messages)
 
-    // Load news from localStorage
-    const newsData = JSON.parse(localStorage.getItem('naijaAmeboNews') || '[]')
-    console.log('[AdminDashboard] Loaded news from localStorage:', newsData)
-    setNews(newsData)
-    setAllNews(newsData)
+    // Load news from localStorage + extended-news.json
+    const localNewsData = JSON.parse(localStorage.getItem('naijaAmeboNews') || '[]')
+    console.log('[AdminDashboard] Loaded news from localStorage:', localNewsData)
+    
+    // Convert extended news to NewsItem format
+    const staticNews = extendedNews.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      description: item.excerpt || item.description,
+      category: item.contentType || 'breaking-news',
+      date: item.publishedAt || item.date,
+      status: 'approved' as const,
+      submittedBy: item.author || 'System',
+      submitterEmail: 'system@naijaamebogist.com',
+      hashtags: item.tags || [],
+      socialCaption: '',
+      image: item.image || item.imageUrl,
+      video: item.videoUrl,
+    }))
+    
+    // Combine and deduplicate by title
+    const combinedNews = [
+      ...localNewsData,
+      ...staticNews
+    ]
+    const uniqueNews = Array.from(
+      new Map(combinedNews.map((item: any) => [item.title, item])).values()
+    )
+    
+    setNews(uniqueNews)
+    setAllNews(uniqueNews)
   }
 
   const forceRefreshRequests = () => {
