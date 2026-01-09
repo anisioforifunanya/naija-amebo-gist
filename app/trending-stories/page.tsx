@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';
+import extendedNews from '@/data/extended-news.json';
 
 interface NewsItem {
   id: string;
@@ -46,19 +47,16 @@ export default function TrendingStories() {
   useEffect(() => {
     const loadNews = () => {
       const storedNews = localStorage.getItem('naijaAmeboNews');
-      if (storedNews) {
-        try {
-          const parsedNews = JSON.parse(storedNews);
-          // Filter news by category and status
-          const trendingNews = Array.isArray(parsedNews) 
-            ? parsedNews.filter((item: NewsItem) => item.category === 'trending-stories' && item.status === 'approved')
-            : [];
-          setNewsItems([...trendingNews, ...defaultNews]);
-        } catch (error) {
-          console.error('Error loading news from localStorage:', error);
-          setNewsItems(defaultNews);
-        }
-      }
+      const localNews = storedNews ? JSON.parse(storedNews) : [];
+      const trendingLocal = localNews.filter((item: NewsItem) => item.category === 'trending-stories' && item.status === 'approved');
+      
+      const trendingStatic = extendedNews.filter((item: any) => item.contentType === 'trending-stories' || item.contentType === 'trending');
+      
+      const combined = [...trendingLocal, ...trendingStatic, ...defaultNews];
+      const unique = Array.from(
+        new Map(combined.map((item: any) => [item.title, item])).values()
+      );
+      setNewsItems(unique);
     };
 
     loadNews();

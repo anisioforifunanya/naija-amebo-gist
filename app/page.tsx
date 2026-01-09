@@ -8,6 +8,7 @@ import Script from 'next/script';
 import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
 import FeaturesWidget from '../components/FeaturesWidget';
+import extendedNews from '@/data/extended-news.json';
 import HomepageEnhancements from '../components/HomepageEnhancements';
 import AutomatedNewsDisplay from '../components/AutomatedNewsDisplay';
 import NigerianNewsSection from '../components/NigerianNewsSection';
@@ -133,39 +134,47 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Load news from localStorage
+    // Load news from localStorage + extended-news.json
     const loadNews = () => {
       const storedNews = localStorage.getItem('naijaAmeboNews');
-      if (storedNews) {
-        try {
-          const parsedNews = JSON.parse(storedNews);
-          // Parse as array and organize by category
-          const newsArray = Array.isArray(parsedNews) ? parsedNews : [];
-          
-          // Create news object - START EMPTY (don't merge with defaults)
-          const mergedNews: Record<string, NewsItem[]> = {};
-          
-          // Organize ONLY APPROVED news by category
-          newsArray.forEach((newsItem: NewsItem) => {
-            if (newsItem.status === 'approved' && newsItem.category) {
-              if (!mergedNews[newsItem.category]) {
-                mergedNews[newsItem.category] = [];
-              }
-              mergedNews[newsItem.category].unshift(newsItem); // Add to beginning
-            }
-          });
-          
-          // If we have real approved news, use it; otherwise fallback to defaults
-          const finalNews = Object.keys(mergedNews).length > 0 ? mergedNews : defaultNews;
-          setNewsData(finalNews);
-        } catch (error) {
-          console.error('Error loading news from localStorage:', error);
-          setNewsData(defaultNews);
+      const localNews = storedNews ? JSON.parse(storedNews) : [];
+      
+      // Create news object from local + extended
+      const mergedNews: Record<string, NewsItem[]> = {};
+      
+      // Add approved local news by category
+      localNews.forEach((newsItem: NewsItem) => {
+        if (newsItem.status === 'approved' && newsItem.category) {
+          if (!mergedNews[newsItem.category]) {
+            mergedNews[newsItem.category] = [];
+          }
+          mergedNews[newsItem.category].unshift(newsItem);
         }
-      } else {
-        // No stored news, use defaults
-        setNewsData(defaultNews);
-      }
+      });
+      
+      // Add extended news by category
+      (extendedNews as any[]).forEach((item: any) => {
+        const category = item.contentType || 'breaking-news';
+        if (!mergedNews[category]) {
+          mergedNews[category] = [];
+        }
+        mergedNews[category].push({
+          id: item.id,
+          title: item.title,
+          description: item.excerpt || item.description,
+          date: item.publishedAt || item.date,
+          category: category,
+          status: 'approved' as const,
+          author: item.author,
+          hashtags: item.tags || [],
+          image: item.image || item.imageUrl,
+          video: item.videoUrl,
+        });
+      });
+      
+      // Use merged data with defaults as fallback
+      const finalNews = Object.keys(mergedNews).length > 0 ? mergedNews : defaultNews;
+      setNewsData(finalNews);
     };
 
     loadNews();

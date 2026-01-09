@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';
+import extendedNews from '@/data/extended-news.json';
 
 interface NewsItem {
   id: string;
@@ -46,18 +47,16 @@ export default function ViralContent() {
   useEffect(() => {
     const loadNews = () => {
       const storedNews = localStorage.getItem('naijaAmeboNews');
-      if (storedNews) {
-        try {
-          const parsedNews = JSON.parse(storedNews);
-          const viralContent = Array.isArray(parsedNews)
-            ? parsedNews.filter((item: NewsItem) => item.category === 'viral-content' && item.status === 'approved')
-            : [];
-          setNewsItems([...viralContent, ...defaultNews]);
-        } catch (error) {
-          console.error('Error loading news from localStorage:', error);
-          setNewsItems(defaultNews);
-        }
-      }
+      const localNews = storedNews ? JSON.parse(storedNews) : [];
+      const viralLocal = localNews.filter((item: NewsItem) => item.category === 'viral-content' && item.status === 'approved');
+      
+      const viralStatic = extendedNews.filter((item: any) => item.contentType === 'viral-content' || item.contentType === 'viral');
+      
+      const combined = [...viralLocal, ...viralStatic, ...defaultNews];
+      const unique = Array.from(
+        new Map(combined.map((item: any) => [item.title, item])).values()
+      );
+      setNewsItems(unique);
     };
 
     loadNews();
