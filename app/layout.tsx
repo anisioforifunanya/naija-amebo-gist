@@ -100,6 +100,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Cache control meta tags for fresh content across all browsers */}
+        <meta httpEquiv="cache-control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="pragma" content="no-cache" />
+        <meta httpEquiv="expires" content="0" />
         {/* Theme initialization script to prevent flash */}
         <script
           dangerouslySetInnerHTML={{

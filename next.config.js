@@ -47,6 +47,11 @@ const nextConfig = {
           key: 'Referrer-Policy',
           value: 'strict-origin-when-cross-origin',
         },
+        // Disable aggressive caching for dynamic content pages
+        {
+          key: 'Cache-Control',
+          value: 'no-cache, no-store, must-revalidate, max-age=0',
+        },
         // Allow crawlers
         {
           key: 'Permissions-Policy',

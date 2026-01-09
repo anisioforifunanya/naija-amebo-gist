@@ -9,31 +9,46 @@ export default function GossipPage() {
   const [gossipStories, setGossipStories] = useState<any[]>([])
 
   useEffect(() => {
-    // Get gossip stories from localStorage
-    const storedNews = localStorage.getItem('naijaAmeboNews')
-    const newsFromStorage = storedNews ? JSON.parse(storedNews) : []
+    // Force refresh by checking localStorage on every mount
+    const loadGossipStories = () => {
+      const storedNews = localStorage.getItem('naijaAmeboNews')
+      const newsFromStorage = storedNews ? JSON.parse(storedNews) : []
+      
+      // Filter for gossip category and approved status
+      const localGossip = newsFromStorage.filter((item: any) => 
+        item.category?.toLowerCase() === 'gossip' && item.status?.toLowerCase() === 'approved'
+      )
+      
+      // Combine with static data
+      const allGossip = [
+        ...localGossip,
+        ...extendedNews.filter((item: any) => item.contentType === 'gossip')
+      ]
+      
+      // Remove duplicates based on title
+      const uniqueGossip = Array.from(
+        new Map(allGossip.map((item: any) => [item.title, item])).values()
+      ).sort((a: any, b: any) => {
+        const dateA = new Date(a.publishedAt || a.date || 0).getTime()
+        const dateB = new Date(b.publishedAt || b.date || 0).getTime()
+        return dateB - dateA
+      })
+      
+      setGossipStories(uniqueGossip)
+    }
+
+    loadGossipStories()
     
-    // Filter for gossip category and approved status
-    const localGossip = newsFromStorage.filter((item: any) => 
-      item.category?.toLowerCase() === 'gossip' && item.status?.toLowerCase() === 'approved'
-    )
+    // Refresh data every 2 seconds to ensure cross-browser consistency
+    const interval = setInterval(loadGossipStories, 2000)
     
-    // Combine with static data
-    const allGossip = [
-      ...localGossip,
-      ...extendedNews.filter((item: any) => item.contentType === 'gossip')
-    ]
+    // Also listen for storage changes from other tabs/windows
+    window.addEventListener('storage', loadGossipStories)
     
-    // Remove duplicates based on title
-    const uniqueGossip = Array.from(
-      new Map(allGossip.map((item: any) => [item.title, item])).values()
-    ).sort((a: any, b: any) => {
-      const dateA = new Date(a.publishedAt || a.date || 0).getTime()
-      const dateB = new Date(b.publishedAt || b.date || 0).getTime()
-      return dateB - dateA
-    })
-    
-    setGossipStories(uniqueGossip)
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('storage', loadGossipStories)
+    }
   }, [])
 
   return (
