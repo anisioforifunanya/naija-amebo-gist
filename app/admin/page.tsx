@@ -195,6 +195,12 @@ export default function AdminDashboard() {
     // Load messages
     const messages = JSON.parse(localStorage.getItem('naijaAmeboChatMessages') || '[]')
     setAllMessages(messages)
+
+    // Load news from localStorage
+    const newsData = JSON.parse(localStorage.getItem('naijaAmeboNews') || '[]')
+    console.log('[AdminDashboard] Loaded news from localStorage:', newsData)
+    setNews(newsData)
+    setAllNews(newsData)
   }
 
   const forceRefreshRequests = () => {
