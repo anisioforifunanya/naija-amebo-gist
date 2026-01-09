@@ -2035,6 +2035,7 @@ export default function AdminDashboard() {
                           <option value="celebrity-news">Celebrity News</option>
                           <option value="entertainment">Entertainment</option>
                           <option value="gossip">Gossip</option>
+                          <option value="viral-content">Viral Content</option>
                         </select>
                         <select
                           value={newNewsForm.status}
@@ -2157,6 +2158,7 @@ export default function AdminDashboard() {
                     <option value="celebrity-news">Celebrity News</option>
                     <option value="entertainment">Entertainment</option>
                     <option value="gossip">Gossip</option>
+                    <option value="viral-content">Viral Content</option>
                   </select>
                   <select
                     value={newsStatusFilter}
@@ -2242,6 +2244,7 @@ export default function AdminDashboard() {
                               <option value="celebrity-news">Celebrity News</option>
                               <option value="entertainment">Entertainment</option>
                               <option value="gossip">Gossip</option>
+                              <option value="viral-content">Viral Content</option>
                             </select>
                             <select
                               value={editingNewsForm.status || ''}
