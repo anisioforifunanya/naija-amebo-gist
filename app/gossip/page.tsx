@@ -19,9 +19,22 @@ export default function GossipPage() {
         item.category?.toLowerCase() === 'gossip' && item.status?.toLowerCase() === 'approved'
       )
       
+      // Convert and add extended news as gossip content
+      const staticGossip = extendedNews.map((item: any) => ({
+        id: item.id?.toString() || Math.random().toString(),
+        title: item.title,
+        excerpt: item.excerpt || item.content,
+        publishedAt: item.publishedAt || item.updatedAt,
+        image: item.image,
+        videoUrl: item.videoUrl,
+        contentType: 'gossip',
+        isRumor: true,
+      }))
+      
       // Combine with static data
       const allGossip = [
         ...localGossip,
+        ...staticGossip,
         ...extendedNews.filter((item: any) => item.contentType === 'gossip')
       ]
       

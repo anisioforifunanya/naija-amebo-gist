@@ -50,7 +50,19 @@ export default function ViralContent() {
       const localNews = storedNews ? JSON.parse(storedNews) : [];
       const viralLocal = localNews.filter((item: NewsItem) => item.category === 'viral-content' && item.status === 'approved');
       
-      const viralStatic = extendedNews.filter((item: any) => item.contentType === 'viral-content' || item.contentType === 'viral');
+      // Extended news is a mixed collection - use all of it as fallback
+      const viralStatic = extendedNews.map((item: any) => ({
+        id: item.id?.toString() || Math.random().toString(),
+        title: item.title,
+        description: item.excerpt || item.content,
+        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+        category: 'viral-content',
+        status: 'approved' as const,
+        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
+        hashtags: item.tags || [],
+        image: item.image,
+        video: item.videoUrl,
+      }));
       
       const combined = [...viralLocal, ...viralStatic, ...defaultNews];
       const unique = Array.from(

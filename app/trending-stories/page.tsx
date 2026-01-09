@@ -50,7 +50,19 @@ export default function TrendingStories() {
       const localNews = storedNews ? JSON.parse(storedNews) : [];
       const trendingLocal = localNews.filter((item: NewsItem) => item.category === 'trending-stories' && item.status === 'approved');
       
-      const trendingStatic = extendedNews.filter((item: any) => item.contentType === 'trending-stories' || item.contentType === 'trending');
+      // Extended news is a mixed collection - use all of it as fallback
+      const trendingStatic = extendedNews.map((item: any) => ({
+        id: item.id?.toString() || Math.random().toString(),
+        title: item.title,
+        description: item.excerpt || item.content,
+        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+        category: 'trending-stories',
+        status: 'approved' as const,
+        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
+        hashtags: item.tags || [],
+        image: item.image,
+        video: item.videoUrl,
+      }));
       
       const combined = [...trendingLocal, ...trendingStatic, ...defaultNews];
       const unique = Array.from(

@@ -152,24 +152,27 @@ export default function Home() {
         }
       });
       
-      // Add extended news by category
-      (extendedNews as any[]).forEach((item: any) => {
-        const category = item.contentType || 'breaking-news';
-        if (!mergedNews[category]) {
-          mergedNews[category] = [];
+      // Add extended news to all categories as fallback
+      const extendedConverted = (extendedNews as any[]).map((item: any) => ({
+        id: item.id?.toString() || Math.random().toString(),
+        title: item.title,
+        description: item.excerpt || item.content,
+        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+        category: 'breaking-news',
+        status: 'approved' as const,
+        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
+        hashtags: item.tags || [],
+        image: item.image,
+        video: item.videoUrl,
+      }));
+      
+      // Distribute extended news across categories
+      const allCategories = ['breaking-news', 'celebrity-news', 'entertainment', 'trending-stories', 'viral-content'];
+      allCategories.forEach(cat => {
+        if (!mergedNews[cat]) {
+          mergedNews[cat] = [];
         }
-        mergedNews[category].push({
-          id: item.id,
-          title: item.title,
-          description: item.excerpt || item.description,
-          date: item.publishedAt || item.date,
-          category: category,
-          status: 'approved' as const,
-          author: item.author,
-          hashtags: item.tags || [],
-          image: item.image || item.imageUrl,
-          video: item.videoUrl,
-        });
+        mergedNews[cat].push(...extendedConverted);
       });
       
       // Use merged data with defaults as fallback

@@ -50,7 +50,19 @@ export default function Entertainment() {
       const localNews = storedNews ? JSON.parse(storedNews) : [];
       const entertLocal = localNews.filter((item: NewsItem) => item.category === 'entertainment' && item.status === 'approved');
       
-      const entertStatic = extendedNews.filter((item: any) => item.contentType === 'entertainment' || item.contentType === 'entertainment');
+      // Extended news is a mixed collection - use all of it as fallback
+      const entertStatic = extendedNews.map((item: any) => ({
+        id: item.id?.toString() || Math.random().toString(),
+        title: item.title,
+        description: item.excerpt || item.content,
+        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+        category: 'entertainment',
+        status: 'approved' as const,
+        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
+        hashtags: item.tags || [],
+        image: item.image,
+        video: item.videoUrl,
+      }));
       
       const combined = [...entertLocal, ...entertStatic, ...defaultNews];
       const unique = Array.from(

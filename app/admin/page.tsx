@@ -203,17 +203,17 @@ export default function AdminDashboard() {
     
     // Convert extended news to NewsItem format
     const staticNews = extendedNews.map((item: any) => ({
-      id: item.id,
+      id: item.id?.toString() || Math.random().toString(),
       title: item.title,
-      description: item.excerpt || item.description,
-      category: item.contentType || 'breaking-news',
-      date: item.publishedAt || item.date,
+      description: item.excerpt || item.content,
+      category: 'breaking-news',
+      date: item.publishedAt || item.updatedAt || new Date().toISOString(),
       status: 'approved' as const,
-      submittedBy: item.author || 'System',
+      submittedBy: typeof item.author === 'object' ? item.author?.name || 'System' : (item.author || 'System'),
       submitterEmail: 'system@naijaamebogist.com',
       hashtags: item.tags || [],
       socialCaption: '',
-      image: item.image || item.imageUrl,
+      image: item.image,
       video: item.videoUrl,
     }))
     

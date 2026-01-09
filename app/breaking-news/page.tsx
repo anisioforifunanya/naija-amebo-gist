@@ -52,7 +52,19 @@ export default function BreakingNews() {
       const localNews = storedNews ? JSON.parse(storedNews) : [];
       const breakingLocal = localNews.filter((item: NewsItem) => item.category === 'breaking-news' && item.status === 'approved');
       
-      const breakingStatic = extendedNews.filter((item: any) => item.contentType === 'breaking-news' || item.contentType === 'breaking');
+      // Extended news is a mixed collection - use all of it as fallback
+      const breakingStatic = extendedNews.map((item: any) => ({
+        id: item.id?.toString() || Math.random().toString(),
+        title: item.title,
+        description: item.excerpt || item.content,
+        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+        category: 'breaking-news',
+        status: 'approved' as const,
+        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
+        hashtags: item.tags || [],
+        image: item.image,
+        video: item.videoUrl,
+      }));
       
       const combined = [...breakingLocal, ...breakingStatic, ...defaultNews];
       const unique = Array.from(
