@@ -15,7 +15,7 @@ export default function GossipPage() {
     
     // Filter for gossip category and approved status
     const localGossip = newsFromStorage.filter((item: any) => 
-      item.category?.toLowerCase() === 'gossip' && item.status === 'Approved'
+      item.category?.toLowerCase() === 'gossip' && item.status?.toLowerCase() === 'approved'
     )
     
     // Combine with static data
