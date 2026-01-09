@@ -39,15 +39,19 @@ export default function GossipPage() {
 
     loadGossipStories()
     
-    // Refresh data every 2 seconds to ensure cross-browser consistency
-    const interval = setInterval(loadGossipStories, 2000)
-    
-    // Also listen for storage changes from other tabs/windows
+    // Listen for storage changes from other tabs/windows
     window.addEventListener('storage', loadGossipStories)
     
+    // Refresh on visibility change (when user returns to tab)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        loadGossipStories()
+      }
+    })
+    
     return () => {
-      clearInterval(interval)
       window.removeEventListener('storage', loadGossipStories)
+      document.removeEventListener('visibilitychange', loadGossipStories)
     }
   }, [])
 
