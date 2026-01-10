@@ -1,11 +1,42 @@
-"use client";
+import { Metadata } from 'next'
+import NewsPageClient from '@/components/NewsPageClient'
+import extendedNews from '@/data/extended-news.json'
 
-import { useState, useEffect } from 'react';
-import NewsCard from '../../components/NewsCard';
-import NewsCarousel from '../../components/NewsCarousel';
-import DashboardButton from '../../components/DashboardButton';
-import { StorageSync } from '@/lib/storageSync';
-import extendedNews from '@/data/extended-news.json';
+export const metadata: Metadata = {
+  title: 'Breaking News | Latest Updates | Naija Amebo Gist',
+  description: 'Latest breaking news and updates from Nigeria. Stay informed with real-time celebrity news, entertainment updates, and trending stories on Naija Amebo Gist.',
+  keywords: [
+    'breaking news',
+    'latest news',
+    'Nigeria news',
+    'celebrity news',
+    'entertainment news',
+    'Naija news',
+    'breaking news Nigeria',
+    'latest updates',
+    'trending now',
+  ],
+  openGraph: {
+    type: 'website',
+    url: 'https://amebo.org/breaking-news',
+    title: 'Breaking News | Naija Amebo Gist',
+    description: 'Latest breaking news and updates from Nigeria.',
+    images: [
+      {
+        url: 'https://amebo.org/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Naija Amebo Gist - Breaking News',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Breaking News | Naija Amebo Gist',
+    description: 'Latest breaking news and updates from Nigeria.',
+    images: ['https://amebo.org/og-image.jpg'],
+  },
+}
 
 interface NewsItem {
   id: string;
@@ -22,69 +53,17 @@ interface NewsItem {
   liveAudio?: string;
 }
 
-const defaultNews = [
-  { id: '1', title: "Celebrity Arrest in Lagos", description: "Breaking details about the high-profile arrest...", date: "1 hour ago", category: "breaking-news", status: "approved" as const },
-  { id: '2', title: "Major Movie Deal Announced", description: "Hollywood star signs multi-million dollar contract...", date: "2 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '3', title: "Singer's New Album Release", description: "Fans excited for the upcoming tracks...", date: "3 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '4', title: "Actress Wins Award", description: "Celebrating her latest achievement...", date: "4 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '5', title: "Influencer Scandal Exposed", description: "Social media reacts to the controversy...", date: "5 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '6', title: "Musician's Tour Dates", description: "Announcing the concert schedule...", date: "6 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '7', title: "Celebrity Couple Split", description: "Details of the breakup emerge...", date: "7 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '8', title: "New TV Show Premiere", description: "First look at the upcoming series...", date: "8 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '9', title: "Athlete's Record Breaking", description: "Sports star achieves new milestone...", date: "9 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '10', title: "Fashion Icon's Collection", description: "Latest runway show highlights...", date: "10 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '11', title: "Music Video Release", description: "Behind the scenes of the new clip...", date: "11 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '12', title: "Celebrity Health Update", description: "Well-wishes pour in for recovery...", date: "12 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '13', title: "Award Show Winners", description: "Complete list of this year's winners...", date: "13 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '14', title: "Influencer's Brand Deal", description: "New partnership announced...", date: "14 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '15', title: "Movie Sequel Confirmed", description: "Fans rejoice at the news...", date: "15 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '16', title: "Singer's Collaboration", description: "Teaming up with major artist...", date: "16 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '17', title: "Celebrity's Charity Work", description: "Supporting important causes...", date: "17 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '18', title: "TV Star's New Role", description: "Exciting casting announcement...", date: "18 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '19', title: "Music Festival Lineup", description: "Stars confirmed for the event...", date: "19 hours ago", category: "breaking-news", status: "approved" as const },
-  { id: '20', title: "Celebrity's Social Media Post", description: "Viral moment captures attention...", date: "20 hours ago", category: "breaking-news", status: "approved" as const },
-];
-
 export default function BreakingNews() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(defaultNews);
-
-  useEffect(() => {
-    const loadNews = async () => {
-      const allNews = await StorageSync.loadNews(extendedNews);
-      const breakingNews = allNews.filter((item: NewsItem) => item.category === 'breaking-news' && item.status === 'approved');
-      
-      const combined = [...breakingNews, ...defaultNews];
-      const unique = Array.from(
-        new Map(combined.map((item: any) => [item.title, item])).values()
-      );
-      setNewsItems(unique);
-    };
-
-    loadNews();
-    
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'naijaAmeboNews') {
-        loadNews();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  const breakingNewsArticles = (extendedNews as any[])
+    .filter((item: any) => item.category === 'breaking-news' && item.status === 'approved')
+    .sort((a: any, b: any) => new Date(b.publishedAt || b.date).getTime() - new Date(a.publishedAt || a.date).getTime())
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <DashboardButton />
-        <h1 className="text-4xl font-bold mb-8">Breaking News</h1>
-        <div className="space-y-8">
-          {newsItems.map((item, index) => (
-            <NewsCard key={item.id} item={item} index={index} />
-          ))}
-        </div>
-        {/* News Carousel */}
-        <NewsCarousel items={newsItems} title="Featured Breaking News" />
-      </div>
-    </div>
+    <NewsPageClient 
+      articles={breakingNewsArticles}
+      category="breaking-news"
+      title="🚨 Breaking News"
+      description="Get the latest breaking news from Nigeria and around the world"
+    />
   )
 }
