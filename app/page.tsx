@@ -8,6 +8,7 @@ import Script from 'next/script';
 import NewsCard from '../components/NewsCard';
 import AlternatingLogo from '../components/AlternatingLogo';
 import FeaturesWidget from '../components/FeaturesWidget';
+import { StorageSync } from '@/lib/storageSync';
 import extendedNews from '@/data/extended-news.json';
 import HomepageEnhancements from '../components/HomepageEnhancements';
 import AutomatedNewsDisplay from '../components/AutomatedNewsDisplay';
@@ -134,45 +135,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Load news from localStorage + extended-news.json
-    const loadNews = () => {
-      const storedNews = localStorage.getItem('naijaAmeboNews');
-      const localNews = storedNews ? JSON.parse(storedNews) : [];
+    // Load news from all storage sources using StorageSync
+    const loadNews = async () => {
+      const allNews = await StorageSync.loadNews(extendedNews);
       
-      // Create news object from local + extended
+      // Create news object organized by category
       const mergedNews: Record<string, NewsItem[]> = {};
       
-      // Add approved local news by category
-      localNews.forEach((newsItem: NewsItem) => {
+      // Add approved news by category
+      allNews.forEach((newsItem: NewsItem) => {
         if (newsItem.status === 'approved' && newsItem.category) {
           if (!mergedNews[newsItem.category]) {
             mergedNews[newsItem.category] = [];
           }
           mergedNews[newsItem.category].unshift(newsItem);
         }
-      });
-      
-      // Add extended news to all categories as fallback
-      const extendedConverted = (extendedNews as any[]).map((item: any) => ({
-        id: item.id?.toString() || Math.random().toString(),
-        title: item.title,
-        description: item.excerpt || item.content,
-        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
-        category: 'breaking-news',
-        status: 'approved' as const,
-        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
-        hashtags: item.tags || [],
-        image: item.image,
-        video: item.videoUrl,
-      }));
-      
-      // Distribute extended news across categories
-      const allCategories = ['breaking-news', 'celebrity-news', 'entertainment', 'trending-stories', 'viral-content'];
-      allCategories.forEach(cat => {
-        if (!mergedNews[cat]) {
-          mergedNews[cat] = [];
-        }
-        mergedNews[cat].push(...extendedConverted);
       });
       
       // Use merged data with defaults as fallback

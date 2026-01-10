@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';
+import { StorageSync } from '@/lib/storageSync';
 import extendedNews from '@/data/extended-news.json';
 
 interface NewsItem {
@@ -47,26 +48,11 @@ export default function BreakingNews() {
   const [newsItems, setNewsItems] = useState<NewsItem[]>(defaultNews);
 
   useEffect(() => {
-    const loadNews = () => {
-      const storedNews = localStorage.getItem('naijaAmeboNews');
-      const localNews = storedNews ? JSON.parse(storedNews) : [];
-      const breakingLocal = localNews.filter((item: NewsItem) => item.category === 'breaking-news' && item.status === 'approved');
+    const loadNews = async () => {
+      const allNews = await StorageSync.loadNews(extendedNews);
+      const breakingNews = allNews.filter((item: NewsItem) => item.category === 'breaking-news' && item.status === 'approved');
       
-      // Extended news is a mixed collection - use all of it as fallback
-      const breakingStatic = extendedNews.map((item: any) => ({
-        id: item.id?.toString() || Math.random().toString(),
-        title: item.title,
-        description: item.excerpt || item.content,
-        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
-        category: 'breaking-news',
-        status: 'approved' as const,
-        author: typeof item.author === 'object' ? `${item.author?.name || 'Admin'}` : item.author,
-        hashtags: item.tags || [],
-        image: item.image,
-        video: item.videoUrl,
-      }));
-      
-      const combined = [...breakingLocal, ...breakingStatic, ...defaultNews];
+      const combined = [...breakingNews, ...defaultNews];
       const unique = Array.from(
         new Map(combined.map((item: any) => [item.title, item])).values()
       );

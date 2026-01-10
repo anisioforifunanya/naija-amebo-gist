@@ -3,44 +3,26 @@
 import { useEffect, useState } from 'react'
 import HeadlineBanner from '@/components/HeadlineBanner'
 import NewsCard from '@/components/NewsCard'
+import { StorageSync } from '@/lib/storageSync'
 import extendedNews from '@/data/extended-news.json'
 
 export default function GossipPage() {
   const [gossipStories, setGossipStories] = useState<any[]>([])
 
   useEffect(() => {
-    // Force refresh by checking localStorage on every mount
-    const loadGossipStories = () => {
-      const storedNews = localStorage.getItem('naijaAmeboNews')
-      const newsFromStorage = storedNews ? JSON.parse(storedNews) : []
+    // Force refresh by checking all storage sources
+    const loadGossipStories = async () => {
+      // Use StorageSync to load from all available sources
+      const allNews = await StorageSync.loadNews(extendedNews)
       
       // Filter for gossip category and approved status
-      const localGossip = newsFromStorage.filter((item: any) => 
+      const localGossip = allNews.filter((item: any) => 
         item.category?.toLowerCase() === 'gossip' && item.status?.toLowerCase() === 'approved'
       )
       
-      // Convert and add extended news as gossip content
-      const staticGossip = extendedNews.map((item: any) => ({
-        id: item.id?.toString() || Math.random().toString(),
-        title: item.title,
-        excerpt: item.excerpt || item.content,
-        publishedAt: item.publishedAt || item.updatedAt,
-        image: item.image,
-        videoUrl: item.videoUrl,
-        contentType: 'gossip',
-        isRumor: true,
-      }))
-      
-      // Combine with static data
-      const allGossip = [
-        ...localGossip,
-        ...staticGossip,
-        ...extendedNews.filter((item: any) => item.contentType === 'gossip')
-      ]
-      
-      // Remove duplicates based on title
+      // Remove duplicates and sort by date
       const uniqueGossip = Array.from(
-        new Map(allGossip.map((item: any) => [item.title, item])).values()
+        new Map(localGossip.map((item: any) => [item.title, item])).values()
       ).sort((a: any, b: any) => {
         const dateA = new Date(a.publishedAt || a.date || 0).getTime()
         const dateB = new Date(b.publishedAt || b.date || 0).getTime()
