@@ -203,7 +203,7 @@
     "liveStreamArchived": true
   },
   {
-    "id": "1767511647657",
+    "id": 13,
     "title": "Venezeula",
     "description": "President captured",
     "category": "trending-stories",
@@ -215,10 +215,14 @@
     ],
     "socialCaption": "They captured the president",
     "serverAddedAt": "2026-01-10T08:08:33.454Z",
-    "isServerStored": true
+    "isServerStored": true,
+    "slug": "venezuela-president-captured",
+    "excerpt": "President captured",
+    "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
+    "publishedAt": "2026-01-10T08:08:33Z"
   },
   {
-    "id": "1767512092046",
+    "id": 14,
     "title": "Venezula",
     "description": "President captured",
     "category": "trending-stories",
@@ -231,10 +235,14 @@
     ],
     "socialCaption": "President Captured",
     "serverAddedAt": "2026-01-10T08:08:33.492Z",
-    "isServerStored": true
+    "isServerStored": true,
+    "slug": "venezuela-president-captured-update",
+    "excerpt": "President captured",
+    "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
+    "publishedAt": "2026-01-10T08:08:33Z"
   },
   {
-    "id": "1767512841987",
+    "id": 15,
     "title": "New year",
     "description": "Tax starts in Nigeria",
     "category": "breaking-news",
@@ -247,10 +255,14 @@
     ],
     "socialCaption": "Nigeria Starts taxing their citizens",
     "serverAddedAt": "2026-01-10T08:08:33.528Z",
-    "isServerStored": true
+    "isServerStored": true,
+    "slug": "nigeria-tax-reform-new-year",
+    "excerpt": "Tax starts in Nigeria",
+    "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
+    "publishedAt": "2026-01-10T08:08:33Z"
   },
   {
-    "id": "abia-politics-1",
+    "id": 6,
     "title": "🚨 ABIA POLITICS HEATS UP: ORJI UZOR KALU VS ALEX OTTI—FACTS, CLAIMS, AND COUNTERCLAIMS 🚨",
     "description": "A fresh political storm is trending across national TV interviews, radio discussions, YouTube political shows, Instagram reels, TikTok commentary pages...",
     "category": "trending-stories",
@@ -261,7 +273,7 @@
     "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop"
   },
   {
-    "id": "kanu-viral-1",
+    "id": 7,
     "title": "🔥 BREAKING VIRAL: Nigerian Legend Kanu Nwankwo & Wife Amara SLAY the Dave & Tems TikTok Challenge! 😍💃🕺 #ViralVideo 🔥",
     "description": "Today the internet went absolutely crazy as iconic Nigerian football legend Kanu Nwankwo and his beautiful wife Amara Kanu totally nailed the trending...",
     "category": "celebrity-news",
@@ -272,7 +284,7 @@
     "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop"
   },
   {
-    "id": "regina-daniels-1",
+    "id": 8,
     "title": "🔥 BREAKING VIRAL: Medical Director Dismisses Claims Regina Daniels Flushed Drugs Before Negative Drug Test – Full Truth Emerges! 😱📸",
     "description": "In the latest explosive turn in the ongoing Regina Daniels drug test controversy, a respected medical director and doctor publicly rubbished the wid...",
     "category": "breaking-news",
@@ -283,7 +295,7 @@
     "image": "https://images.unsplash.com/photo-1579154204601-01d82b27d100?w=800&h=600&fit=crop"
   },
   {
-    "id": "nestle-recall-1",
+    "id": 9,
     "title": "🔥 BREAKING GLOBAL HEALTH ALERT: Nestlé Issues Massive Worldwide Recall of Infant Formula Over Dangerous Toxin Risk 🚨👶",
     "description": "In a major global food safety emergency, Swiss food giant Nestlé has launched one of the largest infant formula recalls in history, pulling specific b...",
     "category": "breaking-news",
@@ -294,7 +306,7 @@
     "image": "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=800&h=600&fit=crop"
   },
   {
-    "id": "rivers-apc-1",
+    "id": 10,
     "title": "🚨 BREAKING POLITICAL DEVELOPMENTS: Rivers APC Firmly Rejects Impeachment Plot Against Governor Siminalayi Fubara",
     "description": "Nigeria's political space is once again heated as the All Progressives Congress (APC) in Rivers State has officially rejected the ongoing impeachment ...",
     "category": "breaking-news",
@@ -305,7 +317,7 @@
     "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop"
   },
   {
-    "id": "fave-women-1",
+    "id": 11,
     "title": "🔥 BREAKING: Singer Fave Urges Women to Lift One Another as Debate on Respect and Recognition Ignites Online 💃🎤",
     "description": "Nigerian music sensation Fave has sparked an important nationwide conversation on women's empowerment and solidarity, drawing attention to the challen...",
     "category": "entertainment",
@@ -316,7 +328,7 @@
     "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=600&fit=crop"
   },
   {
-    "id": "mustsee-1",
+    "id": 12,
     "title": "#MustSee",
     "description": "#TrendingNow...",
     "category": "gossip",
@@ -326,3 +338,4 @@
     "slug": "mustsee-trending-now",
     "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=600&fit=crop"
   }
+]

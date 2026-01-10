@@ -8,7 +8,23 @@ export const metadata = {
 }
 
 export default function InterviewsPage() {
-  const interviews = extendedNews.filter((item: any) => item.contentType === 'interview')
+  const interviews = extendedNews
+    .filter((item: any) => 
+      item.contentType === 'interview' && 
+      item.slug && 
+      typeof item.isBreakinNews === 'boolean' &&
+      item.publishedAt
+    )
+    .map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      slug: item.slug,
+      excerpt: item.excerpt,
+      image: item.image,
+      category: item.category,
+      isBreakinNews: item.isBreakinNews || false,
+      publishedAt: item.publishedAt,
+    })) as any[]
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-950">
