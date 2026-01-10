@@ -7,6 +7,64 @@ export default function DataMigration() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any[]>([]);
   const [message, setMessage] = useState('');
+  const [localStorageNews, setLocalStorageNews] = useState<any[]>([]);
+  const [showNewsPreview, setShowNewsPreview] = useState(false);
+
+  // Migrate localStorage news to server/extended-news.json
+  const handleMigrateLocalStorageNews = async () => {
+    setLoading(true);
+    setMessage('Reading from localStorage...');
+    setResults([]);
+
+    try {
+      // Read from localStorage
+      const newsData = localStorage.getItem('naijaAmeboNews');
+      if (!newsData) {
+        setMessage('❌ No articles found in localStorage');
+        setLoading(false);
+        return;
+      }
+
+      const articles = JSON.parse(newsData);
+      setLocalStorageNews(articles);
+      setShowNewsPreview(true);
+      setMessage(`✅ Found ${articles.length} articles in localStorage. Syncing to server...`);
+
+      // Send each article to the server
+      const syncResults = [];
+      for (const article of articles) {
+        try {
+          const response = await fetch('/api/admin/news', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(article),
+          });
+          const result = await response.json();
+          syncResults.push({
+            title: article.title,
+            status: response.ok ? '✅ Synced' : '❌ Failed',
+            category: article.category,
+            date: article.date
+          });
+        } catch (error) {
+          syncResults.push({
+            title: article.title,
+            status: '❌ Error: ' + String(error),
+            category: article.category,
+            date: article.date
+          });
+        }
+      }
+
+      setResults(syncResults);
+      setMessage(`✅ Migration complete! ${syncResults.filter(r => r.status.includes('✅')).length}/${articles.length} articles synced to server`);
+    } catch (error) {
+      setMessage('❌ Error: ' + String(error));
+      console.error(error);
+    }
+
+    setLoading(false);
+  };
 
   const handleMigrateAdmins = async () => {
     setLoading(true);
@@ -114,7 +172,7 @@ export default function DataMigration() {
           🔄 Data Migration to Firebase
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Admins Migration */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
@@ -148,6 +206,23 @@ export default function DataMigration() {
               {loading ? 'Migrating...' : 'Migrate Users'}
             </button>
           </div>
+
+          {/* News Migration */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              📰 Sync Your News
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Migrate articles from browser localStorage to all browsers
+            </p>
+            <button
+              onClick={handleMigrateLocalStorageNews}
+              disabled={loading}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+            >
+              {loading ? 'Syncing...' : 'Sync Articles'}
+            </button>
+          </div>
         </div>
 
         {/* Status Messages */}
@@ -161,23 +236,38 @@ export default function DataMigration() {
         {results.length > 0 && (
           <div className="mt-6">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-              Migration Results:
+              {showNewsPreview ? '📰 News Migration Results:' : 'Migration Results:'}
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-96 overflow-y-auto">
               {results.map((result, index) => (
                 <div
                   key={index}
                   className={`p-4 rounded-lg ${
-                    result.success
+                    showNewsPreview
+                      ? result.status.includes('✅')
+                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                        : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                      : result.success
                       ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
                       : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
                   }`}
                 >
-                  <p className="font-semibold">{result.email}</p>
-                  <p className="text-sm">
-                    {result.success ? '✅ ' : '❌ '}
-                    {result.message || result.error}
-                  </p>
+                  {showNewsPreview ? (
+                    <>
+                      <p className="font-semibold">{result.title}</p>
+                      <p className="text-sm">
+                        {result.status} • {result.category} • {result.date}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="font-semibold">{result.email}</p>
+                      <p className="text-sm">
+                        {result.success ? '✅ ' : '❌ '}
+                        {result.message || result.error}
+                      </p>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
