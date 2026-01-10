@@ -33,7 +33,7 @@ export default function DashboardButton() {
   if (!isAdmin) return null
 
   return (
-    <div className="mb-6 inline-block">
+    <div className="mb-12 relative z-10">
       <Link
         href="/admin"
         className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
