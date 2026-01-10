@@ -46,7 +46,7 @@ export class StorageSync {
 
   /**
    * Load news from all available sources
-   * Priority: Server > localStorage > sessionStorage > Static data
+   * Priority: Server (if has data) > localStorage > sessionStorage > Static data
    */
   static async loadNews(fallbackData: any[] = []): Promise<any[]> {
     try {
@@ -54,6 +54,7 @@ export class StorageSync {
       const serverResponse = await fetch(SYNC_ENDPOINT)
       if (serverResponse.ok) {
         const { news: serverNews } = await serverResponse.json()
+        // Only use server data if it has actual items
         if (Array.isArray(serverNews) && serverNews.length > 0) {
           console.log('[StorageSync] Loaded from server:', serverNews.length, 'items')
           
@@ -67,13 +68,15 @@ export class StorageSync {
           
           return serverNews
         }
+        // Server returned empty array - continue to check local storage
       }
     } catch (error) {
       console.warn('[StorageSync] Server load failed:', error)
+      // Continue to local storage
     }
 
     try {
-      // Try localStorage
+      // Try localStorage (browser-specific but persists)
       if (typeof localStorage !== 'undefined') {
         const localData = localStorage.getItem(STORAGE_KEY)
         if (localData) {
@@ -95,7 +98,7 @@ export class StorageSync {
     }
 
     try {
-      // Try sessionStorage
+      // Try sessionStorage (per-tab storage)
       if (typeof sessionStorage !== 'undefined') {
         const sessionData = sessionStorage.getItem(SESSION_KEY)
         if (sessionData) {
@@ -110,6 +113,7 @@ export class StorageSync {
       console.warn('[StorageSync] sessionStorage load failed:', error)
     }
 
+    // No data from any source, use fallback (extended-news.json + defaults)
     console.log('[StorageSync] Using fallback data:', fallbackData.length, 'items')
     return fallbackData
   }
