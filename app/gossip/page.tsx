@@ -53,8 +53,8 @@ export default function GossipPage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-950">
-      <DashboardButton />
       <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
+        <DashboardButton />
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-gray-900 dark:text-white">

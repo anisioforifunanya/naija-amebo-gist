@@ -33,10 +33,10 @@ export default function DashboardButton() {
   if (!isAdmin) return null
 
   return (
-    <div className="fixed top-4 left-4 z-40 sm:top-6 sm:left-6">
+    <div className="mb-6 inline-block">
       <Link
         href="/admin"
-        className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
+        className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 text-sm sm:text-base"
       >
         <svg
           className="w-4 h-4 sm:w-5 sm:h-5"
@@ -51,7 +51,7 @@ export default function DashboardButton() {
             d="M15 19l-7-7 7-7"
           />
         </svg>
-        <span>Dashboard</span>
+        <span>Back to Dashboard</span>
       </Link>
     </div>
   )

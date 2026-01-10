@@ -72,8 +72,9 @@ export default function CelebrityNews() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <DashboardButton />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <DashboardButton />
+        <h1 className="text-4xl font-bold mb-8">Celebrity News</h1>
         <h1 className="text-4xl font-bold mb-8">Celebrity News</h1>
         <div className="space-y-8">
           {newsItems.map((item, index) => (
