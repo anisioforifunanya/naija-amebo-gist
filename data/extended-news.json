@@ -38,7 +38,11 @@
         "caption": "Check out the album teaser"
       }
     ],
-    "relatedStories": [2, 5, 8],
+    "relatedStories": [
+      2,
+      5,
+      8
+    ],
     "newsletter": true
   },
   {
@@ -71,9 +75,15 @@
     "comments": 324,
     "shares": 567,
     "archived": false,
-    "warningLabels": ["Unconfirmed Report", "Celebrity Gossip"],
+    "warningLabels": [
+      "Unconfirmed Report",
+      "Celebrity Gossip"
+    ],
     "misinformationWarning": "This story contains unconfirmed rumors. Please verify before sharing.",
-    "relatedStories": [3, 6]
+    "relatedStories": [
+      3,
+      6
+    ]
   },
   {
     "id": 3,
@@ -191,5 +201,128 @@
     "archived": false,
     "liveStreamUrl": "https://youtube.com/live/bbnaija-finale",
     "liveStreamArchived": true
+  },
+  {
+    "id": "1767511647657",
+    "title": "Venezeula",
+    "description": "President captured",
+    "category": "trending-stories",
+    "date": "04/01/2026, 08:27:27",
+    "status": "approved",
+    "submittedBy": "admin",
+    "hashtags": [
+      "#US_ARMY"
+    ],
+    "socialCaption": "They captured the president",
+    "serverAddedAt": "2026-01-10T08:08:33.454Z",
+    "isServerStored": true
+  },
+  {
+    "id": "1767512092046",
+    "title": "Venezula",
+    "description": "President captured",
+    "category": "trending-stories",
+    "date": "04/01/2026, 08:34:52",
+    "status": "approved",
+    "submittedBy": "Anisiofor Ifunanya",
+    "submitterEmail": "ifunanya.anisiofor@gmail.com",
+    "hashtags": [
+      "#US_army"
+    ],
+    "socialCaption": "President Captured",
+    "serverAddedAt": "2026-01-10T08:08:33.492Z",
+    "isServerStored": true
+  },
+  {
+    "id": "1767512841987",
+    "title": "New year",
+    "description": "Tax starts in Nigeria",
+    "category": "breaking-news",
+    "date": "04/01/2026, 08:47:21",
+    "status": "approved",
+    "submittedBy": "Alex",
+    "submitterEmail": "alex.anisiofor@gmail.com",
+    "hashtags": [
+      "#TaxReform"
+    ],
+    "socialCaption": "Nigeria Starts taxing their citizens",
+    "serverAddedAt": "2026-01-10T08:08:33.528Z",
+    "isServerStored": true
+  },
+  {
+    "id": "abia-politics-1",
+    "title": "🚨 ABIA POLITICS HEATS UP: ORJI UZOR KALU VS ALEX OTTI—FACTS, CLAIMS, AND COUNTERCLAIMS 🚨",
+    "description": "A fresh political storm is trending across national TV interviews, radio discussions, YouTube political shows, Instagram reels, TikTok commentary pages...",
+    "category": "trending-stories",
+    "date": "1/8/2026, 11:44:14 PM",
+    "status": "approved",
+    "excerpt": "A fresh political storm is trending across national TV interviews, radio discussions, YouTube political shows, Instagram reels, TikTok commentary pages...",
+    "slug": "abia-politics-orji-kalu-alex-otti",
+    "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "kanu-viral-1",
+    "title": "🔥 BREAKING VIRAL: Nigerian Legend Kanu Nwankwo & Wife Amara SLAY the Dave & Tems TikTok Challenge! 😍💃🕺 #ViralVideo 🔥",
+    "description": "Today the internet went absolutely crazy as iconic Nigerian football legend Kanu Nwankwo and his beautiful wife Amara Kanu totally nailed the trending...",
+    "category": "celebrity-news",
+    "date": "1/8/2026, 11:51:18 PM",
+    "status": "approved",
+    "excerpt": "Today the internet went absolutely crazy as iconic Nigerian football legend Kanu Nwankwo and his beautiful wife Amara Kanu totally nailed the trending...",
+    "slug": "kanu-nwankwo-viral-tiktok-challenge",
+    "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "regina-daniels-1",
+    "title": "🔥 BREAKING VIRAL: Medical Director Dismisses Claims Regina Daniels Flushed Drugs Before Negative Drug Test – Full Truth Emerges! 😱📸",
+    "description": "In the latest explosive turn in the ongoing Regina Daniels drug test controversy, a respected medical director and doctor publicly rubbished the wid...",
+    "category": "breaking-news",
+    "date": "1/8/2026, 11:55:06 PM",
+    "status": "approved",
+    "excerpt": "In the latest explosive turn in the ongoing Regina Daniels drug test controversy, a respected medical director and doctor publicly rubbished the wid...",
+    "slug": "regina-daniels-medical-director-drug-test",
+    "image": "https://images.unsplash.com/photo-1579154204601-01d82b27d100?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "nestle-recall-1",
+    "title": "🔥 BREAKING GLOBAL HEALTH ALERT: Nestlé Issues Massive Worldwide Recall of Infant Formula Over Dangerous Toxin Risk 🚨👶",
+    "description": "In a major global food safety emergency, Swiss food giant Nestlé has launched one of the largest infant formula recalls in history, pulling specific b...",
+    "category": "breaking-news",
+    "date": "1/8/2026, 11:58:56 PM",
+    "status": "approved",
+    "excerpt": "In a major global food safety emergency, Swiss food giant Nestlé has launched one of the largest infant formula recalls in history, pulling specific b...",
+    "slug": "nestle-infant-formula-recall-worldwide",
+    "image": "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "rivers-apc-1",
+    "title": "🚨 BREAKING POLITICAL DEVELOPMENTS: Rivers APC Firmly Rejects Impeachment Plot Against Governor Siminalayi Fubara",
+    "description": "Nigeria's political space is once again heated as the All Progressives Congress (APC) in Rivers State has officially rejected the ongoing impeachment ...",
+    "category": "breaking-news",
+    "date": "1/9/2026, 12:03:36 AM",
+    "status": "approved",
+    "excerpt": "Nigeria's political space is once again heated as the All Progressives Congress (APC) in Rivers State has officially rejected the ongoing impeachment ...",
+    "slug": "rivers-apc-rejects-impeachment-fubara",
+    "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "fave-women-1",
+    "title": "🔥 BREAKING: Singer Fave Urges Women to Lift One Another as Debate on Respect and Recognition Ignites Online 💃🎤",
+    "description": "Nigerian music sensation Fave has sparked an important nationwide conversation on women's empowerment and solidarity, drawing attention to the challen...",
+    "category": "entertainment",
+    "date": "1/9/2026, 12:09:32 AM",
+    "status": "approved",
+    "excerpt": "Nigerian music sensation Fave has sparked an important nationwide conversation on women's empowerment and solidarity, drawing attention to the challen...",
+    "slug": "fave-women-empowerment-debate",
+    "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=600&fit=crop"
+  },
+  {
+    "id": "mustsee-1",
+    "title": "#MustSee",
+    "description": "#TrendingNow...",
+    "category": "gossip",
+    "date": "1/9/2026, 1:14:30 AM",
+    "status": "approved",
+    "excerpt": "#TrendingNow...",
+    "slug": "mustsee-trending-now",
+    "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=600&fit=crop"
   }
-]
