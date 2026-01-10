@@ -7,7 +7,7 @@
     "tags": ["#Afrobeats", "#Music", "#Nigeria", "#Wizkid"],
     "content": "Afrobeats king Wizkid has done it again with his latest album...",
     "excerpt": "Breaking: Wizkid's album hits 100M streams in 24 hours",
-    "image": "/images/wizkid-album.jpg",
+    "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=600&fit=crop",
     "author": {
       "id": 1,
       "name": "Chidi Okafor",
@@ -48,7 +48,7 @@
     "tags": ["#Gossip", "#Celebrity", "#Tiwa", "#Dating"],
     "content": "Unconfirmed reports suggest Tiwa Savage is dating...",
     "excerpt": "RUMORS: Tiwa Savage's new romance?",
-    "image": "/images/tiwa-mystery.jpg",
+    "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=600&fit=crop",
     "author": {
       "id": 2,
       "name": "Zainab Adesina",
@@ -81,7 +81,7 @@
     "tags": ["#Interview", "#Rema", "#Music", "#Afrobeats"],
     "content": "In this exclusive sit-down, rising star Rema talks about...",
     "excerpt": "Rema reveals secrets to his meteoric rise in music",
-    "image": "/images/rema-interview.jpg",
+    "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=600&fit=crop",
     "author": {
       "id": 1,
       "name": "Chidi Okafor",
@@ -162,7 +162,7 @@
     "tags": ["#BBNaija", "#Reality TV", "#Nigeria", "#Entertainment"],
     "content": "The most dramatic moments from BBNaija Season 8...",
     "excerpt": "Who won? All the drama from the live finale",
-    "image": "/images/bbnaija-finale.jpg",
+    "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&fit=crop",
     "author": {
       "id": 4,
       "name": "Tunde Adeyemi",
