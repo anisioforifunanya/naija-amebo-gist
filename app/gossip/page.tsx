@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import HeadlineBanner from '@/components/HeadlineBanner'
 import NewsCard from '@/components/NewsCard'
+import DashboardButton from '@/components/DashboardButton'
 import { StorageSync } from '@/lib/storageSync'
 import extendedNews from '@/data/extended-news.json'
 
@@ -52,6 +53,7 @@ export default function GossipPage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-gray-950">
+      <DashboardButton />
       <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
         {/* Header */}
         <div className="mb-8">
