@@ -5,6 +5,7 @@ import LiveRecorder from '../../components/LiveRecorder'
 import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
 import VerificationApprovalSection from '@/components/VerificationApprovalSection'
 import extendedNews from '@/data/extended-news.json'
+import { StorageSync } from '@/lib/storageSync'
 
 interface AdminData {
   id: string;
@@ -197,78 +198,32 @@ export default function AdminDashboard() {
     const messages = JSON.parse(localStorage.getItem('naijaAmeboChatMessages') || '[]')
     setAllMessages(messages)
 
-    // Load news from server + localStorage + extended-news.json
-    try {
-      const response = await fetch('/api/admin/news')
-      const { news: serverNews } = await response.json()
-      const serverNewsArray = Array.isArray(serverNews) ? serverNews : []
-      
-      const localNewsData = JSON.parse(localStorage.getItem('naijaAmeboNews') || '[]')
-      
-      // Combine server news + local news
-      const combinedNews = [
-        ...serverNewsArray,
-        ...localNewsData,
-      ]
-      
-      // Convert extended news to NewsItem format
-      const staticNews = extendedNews.map((item: any) => ({
-        id: item.id?.toString() || Math.random().toString(),
-        title: item.title,
-        description: item.excerpt || item.content,
-        category: 'breaking-news',
-        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
-        status: 'approved' as const,
-        submittedBy: typeof item.author === 'object' ? item.author?.name || 'System' : (item.author || 'System'),
-        submitterEmail: 'system@naijaamebogist.com',
-        hashtags: item.tags || [],
-        socialCaption: '',
-        image: item.image,
-        video: item.videoUrl,
-      }))
-      
-      // Combine and deduplicate by title
-      const allCombined = [
-        ...combinedNews,
-        ...staticNews
-      ]
-      const uniqueNews = Array.from(
-        new Map(allCombined.map((item: any) => [item.title, item])).values()
-      )
-      
-      setNews(uniqueNews)
-      setAllNews(uniqueNews)
-    } catch (error) {
-      console.error('Error loading news:', error)
-      // Fallback to localStorage + extended-news
-      const localNewsData = JSON.parse(localStorage.getItem('naijaAmeboNews') || '[]')
-      
-      const staticNews = extendedNews.map((item: any) => ({
-        id: item.id?.toString() || Math.random().toString(),
-        title: item.title,
-        description: item.excerpt || item.content,
-        category: 'breaking-news',
-        date: item.publishedAt || item.updatedAt || new Date().toISOString(),
-        status: 'approved' as const,
-        submittedBy: typeof item.author === 'object' ? item.author?.name || 'System' : (item.author || 'System'),
-        submitterEmail: 'system@naijaamebogist.com',
-        hashtags: item.tags || [],
-        socialCaption: '',
-        image: item.image,
-        video: item.videoUrl,
-      }))
-      
-      const combinedNews = [
-        ...localNewsData,
-        ...staticNews
-      ]
-      const uniqueNews = Array.from(
-        new Map(combinedNews.map((item: any) => [item.title, item])).values()
-      )
-      
-      setNews(uniqueNews)
-      setAllNews(uniqueNews)
-    }
+    // Load news using StorageSync (server + localStorage + extended-news)
+    const staticNews = extendedNews.map((item: any) => ({
+      id: item.id?.toString() || Math.random().toString(),
+      title: item.title,
+      description: item.excerpt || item.content,
+      category: 'breaking-news',
+      date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+      status: 'approved' as const,
+      submittedBy: typeof item.author === 'object' ? item.author?.name || 'System' : (item.author || 'System'),
+      submitterEmail: 'system@naijaamebogist.com',
+      hashtags: item.tags || [],
+      socialCaption: '',
+      image: item.image,
+      video: item.videoUrl,
+    }))
+    
+    const loadedNews = await StorageSync.loadNews(staticNews)
+    console.log('[AdminDashboard] Loaded news:', loadedNews.length, 'items')
+    
+    // Deduplicate by title
+    const uniqueNews = Array.from(
+      new Map(loadedNews.map((item: any) => [item.title, item])).values()
+    )
+    
+    setNews(uniqueNews)
+    setAllNews(uniqueNews)
   }
 
   const forceRefreshRequests = () => {
@@ -912,18 +867,9 @@ export default function AdminDashboard() {
 
     const updatedNews = [...allNews, newArticle]
     setAllNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
     
-    // Save to server for cross-browser access
-    try {
-      await fetch('/api/admin/news', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newArticle),
-      })
-    } catch (error) {
-      console.error('Failed to save to server:', error)
-    }
+    // Save to all storages
+    await StorageSync.saveNews(updatedNews)
 
     setNewNewsForm({
       title: '',
@@ -970,11 +916,9 @@ export default function AdminDashboard() {
 
     const updatedNews = allNews.filter(n => n.id !== newsId)
     setAllNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
     
-    // Delete from server
-    fetch(`/api/admin/news?id=${newsId}`, { method: 'DELETE' })
-      .catch(err => console.error('Failed to delete from server:', err))
+    // Delete from all storages
+    StorageSync.deleteNews(newsId)
     
     alert('✅ News article deleted successfully!')
   }
