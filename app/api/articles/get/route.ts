@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase'
-import { collection, query, where, getDocs, orderBy, limit, startAfter, QueryConstraint } from 'firebase/firestore'
+import { collection, query, where, getDocs, QueryConstraint } from 'firebase/firestore'
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,9 +8,9 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
     const status = searchParams.get('status') || 'approved'
     const pageSize = parseInt(searchParams.get('pageSize') || '20')
-    const startIndex = parseInt(searchParams.get('startIndex') || '0')
 
-    let constraints: QueryConstraint[] = [
+    // Build query constraints
+    const constraints: QueryConstraint[] = [
       where('status', '==', status),
     ]
 
@@ -18,15 +18,15 @@ export async function GET(request: NextRequest) {
       constraints.push(where('category', '==', category))
     }
 
-    // Add orderBy and limit after where clauses
-    constraints.push(orderBy('createdAt', 'desc'))
-    constraints.push(limit(pageSize))
-
+    // Execute query without orderBy (to avoid composite index requirement)
     const q = query(collection(db, 'articles'), ...constraints)
     const querySnapshot = await getDocs(q)
 
+    // Transform documents
     const articles = querySnapshot.docs.map(doc => {
       const data = doc.data()
+      const createdAtDate = data.createdAt?.toDate?.() || new Date()
+      
       return {
         id: doc.id,
         title: data.title || '',
@@ -38,9 +38,9 @@ export async function GET(request: NextRequest) {
         hashtags: data.hashtags || [],
         submittedBy: data.submittedBy || '',
         submitterEmail: data.submitterEmail || '',
-        createdAt: data.createdAt?.toDate?.().toISOString() || new Date().toISOString(),
-        updatedAt: data.updatedAt?.toDate?.().toISOString() || new Date().toISOString(),
-        date: data.date || data.createdAt?.toDate?.().toISOString() || new Date().toISOString(),
+        createdAt: createdAtDate.toISOString(),
+        updatedAt: (data.updatedAt?.toDate?.() || createdAtDate).toISOString(),
+        date: data.date || createdAtDate.toISOString(),
         excerpt: data.excerpt || data.description?.substring(0, 200) || '',
         views: data.views || 0,
         likes: data.likes || 0,
@@ -49,9 +49,19 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Sort by date (newest first) - client-side sorting
+    const sorted = articles.sort((a, b) => {
+      const dateA = new Date(a.date).getTime()
+      const dateB = new Date(b.date).getTime()
+      return dateB - dateA
+    })
+
+    // Apply pagination
+    const paginated = sorted.slice(0, pageSize)
+
     return NextResponse.json({
-      articles,
-      total: querySnapshot.size,
+      articles: paginated,
+      total: articles.length,
       pageSize,
     })
   } catch (error) {
