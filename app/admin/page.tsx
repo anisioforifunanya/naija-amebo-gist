@@ -1222,6 +1222,13 @@ export default function AdminDashboard() {
             {/* Quick Links */}
             <div className="flex items-center space-x-2 flex-shrink-0 flex-wrap gap-2">
               <Link
+                href="/admin"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-lg hover:from-slate-700 hover:to-slate-800 font-semibold transition-all shadow-md hover:shadow-lg"
+              >
+                <span className="text-lg">📈</span>
+                <span>Dashboard</span>
+              </Link>
+              <Link
                 href="/admin/user-presence"
                 className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 font-semibold transition-all shadow-md hover:shadow-lg"
               >
