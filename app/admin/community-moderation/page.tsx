@@ -93,6 +93,7 @@ export default function CommunityModeration() {
           )}
         </div>
       </div>
+      </div>
     </div>
   )
 }

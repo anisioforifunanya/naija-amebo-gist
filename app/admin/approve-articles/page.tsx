@@ -84,6 +84,7 @@ export default function ApproveArticles() {
           ))}
         </div>
       )}
+      </div>
     </div>
   )
 }

@@ -263,6 +263,7 @@ export default function GeoLocationMap() {
         <strong>🔒 IP-Based Geolocation Notice:</strong> Locations are derived from IP addresses only (city-level accuracy ~50km). 
         No GPS or personal location data is collected. All data is anonymized and GDPR/NDPR compliant.
       </div>
+      </div>
     </div>
   )
 }

@@ -330,6 +330,7 @@ export default function AnalyticsMonitor() {
         No personally identifiable information (PII) is collected. All data is anonymized and users can opt-out. 
         Compliant with NDPR, GDPR, and CCPA regulations.
       </div>
+      </div>
     </div>
   )
 }

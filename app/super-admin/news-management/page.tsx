@@ -325,6 +325,7 @@ export default function NewsManagementDashboard() {
           <strong>Next Phase:</strong> Authentication & RBAC System + Content Management Suite (500+ features planned)
         </p>
       </div>
+      </div>
     </div>
   );
 }

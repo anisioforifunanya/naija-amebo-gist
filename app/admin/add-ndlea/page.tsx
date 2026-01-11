@@ -83,6 +83,7 @@ export default function AddNDLEAArticle() {
           {status}
         </div>
       )}
+      </div>
     </div>
   )
 }

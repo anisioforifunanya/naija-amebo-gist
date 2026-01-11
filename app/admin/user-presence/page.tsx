@@ -130,6 +130,7 @@ export default function UserPresenceMonitor() {
           No users found
         </div>
       )}
+      </div>
     </div>
   )
 }
