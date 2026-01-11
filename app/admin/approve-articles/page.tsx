@@ -43,6 +43,15 @@ export default function ApproveArticles() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
+      {/* Back Button - Fixed at Top */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 px-8 py-3">
+        <Link href="/admin" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
+          <span className="mr-2">← Back to Admin Dashboard</span>
+        </Link>
+      </div>
+
+      {/* Main Content with Top Padding */}
+      <div className="pt-12">
       <Link href="/admin" className="text-blue-600 hover:underline mb-4 inline-block">
         ← Back to Admin
       </Link>

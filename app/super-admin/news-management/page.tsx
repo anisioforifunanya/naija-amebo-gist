@@ -106,6 +106,15 @@ export default function NewsManagementDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-4">
+      {/* Back Button - Fixed at Top */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 px-8 py-3">
+        <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
+          <span className="mr-2">← Back to Home</span>
+        </Link>
+      </div>
+
+      {/* Main Content with Top Padding */}
+      <div className="pt-12">
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl shadow-2xl">

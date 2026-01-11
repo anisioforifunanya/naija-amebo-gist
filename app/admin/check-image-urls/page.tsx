@@ -42,7 +42,15 @@ export default function CheckImageUrls() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50 p-8">
-      <div className="max-w-6xl mx-auto">
+      {/* Back Button - Fixed at Top */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 px-8 py-3 rounded-none">
+        <Link href="/admin" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
+          <span className="mr-2">← Back to Admin Dashboard</span>
+        </Link>
+      </div>
+
+      {/* Main Content with Top Padding */}
+      <div className="max-w-6xl mx-auto pt-16">
         <div className="mb-8">
           <Link href="/admin" className="text-blue-600 hover:underline">
             ← Back to Admin

@@ -32,7 +32,16 @@ export default function CommunityModeration() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Back Button - Fixed at Top */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 px-8 py-3">
+        <Link href="/admin" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
+          <span className="mr-2">← Back to Admin Dashboard</span>
+        </Link>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex items-center justify-center min-h-screen p-4 pt-20">
       <div className="max-w-md w-full space-y-6 text-center">
         <div className="space-y-4">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30">

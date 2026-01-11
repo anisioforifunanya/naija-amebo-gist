@@ -33,7 +33,15 @@ export default function ExportData() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-2xl mx-auto">
+      {/* Back Button - Fixed at Top */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 px-8 py-3">
+        <Link href="/admin" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
+          <span className="mr-2">← Back to Admin Dashboard</span>
+        </Link>
+      </div>
+
+      {/* Main Content with Top Padding */}
+      <div className="max-w-2xl mx-auto pt-16">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-4">📊 Data Export</h1>
           
