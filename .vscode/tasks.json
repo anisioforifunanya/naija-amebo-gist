@@ -6,35 +6,20 @@
 			"type": "shell",
 			"command": "npm run dev",
 			"isBackground": true,
-			"group": "build"
-		},
-		{
-			"label": "Run Dev Server",
-			"type": "shell",
-			"command": "npm run dev",
-			"isBackground": true,
-			"group": "build"
-		},
-		{
-			"label": "Run Dev Server",
-			"type": "shell",
-			"command": "npm run dev",
-			"isBackground": true,
-			"group": "build"
-		},
-		{
-			"label": "Run Dev Server",
-			"type": "shell",
-			"command": "npm run dev",
-			"isBackground": true,
-			"group": "build"
-		},
-		{
-			"label": "Run Dev Server",
-			"type": "shell",
-			"command": "npm run dev",
-			"isBackground": true,
-			"group": "build"
+			"group": "build",
+			"problemMatcher": {
+				"pattern": {
+					"regexp": "^.*$",
+					"file": 1,
+					"location": 2,
+					"message": 3
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^ready",
+					"endsPattern": "^compiled"
+				}
+			}
 		}
 	]
 }

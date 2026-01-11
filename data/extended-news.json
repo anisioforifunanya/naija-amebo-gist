@@ -337,5 +337,46 @@
     "excerpt": "#TrendingNow...",
     "slug": "mustsee-trending-now",
     "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=600&fit=crop"
+  },
+  {
+    "id": 16,
+    "title": "BREAKING: Angry Youths Flood Streets in Ekpoma, Edo State, Protest Rising Kidnappings, Pull Down APC Campaign Billboards",
+    "description": "Tension gripped Ekpoma, Edo State, as angry youths took to the streets in a massive protest against the alarming surge in kidnappings and worsening insecurity, expressing deep frustration over what they describe as the government's failure to protect lives and property in the area. Viral videos and eyewitness reports circulating across Google search, TikTok, Instagram, Facebook and major Nigerian TV stations show protesters chanting, blocking roads and tearing down APC campaign billboards, a symbolic act many say reflects growing public anger toward political leadership amid increasing cases of abductions affecting students, residents and commuters around Ekpoma and neighboring communities.",
+    "excerpt": "Angry youths in Ekpoma, Edo State flood streets to protest rising kidnappings and insecurity, pull down APC campaign billboards",
+    "category": "breaking-news",
+    "date": "2026-01-10",
+    "status": "approved",
+    "submittedBy": "IFUNANYA ANISIOFOR",
+    "submitterEmail": "ifunanya.anisiofor@gmail.com",
+    "slug": "ekpoma-youths-protest-kidnappings-edo-state",
+    "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
+    "author": {
+      "id": 5,
+      "name": "IFUNANYA ANISIOFOR",
+      "bio": "Breaking news correspondent",
+      "avatar": "/avatars/ifunanya.jpg",
+      "verified": true,
+      "credibilityScore": 98
+    },
+    "publishedAt": "2026-01-10T19:38:21Z",
+    "updatedAt": "2026-01-10T19:38:21Z",
+    "contentType": "breaking-news",
+    "isVerified": true,
+    "isBreakinNews": true,
+    "isFeatured": true,
+    "tags": [
+      "Ekpoma",
+      "Edo State",
+      "kidnappings",
+      "insecurity",
+      "protest",
+      "youths",
+      "APC"
+    ],
+    "views": 8234,
+    "likes": 567,
+    "comments": 234,
+    "shares": 891,
+    "archived": false
   }
 ]
