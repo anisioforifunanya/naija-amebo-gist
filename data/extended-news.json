@@ -378,5 +378,45 @@
     "comments": 234,
     "shares": 891,
     "archived": false
+  },
+  {
+    "id": 17,
+    "title": "Lagos State Governor Babajide Sanwo-Olu Orders Investigation into Death of Chimamanda Adichie's Son",
+    "description": "Lagos State Governor Babajide Sanwo-Olu has ordered a full investigation into allegations of medical negligence following the d3ath of Nkanu Nnamdi, the 21-month-old son of renowned Nigerian author Chimamanda Ngozi Adichie. Lib reported that Nkanu, one of Adichie's twin sons, died at a Euracare hospital in Lagos on January 6, 2026, from an illness. Read here Adichie, in a statement on January 10, agem released on Saturday, confirming that it had received an account from Adichie detailing the circumstances surrounding the d33th of her son. The statement, signed by the Special Adviser to the Governor on Health, Dr Kemi Ogunyemi, described the incident as deeply distressing and extended condolences to the author and her family, noting that the loss of a child is a profound tragedy. According to the statement, Governor Sanwo-Olu has directed the Health Facility Monitoring and Accreditation Agency (HEFAMAA) to immediately commence a comprehensive, independent and transparent investigation into the incident. The probe is expected to establish both the immediate and underlying causes of the child's d3ath and determine whether there were lapses in professional conduct or medical standards.",
+    "excerpt": "Governor Sanwo-Olu orders probe into medical negligence allegations in d3ath of Chimamanda Adichie's son",
+    "category": "breaking-news",
+    "date": "2026-01-11",
+    "status": "approved",
+    "submittedBy": "IFUNANYA ANISIOFOR",
+    "submitterEmail": "ifunanya.anisiofor@gmail.com",
+    "slug": "governor-sanwo-investigates-chimamanda-adichie-son-death",
+    "image": "https://images.unsplash.com/photo-1491841573634-28fb1daf603d?w=800&h=600&fit=crop",
+    "author": {
+      "id": 5,
+      "name": "IFUNANYA ANISIOFOR",
+      "bio": "Breaking news correspondent",
+      "avatar": "/avatars/ifunanya.jpg",
+      "verified": true,
+      "credibilityScore": 98
+    },
+    "publishedAt": "2026-01-11T08:15:00Z",
+    "updatedAt": "2026-01-11T08:15:00Z",
+    "contentType": "breaking-news",
+    "isVerified": true,
+    "isBreakinNews": true,
+    "isFeatured": true,
+    "tags": [
+      "Chimamanda Adichie",
+      "Lagos",
+      "Medical Investigation",
+      "Governor Sanwo-Olu",
+      "Health",
+      "Investigation"
+    ],
+    "views": 5234,
+    "likes": 456,
+    "comments": 189,
+    "shares": 723,
+    "archived": false
   }
 ]
