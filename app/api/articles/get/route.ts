@@ -12,23 +12,42 @@ export async function GET(request: NextRequest) {
 
     let constraints: QueryConstraint[] = [
       where('status', '==', status),
-      orderBy('createdAt', 'desc'),
-      limit(pageSize)
     ]
 
     if (category && category !== 'all') {
-      constraints.unshift(where('category', '==', category))
+      constraints.push(where('category', '==', category))
     }
+
+    // Add orderBy and limit after where clauses
+    constraints.push(orderBy('createdAt', 'desc'))
+    constraints.push(limit(pageSize))
 
     const q = query(collection(db, 'articles'), ...constraints)
     const querySnapshot = await getDocs(q)
 
-    const articles = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate?.().toISOString() || new Date().toISOString(),
-      updatedAt: doc.data().updatedAt?.toDate?.().toISOString() || new Date().toISOString(),
-    }))
+    const articles = querySnapshot.docs.map(doc => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        title: data.title || '',
+        description: data.description || '',
+        category: data.category || '',
+        status: data.status || 'pending',
+        image: data.image || '',
+        video: data.video || '',
+        hashtags: data.hashtags || [],
+        submittedBy: data.submittedBy || '',
+        submitterEmail: data.submitterEmail || '',
+        createdAt: data.createdAt?.toDate?.().toISOString() || new Date().toISOString(),
+        updatedAt: data.updatedAt?.toDate?.().toISOString() || new Date().toISOString(),
+        date: data.date || data.createdAt?.toDate?.().toISOString() || new Date().toISOString(),
+        excerpt: data.excerpt || data.description?.substring(0, 200) || '',
+        views: data.views || 0,
+        likes: data.likes || 0,
+        comments: data.comments || 0,
+        shares: data.shares || 0,
+      }
+    })
 
     return NextResponse.json({
       articles,
