@@ -13,7 +13,11 @@ export async function POST(request: NextRequest) {
       // Convert File to base64
       const buffer = await file.arrayBuffer()
       const bytes = new Uint8Array(buffer)
-      const binary = String.fromCharCode(...bytes)
+      // Convert bytes to binary string
+      let binary = ''
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i])
+      }
       fileData = 'data:' + file.type + ';base64,' + btoa(binary)
     } else {
       // Fallback to base64 string (from image migration)
