@@ -1,9 +1,29 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 export default function BottomNav() {
   const pathname = usePathname()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+    // Check if user is logged in (stored in localStorage)
+    const currentUser = localStorage.getItem('naijaAmeboCurrentUser')
+    const currentAdmin = localStorage.getItem('naijaAmeboCurrentAdmin')
+    const currentSuperAdmin = localStorage.getItem('naijaAmeboCurrentSuperAdmin')
+    
+    if (currentUser || currentAdmin || currentSuperAdmin) {
+      setIsLoggedIn(true)
+    }
+  }, [])
+
+  // Don't render until mounted (avoid hydration issues)
+  if (!isMounted || !isLoggedIn) {
+    return null
+  }
 
   const isActive = (href: string) => pathname === href
 
