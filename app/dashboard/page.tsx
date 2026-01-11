@@ -321,6 +321,24 @@ export default function UserDashboard() {
 
         {/* Quick Links */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <Link href="/dashboard/user-presence" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
+            <div className="text-4xl mb-3">🟢</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-sm">User Presence</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400">Who's online</p>
+          </Link>
+
+          <Link href="/dashboard/analytics" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
+            <div className="text-4xl mb-3">📊</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Analytics</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400">View metrics</p>
+          </Link>
+
+          <Link href="/dashboard/geo-map" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
+            <div className="text-4xl mb-3">🗺️</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Geo Map</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-400">Regional data</p>
+          </Link>
+
           <Link href="/community" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
             <div className="text-4xl mb-3">💬</div>
             <h3 className="font-bold text-gray-900 dark:text-white text-sm">Community</h3>
@@ -331,24 +349,6 @@ export default function UserDashboard() {
             <div className="text-4xl mb-3">✉️</div>
             <h3 className="font-bold text-gray-900 dark:text-white text-sm">Messages</h3>
             <p className="text-xs text-gray-600 dark:text-gray-400">Conversations</p>
-          </Link>
-
-          <Link href="/group-chats" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
-            <div className="text-4xl mb-3">👥</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Group Chats</h3>
-            <p className="text-xs text-gray-600 dark:text-gray-400">With friends</p>
-          </Link>
-
-          <Link href="/channels" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
-            <div className="text-4xl mb-3">#</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Channels</h3>
-            <p className="text-xs text-gray-600 dark:text-gray-400">Topics</p>
-          </Link>
-
-          <Link href="/submit-news" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
-            <div className="text-4xl mb-3">📰</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-sm">Submit News</h3>
-            <p className="text-xs text-gray-600 dark:text-gray-400">Share story</p>
           </Link>
 
           <Link href={`/profile/${currentUser.id}`} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all">
