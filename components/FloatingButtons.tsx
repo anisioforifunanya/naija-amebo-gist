@@ -36,8 +36,8 @@ export default function FloatingButtons() {
   useLayoutEffect(() => {
     const checkButtonSize = () => {
       // Show 6 animated buttons on all devices (smaller buttons on smaller screens)
-      // 50px for very small screens, 80px for larger screens
-      const size = typeof window !== 'undefined' ? (window.innerWidth < 300 ? 40 : window.innerWidth < 500 ? 50 : 80) : 50
+      // 40px for very small screens, 50px for tablets, 80px for larger desktop screens
+      const size = typeof window !== 'undefined' ? (window.innerWidth < 400 ? 40 : window.innerWidth < 768 ? 50 : 80) : 50
       setButtonSize(size)
     }
     
@@ -245,15 +245,16 @@ export default function FloatingButtons() {
     }
   }, [buttonSize])
 
-  // Don't render full animation on mobile - show simplified grid instead
-  if (buttonSize < 50) {
+  // Don't render full animation on very small screens - show simplified grid instead
+  // But keep dragging functionality
+  if (buttonSize < 40) {
     return (
-      <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2">
+      <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-1">
         {buttons.slice(0, 3).map((button) => (
           <Link
             key={button.id}
             href={button.href}
-            className={`bg-gradient-to-br ${button.bgColor} text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110 active:scale-95 flex items-center justify-center w-12 h-12 text-base`}
+            className={`bg-gradient-to-br ${button.bgColor} text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110 active:scale-95 flex items-center justify-center w-10 h-10 text-sm cursor-grab hover:cursor-grab active:cursor-grabbing`}
             title={button.label}
           >
             {button.icon}
@@ -394,38 +395,39 @@ export default function FloatingButtons() {
                 items-center
                 justify-center
                 gap-0.5
-                p-2.5
-                w-20
-                h-20
+                p-2
                 group
                 relative
                 overflow-hidden
                 block
                 ${isDragging ? 'scale-105' : ''}
+                ${buttonSize < 50 ? 'w-14 h-14' : buttonSize < 70 ? 'w-16 h-16' : 'w-20 h-20'}
               `}
               style={{
-                pointerEvents: isDragging ? 'none' : 'auto'
+                pointerEvents: isDragging ? 'none' : 'auto',
+                width: `${buttonSize}px`,
+                height: `${buttonSize}px`
               }}
             >
               {/* Animated background glow */}
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               
               {/* Icon and label */}
-              <div className="relative z-10 text-center">
+              <div className="relative z-10 text-center flex flex-col items-center justify-center">
                 {showLogoId === button.id ? (
-                  <div className="flex items-center justify-center h-8">
+                  <div className={`flex items-center justify-center ${buttonSize < 50 ? 'h-5' : buttonSize < 70 ? 'h-6' : 'h-8'}`}>
                     <Image 
                       src={button.id === 1 ? "/amebo-logo.png" : "/logo.png"}
                       alt="Amebo Logo" 
-                      width={32} 
-                      height={32}
-                      className="w-8 h-8 object-contain"
+                      width={buttonSize < 50 ? 16 : buttonSize < 70 ? 20 : 32}
+                      height={buttonSize < 50 ? 16 : buttonSize < 70 ? 20 : 32}
+                      className={`object-contain ${buttonSize < 50 ? 'w-4 h-4' : buttonSize < 70 ? 'w-5 h-5' : 'w-8 h-8'}`}
                     />
                   </div>
                 ) : (
-                  <div className="text-2xl mb-0.5">{button.icon}</div>
+                  <div className={`mb-0.5 ${buttonSize < 50 ? 'text-lg' : buttonSize < 70 ? 'text-xl' : 'text-2xl'}`}>{button.icon}</div>
                 )}
-                <div className="text-2xs font-bold whitespace-nowrap">{button.label}</div>
+                <div className={`font-bold whitespace-nowrap ${buttonSize < 50 ? 'text-xs' : buttonSize < 70 ? 'text-2xs' : 'text-2xs'}`}>{button.label}</div>
               </div>
             </Link>
           </div>
