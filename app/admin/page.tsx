@@ -1222,6 +1222,13 @@ export default function AdminDashboard() {
             {/* Quick Links */}
             <div className="flex items-center space-x-2 flex-shrink-0">
               <Link
+                href="/admin/user-presence"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 font-semibold transition-all shadow-md hover:shadow-lg"
+              >
+                <span className="text-lg">🟢</span>
+                <span>User Presence</span>
+              </Link>
+              <Link
                 href="/admin/community-moderation"
                 className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:from-purple-600 hover:to-blue-600 font-semibold transition-all shadow-md hover:shadow-lg"
               >
