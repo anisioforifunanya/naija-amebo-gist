@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import LiveRecorder from '../../components/LiveRecorder'
+import NotificationToast from '../../components/NotificationToast'
 
 interface NewsSubmission {
   title: string
@@ -34,6 +35,10 @@ export default function SubmitNews() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [notification, setNotification] = useState<{
+    message: string
+    type: 'success' | 'error' | 'info' | 'warning'
+  } | null>(null)
 
   useEffect(() => {
     setIsMounted(true)
@@ -61,6 +66,10 @@ export default function SubmitNews() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setNotification({
+      message: '⏳ Uploading your submission...',
+      type: 'info'
+    })
 
     try {
       let imageUrl = '';
@@ -68,11 +77,19 @@ export default function SubmitNews() {
 
       // Upload image to Cloudinary if exists
       if (formData.image) {
+        setNotification({
+          message: '📸 Uploading image to Cloudinary...',
+          type: 'info'
+        })
         imageUrl = await uploadToCloudinary(formData.image)
       }
 
       // Upload video to Cloudinary if exists
       if (formData.video) {
+        setNotification({
+          message: '🎥 Uploading video to Cloudinary...',
+          type: 'info'
+        })
         videoUrl = await uploadToCloudinary(formData.video)
       }
 
@@ -92,6 +109,11 @@ export default function SubmitNews() {
         video: videoUrl || undefined,
       }
 
+      setNotification({
+        message: '💾 Saving to local storage...',
+        type: 'info'
+      })
+
       // Get existing news from localStorage
       const existingNews = localStorage.getItem('naijaAmeboNews')
       const newsArray = existingNews ? JSON.parse(existingNews) : []
@@ -102,6 +124,10 @@ export default function SubmitNews() {
 
       setIsSubmitting(false)
       setSubmitted(true)
+      setNotification({
+        message: `✓ Success! Your article "${formData.title}" has been saved to your submissions. It's pending admin review.`,
+        type: 'success'
+      })
 
       // Reset form
       setFormData({
@@ -119,7 +145,11 @@ export default function SubmitNews() {
       })
     } catch (error) {
       setIsSubmitting(false)
-      alert(`Error submitting news: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      setNotification({
+        message: `✕ Error submitting news: ${errorMessage}`,
+        type: 'error'
+      })
     }
   }
 
@@ -151,6 +181,14 @@ export default function SubmitNews() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-12">
+      {notification && (
+        <NotificationToast
+          message={notification.message}
+          type={notification.type}
+          duration={6000}
+          onClose={() => setNotification(null)}
+        />
+      )}
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-8">
