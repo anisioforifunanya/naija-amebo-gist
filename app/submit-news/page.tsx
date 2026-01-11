@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import LiveRecorder from '../../components/LiveRecorder'
 import NotificationToast from '../../components/NotificationToast'
+import { createArticleInFirebase } from '@/lib/useArticles'
 
 interface NewsSubmission {
   title: string
@@ -108,51 +109,28 @@ export default function SubmitNews() {
         videoUrl = await uploadToCloudinary(formData.video)
       }
 
-      // Create news item
-      const newsItem = {
-        id: Date.now().toString(),
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        date: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
-        status: 'pending',
-        submittedBy: formData.submitterName,
-        submitterEmail: formData.submitterEmail,
-        hashtags: formData.hashtags.split(',').map(tag => tag.trim()),
-        socialCaption: formData.socialCaption,
-        image: imageUrl || undefined,
-        video: videoUrl || undefined,
-      }
-
       setNotification({
-        message: '💾 Saving to local storage...',
+        message: '💾 Saving to Firebase database...',
         type: 'info'
       })
 
-      // Check localStorage size before saving
-      const existingNews = localStorage.getItem('naijaAmeboNews')
-      const newsArray = existingNews ? JSON.parse(existingNews) : []
-      
-      // Calculate size
-      const serialized = JSON.stringify(newsArray)
-      const sizeInBytes = new Blob([serialized]).size
-      const sizeInMB = parseFloat((sizeInBytes / (1024 * 1024)).toFixed(2))
-      
-      if (sizeInMB > 4) {
-        setNotification({
-          message: `⚠️ Warning: localStorage is ${sizeInMB}MB (limit is ~5MB). Delete old articles to free space.`,
-          type: 'warning'
-        })
-      }
-
-      // Add new submission
-      newsArray.push(newsItem)
-      localStorage.setItem('naijaAmeboNews', JSON.stringify(newsArray))
+      // Create article in Firebase (not localStorage anymore!)
+      const result = await createArticleInFirebase({
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        submitterName: formData.submitterName,
+        submitterEmail: formData.submitterEmail,
+        image: imageUrl || undefined,
+        video: videoUrl || undefined,
+        hashtags: formData.hashtags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        socialCaption: formData.socialCaption,
+      })
 
       setIsSubmitting(false)
       setSubmitted(true)
       setNotification({
-        message: `✓ Success! Your article "${formData.title}" has been saved to your submissions. It's pending admin review.`,
+        message: `✓ Success! Your article "${formData.title}" has been saved to Firebase database. It's pending admin review.`,
         type: 'success'
       })
 

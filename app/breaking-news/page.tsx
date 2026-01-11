@@ -26,55 +26,81 @@ export default function BreakingNews() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Load static news from extended-news.json
-    const staticNews = (extendedNews as any[])
-      .filter((item: any) => item.category === 'breaking-news' && item.status === 'approved')
-      .map((item: any) => ({
-        id: item.id?.toString() || '',
-        title: item.title,
-        description: item.excerpt || item.description,
-        date: item.date,
-        publishedAt: item.publishedAt || item.date,
-        category: item.category,
-        status: item.status as 'approved' | 'pending' | 'rejected',
-        author: typeof item.author === 'object' ? item.author?.name : item.author,
-        hashtags: item.hashtags || [],
-        image: item.image,
-        video: item.videoUrl,
-      }))
+    const loadArticles = async () => {
+      try {
+        // Load from Firebase
+        const response = await fetch('/api/articles/get?category=breaking-news&status=approved')
+        const firebaseData = await response.json()
+        const firebaseNews = (firebaseData.articles || []).map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          description: item.excerpt || item.description,
+          date: item.date,
+          publishedAt: item.createdAt || item.date,
+          category: item.category,
+          status: item.status as 'approved' | 'pending' | 'rejected',
+          submittedBy: item.submittedBy,
+          hashtags: item.hashtags || [],
+          image: item.image,
+          video: item.videoUrl,
+        }))
 
-    // Load user-submitted breaking news from localStorage
-    const savedNews: NewsItem[] = []
-    try {
-      const stored = localStorage.getItem('naijaAmeboNews')
-      if (stored) {
-        const allNews = JSON.parse(stored)
-        const breakingNews = allNews.filter(
-          (item: any) => 
-            item.category === 'breaking-news' && 
-            item.status === 'approved'
+        // Load static news from extended-news.json
+        const staticNews = (extendedNews as any[])
+          .filter((item: any) => item.category === 'breaking-news' && item.status === 'approved')
+          .map((item: any) => ({
+            id: item.id?.toString() || '',
+            title: item.title,
+            description: item.excerpt || item.description,
+            date: item.date,
+            publishedAt: item.publishedAt || item.date,
+            category: item.category,
+            status: item.status as 'approved' | 'pending' | 'rejected',
+            author: typeof item.author === 'object' ? item.author?.name : item.author,
+            hashtags: item.hashtags || [],
+            image: item.image,
+            video: item.videoUrl,
+          }))
+
+        // Merge both sources and remove duplicates by title
+        const allArticles = [...firebaseNews, ...staticNews]
+        const uniqueArticles = Array.from(
+          new Map(allArticles.map((item) => [item.title, item])).values()
         )
-        savedNews.push(...breakingNews)
+
+        // Sort by date (newest first)
+        const sorted = uniqueArticles.sort((a: any, b: any) => {
+          const dateA = new Date(a.publishedAt || a.date).getTime()
+          const dateB = new Date(b.publishedAt || b.date).getTime()
+          return dateB - dateA
+        })
+
+        setArticles(sorted)
+      } catch (error) {
+        console.error('Error loading articles:', error)
+        // Fallback to static news only
+        const staticNews = (extendedNews as any[])
+          .filter((item: any) => item.category === 'breaking-news' && item.status === 'approved')
+          .map((item: any) => ({
+            id: item.id?.toString() || '',
+            title: item.title,
+            description: item.excerpt || item.description,
+            date: item.date,
+            publishedAt: item.publishedAt || item.date,
+            category: item.category,
+            status: item.status as 'approved' | 'pending' | 'rejected',
+            author: typeof item.author === 'object' ? item.author?.name : item.author,
+            hashtags: item.hashtags || [],
+            image: item.image,
+            video: item.videoUrl,
+          }))
+        setArticles(staticNews)
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error) {
-      console.error('Error loading saved news:', error)
     }
 
-    // Merge both sources and remove duplicates by title
-    const allArticles = [...staticNews, ...savedNews]
-    const uniqueArticles = Array.from(
-      new Map(allArticles.map((item) => [item.title, item])).values()
-    )
-
-    // Sort by date (newest first)
-    const sorted = uniqueArticles.sort((a: any, b: any) => {
-      const dateA = new Date(a.publishedAt || a.date).getTime()
-      const dateB = new Date(b.publishedAt || b.date).getTime()
-      return dateB - dateA
-    })
-
-    setArticles(sorted)
-    setIsLoading(false)
+    loadArticles()
   }, [])
 
   if (isLoading) {
