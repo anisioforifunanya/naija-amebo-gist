@@ -9,6 +9,8 @@ import { ThemeProvider } from '../lib/theme'
 import ClientSideFeatures from '../components/ClientSideFeatures'
 import { NewsSchedulerInit } from '../components/NewsSchedulerInit'
 import { SEO_CONFIG } from '@/lib/seo-config'
+import { AnalyticsTracker } from '../components/AnalyticsTracker'
+import { AnalyticsConsentBanner } from '../components/AnalyticsConsentBanner'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -165,6 +167,8 @@ export default function RootLayout({
         <ThemeProvider>
           <BrowserCompatibilityInit />
           <NewsSchedulerInit />
+          <AnalyticsTracker />
+          <AnalyticsConsentBanner />
           <Header />
           <main className="pt-20 pb-32">{children}</main>
           <Footer />

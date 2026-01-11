@@ -1220,13 +1220,27 @@ export default function AdminDashboard() {
             </nav>
 
             {/* Quick Links */}
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className="flex items-center space-x-2 flex-shrink-0 flex-wrap gap-2">
               <Link
                 href="/admin/user-presence"
                 className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 font-semibold transition-all shadow-md hover:shadow-lg"
               >
                 <span className="text-lg">🟢</span>
                 <span>User Presence</span>
+              </Link>
+              <Link
+                href="/admin/analytics-monitor"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all shadow-md hover:shadow-lg"
+              >
+                <span className="text-lg">📊</span>
+                <span>Analytics</span>
+              </Link>
+              <Link
+                href="/admin/geolocation-map"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 font-semibold transition-all shadow-md hover:shadow-lg"
+              >
+                <span className="text-lg">🗺️</span>
+                <span>Geo Map</span>
               </Link>
               <Link
                 href="/admin/community-moderation"
@@ -1237,7 +1251,7 @@ export default function AdminDashboard() {
               </Link>
               <Link
                 href="/private-messages"
-                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 font-semibold transition-all shadow-md hover:shadow-lg"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-400 to-cyan-500 text-white rounded-lg hover:from-blue-500 hover:to-cyan-600 font-semibold transition-all shadow-md hover:shadow-lg"
               >
                 <span className="text-lg">💬</span>
                 <span>Messages</span>
