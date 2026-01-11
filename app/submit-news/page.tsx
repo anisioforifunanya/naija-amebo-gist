@@ -39,98 +39,88 @@ export default function SubmitNews() {
     setIsMounted(true)
   }, [])
 
-  // Helper function to convert file to base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  }
+  // Upload file to Cloudinary
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
 
-  // Helper function to convert blob to base64
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
+    const response = await fetch('/api/upload-image', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.details || 'Upload failed')
+    }
+
+    const data = await response.json()
+    return data.url
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    let imageBase64 = '';
-    let videoBase64 = '';
-    let liveVideoBase64 = '';
-    let liveAudioBase64 = '';
+    try {
+      let imageUrl = '';
+      let videoUrl = '';
 
-    // Convert image to base64 if exists
-    if (formData.image) {
-      imageBase64 = await fileToBase64(formData.image);
+      // Upload image to Cloudinary if exists
+      if (formData.image) {
+        imageUrl = await uploadToCloudinary(formData.image)
+      }
+
+      // Upload video to Cloudinary if exists
+      if (formData.video) {
+        videoUrl = await uploadToCloudinary(formData.video)
+      }
+
+      // Create news item
+      const newsItem = {
+        id: Date.now().toString(),
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        date: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
+        status: 'pending',
+        submittedBy: formData.submitterName,
+        submitterEmail: formData.submitterEmail,
+        hashtags: formData.hashtags.split(',').map(tag => tag.trim()),
+        socialCaption: formData.socialCaption,
+        image: imageUrl || undefined,
+        video: videoUrl || undefined,
+      }
+
+      // Get existing news from localStorage
+      const existingNews = localStorage.getItem('naijaAmeboNews')
+      const newsArray = existingNews ? JSON.parse(existingNews) : []
+
+      // Add new submission
+      newsArray.push(newsItem)
+      localStorage.setItem('naijaAmeboNews', JSON.stringify(newsArray))
+
+      setIsSubmitting(false)
+      setSubmitted(true)
+
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        category: 'breaking-news',
+        hashtags: '',
+        socialCaption: '',
+        submitterName: '',
+        submitterEmail: '',
+        image: undefined,
+        video: undefined,
+        liveVideo: undefined,
+        liveAudio: undefined
+      })
+    } catch (error) {
+      setIsSubmitting(false)
+      alert(`Error submitting news: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-
-    // Convert video to base64 if exists
-    if (formData.video) {
-      videoBase64 = await fileToBase64(formData.video);
-    }
-
-    // Convert live video to base64 if exists
-    if (formData.liveVideo) {
-      liveVideoBase64 = await blobToBase64(formData.liveVideo);
-    }
-
-    // Convert live audio to base64 if exists
-    if (formData.liveAudio) {
-      liveAudioBase64 = await blobToBase64(formData.liveAudio);
-    }
-
-    // Create news item
-    const newsItem = {
-      id: Date.now().toString(),
-      title: formData.title,
-      description: formData.description,
-      category: formData.category,
-      date: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
-      status: 'pending',
-      submittedBy: formData.submitterName,
-      submitterEmail: formData.submitterEmail,
-      hashtags: formData.hashtags.split(',').map(tag => tag.trim()),
-      socialCaption: formData.socialCaption,
-      image: imageBase64 || undefined,
-      video: videoBase64 || undefined,
-      liveVideo: liveVideoBase64 || undefined,
-      liveAudio: liveAudioBase64 || undefined
-    }
-
-    // Get existing news from localStorage
-    const existingNews = localStorage.getItem('naijaAmeboNews')
-    const newsArray = existingNews ? JSON.parse(existingNews) : []
-
-    // Add new submission
-    newsArray.push(newsItem)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(newsArray))
-
-    setIsSubmitting(false)
-    setSubmitted(true)
-
-    // Reset form
-    setFormData({
-      title: '',
-      description: '',
-      category: 'breaking-news',
-      hashtags: '',
-      socialCaption: '',
-      submitterName: '',
-      submitterEmail: '',
-      image: undefined,
-      video: undefined,
-      liveVideo: undefined,
-      liveAudio: undefined
-    })
   }
 
   if (submitted) {

@@ -1,51 +1,19 @@
-import { Metadata } from 'next'
+'use client'
+
+import { useState, useEffect } from 'react'
 import NewsPageClient from '@/components/NewsPageClient'
 import extendedNews from '@/data/extended-news.json'
-
-export const metadata: Metadata = {
-  title: 'Breaking News | Latest Updates | Naija Amebo Gist',
-  description: 'Latest breaking news and updates from Nigeria. Stay informed with real-time celebrity news, entertainment updates, and trending stories on Naija Amebo Gist.',
-  keywords: [
-    'breaking news',
-    'latest news',
-    'Nigeria news',
-    'celebrity news',
-    'entertainment news',
-    'Naija news',
-    'breaking news Nigeria',
-    'latest updates',
-    'trending now',
-  ],
-  openGraph: {
-    type: 'website',
-    url: 'https://amebo.org/breaking-news',
-    title: 'Breaking News | Naija Amebo Gist',
-    description: 'Latest breaking news and updates from Nigeria.',
-    images: [
-      {
-        url: 'https://amebo.org/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Naija Amebo Gist - Breaking News',
-      }
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Breaking News | Naija Amebo Gist',
-    description: 'Latest breaking news and updates from Nigeria.',
-    images: ['https://amebo.org/og-image.jpg'],
-  },
-}
 
 interface NewsItem {
   id: string;
   title: string;
   description: string;
   date: string;
+  publishedAt?: string;
   category: string;
   status: 'approved' | 'pending' | 'rejected';
   author?: string;
+  submittedBy?: string;
   hashtags?: string[];
   image?: string;
   video?: string;
@@ -54,13 +22,75 @@ interface NewsItem {
 }
 
 export default function BreakingNews() {
-  const breakingNewsArticles = (extendedNews as any[])
-    .filter((item: any) => item.category === 'breaking-news' && item.status === 'approved')
-    .sort((a: any, b: any) => new Date(b.publishedAt || b.date).getTime() - new Date(a.publishedAt || a.date).getTime())
+  const [articles, setArticles] = useState<NewsItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Load static news from extended-news.json
+    const staticNews = (extendedNews as any[])
+      .filter((item: any) => item.category === 'breaking-news' && item.status === 'approved')
+      .map((item: any) => ({
+        id: item.id?.toString() || '',
+        title: item.title,
+        description: item.excerpt || item.description,
+        date: item.date,
+        publishedAt: item.publishedAt || item.date,
+        category: item.category,
+        status: item.status as 'approved' | 'pending' | 'rejected',
+        author: typeof item.author === 'object' ? item.author?.name : item.author,
+        hashtags: item.hashtags || [],
+        image: item.image,
+        video: item.videoUrl,
+      }))
+
+    // Load user-submitted breaking news from localStorage
+    const savedNews: NewsItem[] = []
+    try {
+      const stored = localStorage.getItem('naijaAmeboNews')
+      if (stored) {
+        const allNews = JSON.parse(stored)
+        const breakingNews = allNews.filter(
+          (item: any) => 
+            item.category === 'breaking-news' && 
+            item.status === 'approved'
+        )
+        savedNews.push(...breakingNews)
+      }
+    } catch (error) {
+      console.error('Error loading saved news:', error)
+    }
+
+    // Merge both sources and remove duplicates by title
+    const allArticles = [...staticNews, ...savedNews]
+    const uniqueArticles = Array.from(
+      new Map(allArticles.map((item) => [item.title, item])).values()
+    )
+
+    // Sort by date (newest first)
+    const sorted = uniqueArticles.sort((a: any, b: any) => {
+      const dateA = new Date(a.publishedAt || a.date).getTime()
+      const dateB = new Date(b.publishedAt || b.date).getTime()
+      return dateB - dateA
+    })
+
+    setArticles(sorted)
+    setIsLoading(false)
+  }, [])
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading breaking news...</p>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <NewsPageClient 
-      articles={breakingNewsArticles}
+      articles={articles}
       category="breaking-news"
       title="🚨 Breaking News"
       description="Get the latest breaking news from Nigeria and around the world"

@@ -64,12 +64,22 @@ export default function NewsPageClient({
                   <div className="flex flex-col sm:flex-row gap-4 p-6">
                     {/* Image */}
                     {article.image && (
-                      <div className="w-full sm:w-48 h-48 sm:h-32 flex-shrink-0 rounded-lg overflow-hidden">
-                        <img
-                          src={article.image}
-                          alt={article.title}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        />
+                      <div className="w-full sm:w-48 h-48 sm:h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
+                        {article.image ? (
+                          <img
+                            src={article.image}
+                            alt={article.title}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none'
+                            }}
+                          />
+                        ) : null}
+                        {!article.image && (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-4xl">📰</span>
+                          </div>
+                        )}
                       </div>
                     )}
 
