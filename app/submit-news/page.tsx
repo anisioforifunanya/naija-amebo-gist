@@ -60,6 +60,21 @@ export default function SubmitNews() {
     }
 
     const data = await response.json()
+    
+    // CRITICAL: Verify we got a Cloudinary URL, not base64
+    if (!data.url) {
+      throw new Error('No URL returned from Cloudinary - upload may have failed')
+    }
+    
+    if (data.url.startsWith('data:')) {
+      throw new Error('Upload failed: Image is base64, not Cloudinary URL. This means Cloudinary upload didn\'t work.')
+    }
+    
+    // Verify it's a Cloudinary URL
+    if (!data.url.includes('cloudinary.com') && !data.url.includes('res.cloudinary.com')) {
+      throw new Error('Upload failed: URL is not from Cloudinary. Expected secure_url from Cloudinary API.')
+    }
+    
     return data.url
   }
 
@@ -114,9 +129,21 @@ export default function SubmitNews() {
         type: 'info'
       })
 
-      // Get existing news from localStorage
+      // Check localStorage size before saving
       const existingNews = localStorage.getItem('naijaAmeboNews')
       const newsArray = existingNews ? JSON.parse(existingNews) : []
+      
+      // Calculate size
+      const serialized = JSON.stringify(newsArray)
+      const sizeInBytes = new Blob([serialized]).size
+      const sizeInMB = parseFloat((sizeInBytes / (1024 * 1024)).toFixed(2))
+      
+      if (sizeInMB > 4) {
+        setNotification({
+          message: `⚠️ Warning: localStorage is ${sizeInMB}MB (limit is ~5MB). Delete old articles to free space.`,
+          type: 'warning'
+        })
+      }
 
       // Add new submission
       newsArray.push(newsItem)
