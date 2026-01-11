@@ -134,6 +134,29 @@ export default function NewsManagementDashboard() {
         </div>
       </div>
 
+      {/* Quick Access Cards */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/super-admin/user-presence" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-green-200 dark:border-green-800">
+            <div className="text-4xl mb-3">🟢</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg">User Presence</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Monitor online users</p>
+          </Link>
+
+          <Link href="/super-admin/analytics" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-blue-200 dark:border-blue-800">
+            <div className="text-4xl mb-3">📊</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Analytics</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">View system metrics</p>
+          </Link>
+
+          <Link href="/super-admin/geo-map" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-red-200 dark:border-red-800">
+            <div className="text-4xl mb-3">🗺️</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Geo Map</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Regional distribution</p>
+          </Link>
+        </div>
+      </div>
+
       {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
