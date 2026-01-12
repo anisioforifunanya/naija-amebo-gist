@@ -48,14 +48,49 @@ export default function ViralContent() {
 
   useEffect(() => {
     const loadNews = async () => {
-      const allNews = await StorageSync.loadNews(extendedNews);
-      const viralNews = allNews.filter((item: NewsItem) => item.category === 'viral-content' && item.status === 'approved');
-      
-      const combined = [...viralNews, ...defaultNews];
-      const unique = Array.from(
-        new Map(combined.map((item: any) => [item.title, item])).values()
-      );
-      setNewsItems(unique);
+      try {
+        // Fetch from Firebase API
+        const response = await fetch('/api/articles/get?category=viral-content&status=approved')
+        const apiData = await response.json()
+        const apiNews = (apiData.articles || []).map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          description: item.excerpt || item.description,
+          date: item.date,
+          category: item.category,
+          status: item.status as 'approved' | 'pending' | 'rejected',
+          submittedBy: item.submittedBy,
+          hashtags: item.hashtags || [],
+          image: item.image,
+          video: item.video,
+        }))
+
+        // Load static news from extended-news.json
+        const staticNews = (extendedNews as any[])
+          .filter((item: any) => item.category === 'viral-content' && item.status === 'approved')
+          .map((item: any) => ({
+            id: item.id?.toString() || '',
+            title: item.title,
+            description: item.excerpt || item.description,
+            date: item.date,
+            category: item.category,
+            status: item.status as 'approved' | 'pending' | 'rejected',
+            author: typeof item.author === 'object' ? item.author?.name : item.author,
+            hashtags: item.hashtags || [],
+            image: item.image,
+            video: item.videoUrl,
+          }))
+
+        // Merge both sources and remove duplicates
+        const combined = [...apiNews, ...staticNews, ...defaultNews]
+        const unique = Array.from(
+          new Map(combined.map((item: any) => [item.title, item])).values()
+        )
+        setNewsItems(unique)
+      } catch (error) {
+        console.error('Error loading viral content:', error)
+        setNewsItems(defaultNews)
+      }
     };
 
     loadNews();
