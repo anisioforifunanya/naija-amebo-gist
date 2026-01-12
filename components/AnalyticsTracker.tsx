@@ -159,11 +159,6 @@ export function AnalyticsTracker() {
           }
         }
 
-        // Setup periodic event flushing (every 10 seconds)
-        const flushInterval = setInterval(() => {
-          flushEvents()
-        }, 10000)
-
         // Track clicks
         document.addEventListener('click', (e: MouseEvent) => {
           handleClick(e)
