@@ -63,17 +63,22 @@ export async function POST(request: NextRequest) {
         }
 
         // Emit via WebSocket for real-time dashboard
-        wsServer.emitEvent('analytics_update', {
+        wsServer.emitEvent({
+          type: (event.eventType === 'page_view' ? 'page_view' : 
+                 event.eventType === 'click' ? 'click' : 
+                 event.eventType === 'scroll' ? 'scroll' : 'engagement') as any,
+          timestamp: Date.now(),
           sessionId,
           userId,
-          deviceFingerprint,
-          eventType: event.eventType,
-          eventData: event.eventData,
-          pageUrl: event.pageUrl,
-          timestamp: event.timestamp,
-          userAgent: event.userAgent,
-          timezone: event.timezone,
-          language: event.language
+          data: {
+            deviceFingerprint,
+            eventType: event.eventType,
+            eventData: event.eventData,
+            pageUrl: event.pageUrl,
+            userAgent: event.userAgent,
+            timezone: event.timezone,
+            language: event.language
+          }
         });
 
         processedEvents.push(event.eventType);
