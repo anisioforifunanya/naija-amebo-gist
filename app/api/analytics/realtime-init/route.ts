@@ -37,6 +37,61 @@ export async function POST(request: NextRequest) {
       action,
       sessionId,
       userId,
+      deviceFingerprint,
+      events,
+      pageUrl,
+      userAgent,
+      timestamp
+    } = body;
+
+    const engine = getRealtimeAnalyticsEngine();
+    const wsServer = getAnalyticsWebSocketServer();
+
+    // If events array is provided (from AnalyticsTracker)
+    if (action === 'track_visitor' && events && Array.isArray(events)) {
+      console.log(`📊 Processing ${events.length} analytics events from session ${sessionId}`);
+      
+      const processedEvents = [];
+      for (const event of events) {
+        // Track the main event
+        if (event.eventType === 'page_view') {
+          engine.trackPageView(sessionId, event.pageUrl, userId);
+        } else if (event.eventType === 'click') {
+          engine.trackClick(sessionId, event.eventData.elementTag, event.eventData, userId);
+        } else if (event.eventType === 'scroll') {
+          engine.trackScroll(sessionId, event.eventData.scrollPercent, userId);
+        }
+
+        // Emit via WebSocket for real-time dashboard
+        wsServer.emitEvent('analytics_update', {
+          sessionId,
+          userId,
+          deviceFingerprint,
+          eventType: event.eventType,
+          eventData: event.eventData,
+          pageUrl: event.pageUrl,
+          timestamp: event.timestamp,
+          userAgent: event.userAgent,
+          timezone: event.timezone,
+          language: event.language
+        });
+
+        processedEvents.push(event.eventType);
+      }
+
+      console.log(`✅ Processed events: ${processedEvents.join(', ')}`);
+      
+      return NextResponse.json({
+        status: 'ok',
+        message: `Processed ${events.length} events`,
+        events: processedEvents,
+        stats: engine.getSummary(),
+        timestamp: Date.now(),
+      });
+    }
+
+    // Legacy handling
+    const {
       deviceInfo,
       geoLocation,
       page,
@@ -44,8 +99,6 @@ export async function POST(request: NextRequest) {
       coordinates,
       scrollDepth,
     } = body;
-
-    const engine = getRealtimeAnalyticsEngine();
 
     switch (action) {
       case 'track_visitor':
