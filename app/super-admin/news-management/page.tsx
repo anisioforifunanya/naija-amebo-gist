@@ -136,42 +136,43 @@ export default function NewsManagementDashboard() {
       </div>
 
       {/* Quick Access Cards */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link href="/super-admin/user-presence" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-green-200 dark:border-green-800">
-            <div className="text-4xl mb-3">🟢</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-lg">User Presence</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Monitor online users</p>
+      <div className="max-w-7xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Link href="/super-admin/user-presence" className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-2xl hover:scale-105 transition-all border-2 border-green-200 dark:border-green-800 group">
+            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🟢</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">User Presence</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Monitor who's online now</p>
           </Link>
 
-          <Link href="/super-admin/analytics" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-blue-200 dark:border-blue-800">
-            <div className="text-4xl mb-3">📊</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Analytics</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">View system metrics</p>
+          <Link href="/super-admin/analytics" className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-2xl hover:scale-105 transition-all border-2 border-blue-200 dark:border-blue-800 group">
+            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">📊</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">Analytics</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Track system metrics</p>
           </Link>
 
-          <Link href="/super-admin/geo-map" className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg hover:scale-105 transition-all border-2 border-red-200 dark:border-red-800">
-            <div className="text-4xl mb-3">🗺️</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Geo Map</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Regional distribution</p>
+          <Link href="/super-admin/geo-map" className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-2xl hover:scale-105 transition-all border-2 border-red-200 dark:border-red-800 group">
+            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🗺️</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">Geo Map</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">View regional distribution</p>
           </Link>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      {/* Navigation Tabs - Improved Layout */}
+      <div className="max-w-7xl mx-auto mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-3 rounded-lg font-bold whitespace-nowrap transition transform hover:scale-105 ${
+              className={`px-6 py-4 rounded-xl font-bold text-center whitespace-nowrap transition-all transform hover:scale-105 shadow-md hover:shadow-xl duration-200 ${
                 activeTab === tab.id
-                  ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-md'
+                  ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-105`
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
-              {tab.icon} {tab.name}
+              <div className="text-2xl mb-2">{tab.icon}</div>
+              <div className="text-sm font-semibold">{tab.name}</div>
             </button>
           ))}
         </div>

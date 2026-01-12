@@ -126,27 +126,28 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* Tabs Navigation */}
-        <div className="bg-white dark:bg-gray-800 rounded-t-lg border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
-          <div className="flex gap-1 p-4">
+        {/* Tabs Navigation - Improved Layout */}
+        <div className="bg-white dark:bg-gray-800 rounded-t-lg border-b border-gray-200 dark:border-gray-700 overflow-x-auto shadow-md">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-2 p-4">
             {[
               { id: 'overview' as const, label: '📈 Overview', icon: '📈' },
               { id: 'realtime' as const, label: '🔴 Real-Time', icon: '🔴' },
-              { id: 'device' as const, label: '📱 Device Intel', icon: '📱' },
-              { id: 'traffic' as const, label: '🚀 Traffic Sources', icon: '🚀' },
+              { id: 'device' as const, label: '📱 Device', icon: '📱' },
+              { id: 'traffic' as const, label: '🚀 Traffic', icon: '🚀' },
               { id: 'behavior' as const, label: '🎯 Behavior', icon: '🎯' },
               { id: 'security' as const, label: '🛡️ Security', icon: '🛡️' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 font-semibold text-sm whitespace-nowrap transition-all border-b-2 ${
+                className={`px-4 py-3 font-semibold text-sm rounded-lg transition-all transform hover:scale-105 ${
                   activeTab === tab.id
-                    ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400'
-                    : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
-                {tab.icon} {tab.label}
+                <div className="text-lg mb-1">{tab.icon}</div>
+                <div className="text-xs font-bold">{tab.label.replace(/ .*/, '')}</div>
               </button>
             ))}
           </div>
