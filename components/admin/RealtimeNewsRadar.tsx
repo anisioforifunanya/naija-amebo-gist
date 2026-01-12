@@ -29,10 +29,10 @@ export default function RealtimeNewsRadar() {
   const [alerts, setAlerts] = useState<RadarAlert[]>([]);
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<NewsCategory>('breaking');
+  const [selectedCategory, setSelectedCategory] = useState<NewsCategory>('breaking-news');
   const [refreshInterval, setRefreshInterval] = useState(5000); // 5 seconds
 
-  const categories: NewsCategory[] = ['breaking', 'trending', 'celebrity', 'entertainment', 'viral'];
+  const categories: NewsCategory[] = ['breaking-news', 'trending', 'celebrity', 'entertainment', 'viral'];
 
   // Fetch and monitor news for real-time updates
   const monitorNews = useCallback(async () => {
@@ -72,16 +72,16 @@ export default function RealtimeNewsRadar() {
       }
 
       // Separate by category for breaking news
-      const breakingNews = await getNewsByCategory('breaking', 20);
+      const breakingNews = await getNewsByCategory('breaking-news' as any, 20);
       breakingNews.slice(0, 5).forEach(news => {
-        if (news.published_at && Date.now() - news.published_at < 300000) { // Last 5 minutes
+        if (news.publishedAt && Date.now() - new Date(news.publishedAt).getTime() < 300000) { // Last 5 minutes
           newAlerts.push({
             id: `breaking_${news.id}`,
             type: 'breaking',
             title: news.title,
-            category: 'breaking',
+            category: 'breaking-news',
             metric: '🚨 Breaking News',
-            timestamp: news.published_at,
+            timestamp: new Date(news.publishedAt).getTime(),
             priority: 'critical'
           });
         }

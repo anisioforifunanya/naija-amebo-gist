@@ -23,8 +23,8 @@ interface AggregationSource {
 }
 
 const DEFAULT_SOURCES: Omit<AggregationSource, 'id' | 'last_synced'>[] = [
-  { name: 'BBC News Nigeria', url: 'https://www.bbc.com/news/world/africa', category: 'breaking', is_active: true, sync_frequency: 15 },
-  { name: 'Premium Times', url: 'https://www.premiumtimesng.com', category: 'breaking', is_active: true, sync_frequency: 30 },
+  { name: 'BBC News Nigeria', url: 'https://www.bbc.com/news/world/africa', category: 'breaking-news', is_active: true, sync_frequency: 15 },
+  { name: 'Premium Times', url: 'https://www.premiumtimesng.com', category: 'breaking-news', is_active: true, sync_frequency: 30 },
   { name: 'The Punch Nigeria', url: 'https://punchng.com', category: 'trending', is_active: true, sync_frequency: 30 },
   { name: 'Guardian Nigeria', url: 'https://guardian.ng', category: 'trending', is_active: true, sync_frequency: 30 },
   { name: 'Vanguard News', url: 'https://www.vanguardngr.com', category: 'entertainment', is_active: true, sync_frequency: 45 },
@@ -156,8 +156,8 @@ export default function NewsAggregationEngine() {
             author: source.name,
             source: source.name,
             status: 'draft',
-            created_at: Date.now(),
-            updated_at: Date.now(),
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
             admin_id: 'aggregation_engine',
             tags: [source.category, source.name.toLowerCase()],
             seo_title: `Breaking: News from ${source.name}`,
@@ -211,7 +211,7 @@ export default function NewsAggregationEngine() {
 
   const getCategoryColor = (category: NewsCategory) => {
     switch (category) {
-      case 'breaking':
+      case 'breaking-news':
         return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200';
       case 'trending':
         return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200';

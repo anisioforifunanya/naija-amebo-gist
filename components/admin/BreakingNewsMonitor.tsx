@@ -40,7 +40,7 @@ export default function BreakingNewsMonitor() {
         title,
         description,
         content: content || description,
-        category: 'breaking',
+        category: 'breaking-news',
         image_url: imageUrl,
         author: localStorage.getItem('userEmail') || 'Admin',
         source: source || 'Editorial',

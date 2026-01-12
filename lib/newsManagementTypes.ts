@@ -4,10 +4,10 @@
 // ============================================
 
 // News Categories
-export type NewsCategory = 'breaking' | 'trending' | 'celebrity' | 'entertainment' | 'viral';
+export type NewsCategory = 'breaking-news' | 'trending' | 'celebrity' | 'entertainment' | 'viral';
 
 // Publishing Status
-export type PublishStatus = 'draft' | 'scheduled' | 'published' | 'archived' | 'rejected';
+export type PublishStatus = 'draft' | 'scheduled' | 'published' | 'archived' | 'rejected' | 'approved' | 'pending';
 
 // Analytics Metrics
 export interface NewsAnalytics {
@@ -46,10 +46,10 @@ export interface NewsItem {
   
   // Status & Publishing
   status: PublishStatus;
-  published_at?: number;
-  scheduled_at?: number;
-  created_at: number;
-  updated_at: number;
+  publishedAt?: number;
+  scheduledAt?: number;
+  createdAt: number;
+  updatedAt: number;
   
   // Tags & SEO
   tags: string[];

@@ -24,7 +24,7 @@ export default function IntelligenceHub() {
   const [loading, setLoading] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month'>('today');
 
-  const categories: NewsCategory[] = ['breaking', 'trending', 'celebrity', 'entertainment', 'viral'];
+  const categories: NewsCategory[] = ['breaking-news', 'trending', 'celebrity', 'entertainment', 'viral'];
 
   // Generate intelligence report
   const generateReport = async () => {
@@ -41,13 +41,13 @@ export default function IntelligenceHub() {
 
       // Aggregate metrics
       const filteredNews = trendingNews.filter(n => 
-        n.published_at && n.published_at >= periodStart
+        n.publishedAt && n.publishedAt >= periodStart
       );
 
       let totalEngagement = 0;
       let totalPosts = filteredNews.length;
       const categoryMetrics: Record<NewsCategory, { count: number; totalEngagement: number }> = {
-        breaking: { count: 0, totalEngagement: 0 },
+        'breaking-news': { count: 0, totalEngagement: 0 },
         trending: { count: 0, totalEngagement: 0 },
         celebrity: { count: 0, totalEngagement: 0 },
         entertainment: { count: 0, totalEngagement: 0 },
@@ -91,12 +91,12 @@ export default function IntelligenceHub() {
         total_engagement: totalEngagement,
         avg_engagement_rate: totalPosts > 0 ? (totalEngagement / (totalPosts * 10)) * 100 : 0,
         category_performance: {
-          breaking: {
-            count: categoryMetrics.breaking.count,
-            avg_engagement: categoryMetrics.breaking.count > 0 
-              ? categoryMetrics.breaking.totalEngagement / categoryMetrics.breaking.count 
+          'breaking-news': {
+            count: categoryMetrics['breaking-news'].count,
+            avg_engagement: categoryMetrics['breaking-news'].count > 0 
+              ? categoryMetrics['breaking-news'].totalEngagement / categoryMetrics['breaking-news'].count 
               : 0,
-            top_post: filteredNews.find(n => n.category === 'breaking')
+            top_post: filteredNews.find(n => n.category === 'breaking-news')
           },
           trending: {
             count: categoryMetrics.trending.count,
@@ -136,7 +136,7 @@ export default function IntelligenceHub() {
         ],
         trending_topics: sortedTopics,
         recommendations: [
-          `📈 Boost Breaking News content (${categoryMetrics.breaking.count} posts, highest priority)`,
+          `📈 Boost Breaking News content (${categoryMetrics['breaking-news'].count} posts, highest priority)`,
           `🎬 Entertainment category shows ${(categoryMetrics.entertainment.totalEngagement / Math.max(1, categoryMetrics.entertainment.count)).toFixed(0)} avg engagement`,
           `⭐ Top topic: "${sortedTopics[0]?.topic}" (${sortedTopics[0]?.mentions} mentions)`,
           `💬 Increase comment engagement by adding CTAs to posts`,
@@ -256,7 +256,7 @@ export default function IntelligenceHub() {
             return (
               <div key={cat} className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                 <div className="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                  {cat === 'breaking' && '🚨'} 
+                  {cat === 'breaking-news' && '🚨'} 
                   {cat === 'trending' && '📈'} 
                   {cat === 'celebrity' && '⭐'} 
                   {cat === 'entertainment' && '🎬'} 
@@ -264,7 +264,7 @@ export default function IntelligenceHub() {
                   {perf.count}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {cat === 'breaking-news' ? 'Breaking News' : cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </div>
                 <div className="text-xs text-gray-500">
                   {perf.avg_engagement.toFixed(0)} avg engagement
