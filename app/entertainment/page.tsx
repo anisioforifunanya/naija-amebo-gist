@@ -1,5 +1,6 @@
 "use client";
 
+// Force cache clear: 2026-01-13
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';

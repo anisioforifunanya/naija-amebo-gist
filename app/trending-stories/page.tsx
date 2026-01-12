@@ -1,6 +1,6 @@
 "use client";
 
-// Trending-Stories Page - API fetch rebuild Jan 12 2026
+// Trending-Stories Page - API fetch rebuild Jan 12 2026 - Cache clear 2026-01-13
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';

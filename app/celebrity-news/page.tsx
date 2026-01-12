@@ -1,6 +1,6 @@
 "use client";
 
-// Celebrity-News Page - API fetch rebuild Jan 12 2026
+// Celebrity-News Page - API fetch rebuild Jan 12 2026 - Cache clear 2026-01-13
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';
