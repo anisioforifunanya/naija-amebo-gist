@@ -1,5 +1,6 @@
 'use client'
 
+// TEST: Forcing rebuild to verify Railway deployment (Jan 12 2026)
 import { useState, useEffect } from 'react'
 import NewsPageClient from '@/components/NewsPageClient'
 import extendedNews from '@/data/extended-news.json'
