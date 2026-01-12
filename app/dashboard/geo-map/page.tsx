@@ -3,7 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import InteractiveAnalyticsMap from '@/components/InteractiveAnalyticsMap';
+import dynamic from 'next/dynamic';
+
+const InteractiveAnalyticsMap = dynamic(() => import('@/components/InteractiveAnalyticsMap'), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+});
 
 interface GeoLocation {
   region: string;
