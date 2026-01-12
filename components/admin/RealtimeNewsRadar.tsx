@@ -32,7 +32,7 @@ export default function RealtimeNewsRadar() {
   const [selectedCategory, setSelectedCategory] = useState<NewsCategory>('breaking-news');
   const [refreshInterval, setRefreshInterval] = useState(5000); // 5 seconds
 
-  const categories: NewsCategory[] = ['breaking-news', 'trending', 'celebrity', 'entertainment', 'viral'];
+  const categories: NewsCategory[] = ['breaking-news', 'trending-stories', 'celebrity-news', 'entertainment', 'viral-content'];
 
   // Fetch and monitor news for real-time updates
   const monitorNews = useCallback(async () => {

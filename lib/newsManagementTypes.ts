@@ -4,7 +4,7 @@
 // ============================================
 
 // News Categories
-export type NewsCategory = 'breaking-news' | 'trending' | 'celebrity' | 'entertainment' | 'viral';
+export type NewsCategory = 'breaking-news' | 'trending-stories' | 'celebrity-news' | 'entertainment' | 'viral-content';
 
 // Publishing Status
 export type PublishStatus = 'draft' | 'scheduled' | 'published' | 'archived' | 'rejected' | 'approved' | 'pending';

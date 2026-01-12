@@ -25,12 +25,12 @@ interface AggregationSource {
 const DEFAULT_SOURCES: Omit<AggregationSource, 'id' | 'last_synced'>[] = [
   { name: 'BBC News Nigeria', url: 'https://www.bbc.com/news/world/africa', category: 'breaking-news', is_active: true, sync_frequency: 15 },
   { name: 'Premium Times', url: 'https://www.premiumtimesng.com', category: 'breaking-news', is_active: true, sync_frequency: 30 },
-  { name: 'The Punch Nigeria', url: 'https://punchng.com', category: 'trending', is_active: true, sync_frequency: 30 },
-  { name: 'Guardian Nigeria', url: 'https://guardian.ng', category: 'trending', is_active: true, sync_frequency: 30 },
+  { name: 'The Punch Nigeria', url: 'https://punchng.com', category: 'trending-stories', is_active: true, sync_frequency: 30 },
+  { name: 'Guardian Nigeria', url: 'https://guardian.ng', category: 'trending-stories', is_active: true, sync_frequency: 30 },
   { name: 'Vanguard News', url: 'https://www.vanguardngr.com', category: 'entertainment', is_active: true, sync_frequency: 45 },
-  { name: 'Naija.com Celebrity', url: 'https://naija.com', category: 'celebrity', is_active: true, sync_frequency: 60 },
-  { name: 'Twitter Trends', url: 'https://twitter.com', category: 'viral', is_active: true, sync_frequency: 5 },
-  { name: 'TikTok Viral', url: 'https://www.tiktok.com', category: 'viral', is_active: true, sync_frequency: 10 },
+  { name: 'Naija.com Celebrity', url: 'https://naija.com', category: 'celebrity-news', is_active: true, sync_frequency: 60 },
+  { name: 'Twitter Trends', url: 'https://twitter.com', category: 'viral-content', is_active: true, sync_frequency: 5 },
+  { name: 'TikTok Viral', url: 'https://www.tiktok.com', category: 'viral-content', is_active: true, sync_frequency: 10 },
 ];
 
 export default function NewsAggregationEngine() {
@@ -42,7 +42,7 @@ export default function NewsAggregationEngine() {
   const [newSource, setNewSource] = useState({
     name: '',
     url: '',
-    category: 'trending' as NewsCategory,
+    category: 'trending-stories' as NewsCategory,
     api_key: ''
   });
 
@@ -126,7 +126,7 @@ export default function NewsAggregationEngine() {
 
       console.log('✅ Source added successfully with ID:', id);
       toast.success(`✅ Added "${newSource.name}" as news source!`);
-      setNewSource({ name: '', url: '', category: 'trending', api_key: '' });
+      setNewSource({ name: '', url: '', category: 'trending-stories', api_key: '' });
       setShowAddSource(false);
     } catch (error) {
       console.error('❌ Error adding source:', error);
@@ -213,13 +213,13 @@ export default function NewsAggregationEngine() {
     switch (category) {
       case 'breaking-news':
         return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200';
-      case 'trending':
+      case 'trending-stories':
         return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200';
-      case 'celebrity':
+      case 'celebrity-news':
         return 'bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-200';
       case 'entertainment':
         return 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200';
-      case 'viral':
+      case 'viral-content':
         return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200';
       default:
         return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
@@ -300,11 +300,11 @@ export default function NewsAggregationEngine() {
                 onChange={(e) => setNewSource({ ...newSource, category: e.target.value as NewsCategory })}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
               >
-                <option value="breaking">Breaking</option>
-                <option value="trending">Trending</option>
-                <option value="celebrity">Celebrity</option>
+                <option value="breaking-news">Breaking News</option>
+                <option value="trending-stories">Trending Stories</option>
+                <option value="celebrity-news">Celebrity News</option>
                 <option value="entertainment">Entertainment</option>
-                <option value="viral">Viral</option>
+                <option value="viral-content">Viral Content</option>
               </select>
               <input
                 type="text"

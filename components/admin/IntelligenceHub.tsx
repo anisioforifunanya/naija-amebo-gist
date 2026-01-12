@@ -24,7 +24,7 @@ export default function IntelligenceHub() {
   const [loading, setLoading] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month'>('today');
 
-  const categories: NewsCategory[] = ['breaking-news', 'trending', 'celebrity', 'entertainment', 'viral'];
+  const categories: NewsCategory[] = ['breaking-news', 'trending-stories', 'celebrity-news', 'entertainment', 'viral-content'];
 
   // Generate intelligence report
   const generateReport = async () => {
@@ -48,10 +48,10 @@ export default function IntelligenceHub() {
       let totalPosts = filteredNews.length;
       const categoryMetrics: Record<NewsCategory, { count: number; totalEngagement: number }> = {
         'breaking-news': { count: 0, totalEngagement: 0 },
-        trending: { count: 0, totalEngagement: 0 },
-        celebrity: { count: 0, totalEngagement: 0 },
-        entertainment: { count: 0, totalEngagement: 0 },
-        viral: { count: 0, totalEngagement: 0 }
+        'trending-stories': { count: 0, totalEngagement: 0 },
+        'celebrity-news': { count: 0, totalEngagement: 0 },
+        'entertainment': { count: 0, totalEngagement: 0 },
+        'viral-content': { count: 0, totalEngagement: 0 }
       };
 
       filteredNews.forEach(news => {
@@ -98,19 +98,19 @@ export default function IntelligenceHub() {
               : 0,
             top_post: filteredNews.find(n => n.category === 'breaking-news')
           },
-          trending: {
-            count: categoryMetrics.trending.count,
-            avg_engagement: categoryMetrics.trending.count > 0 
-              ? categoryMetrics.trending.totalEngagement / categoryMetrics.trending.count 
+          'trending-stories': {
+            count: categoryMetrics['trending-stories'].count,
+            avg_engagement: categoryMetrics['trending-stories'].count > 0 
+              ? categoryMetrics['trending-stories'].totalEngagement / categoryMetrics['trending-stories'].count 
               : 0,
-            top_post: filteredNews.find(n => n.category === 'trending')
+            top_post: filteredNews.find(n => n.category === 'trending-stories')
           },
-          celebrity: {
-            count: categoryMetrics.celebrity.count,
-            avg_engagement: categoryMetrics.celebrity.count > 0 
-              ? categoryMetrics.celebrity.totalEngagement / categoryMetrics.celebrity.count 
+          'celebrity-news': {
+            count: categoryMetrics['celebrity-news'].count,
+            avg_engagement: categoryMetrics['celebrity-news'].count > 0 
+              ? categoryMetrics['celebrity-news'].totalEngagement / categoryMetrics['celebrity-news'].count 
               : 0,
-            top_post: filteredNews.find(n => n.category === 'celebrity')
+            top_post: filteredNews.find(n => n.category === 'celebrity-news')
           },
           entertainment: {
             count: categoryMetrics.entertainment.count,
@@ -119,12 +119,12 @@ export default function IntelligenceHub() {
               : 0,
             top_post: filteredNews.find(n => n.category === 'entertainment')
           },
-          viral: {
-            count: categoryMetrics.viral.count,
-            avg_engagement: categoryMetrics.viral.count > 0 
-              ? categoryMetrics.viral.totalEngagement / categoryMetrics.viral.count 
+          'viral-content': {
+            count: categoryMetrics['viral-content'].count,
+            avg_engagement: categoryMetrics['viral-content'].count > 0 
+              ? categoryMetrics['viral-content'].totalEngagement / categoryMetrics['viral-content'].count 
               : 0,
-            top_post: filteredNews.find(n => n.category === 'viral')
+            top_post: filteredNews.find(n => n.category === 'viral-content')
           }
         },
         social_performance: [
@@ -257,14 +257,14 @@ export default function IntelligenceHub() {
               <div key={cat} className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                 <div className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                   {cat === 'breaking-news' && '🚨'} 
-                  {cat === 'trending' && '📈'} 
-                  {cat === 'celebrity' && '⭐'} 
+                  {cat === 'trending-stories' && '📈'} 
+                  {cat === 'celebrity-news' && '⭐'} 
                   {cat === 'entertainment' && '🎬'} 
-                  {cat === 'viral' && '🔥'} 
+                  {cat === 'viral-content' && '🔥'} 
                   {perf.count}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  {cat === 'breaking-news' ? 'Breaking News' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {cat === 'breaking-news' ? 'Breaking News' : cat === 'trending-stories' ? 'Trending Stories' : cat === 'celebrity-news' ? 'Celebrity News' : cat === 'viral-content' ? 'Viral Content' : cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </div>
                 <div className="text-xs text-gray-500">
                   {perf.avg_engagement.toFixed(0)} avg engagement
