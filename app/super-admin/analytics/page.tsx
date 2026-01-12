@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import RealTimeVisitorsPanel from '@/components/RealTimeVisitorsPanel';
+import DeviceIntelligencePanel from '@/components/DeviceIntelligencePanel';
+import TrafficSourceAnalytics from '@/components/TrafficSourceAnalytics';
+import BehaviorAnalytics from '@/components/BehaviorAnalytics';
+import SecurityAlerts from '@/components/SecurityAlerts';
 
 interface AnalyticsData {
   pageViews: number;
@@ -14,10 +19,13 @@ interface AnalyticsData {
   browsers: Array<{ name: string; percentage: number }>;
 }
 
+type AnalyticsTab = 'overview' | 'realtime' | 'device' | 'traffic' | 'behavior' | 'security';
+
 export default function Analytics() {
   const router = useRouter();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('7d');
+  const [activeTab, setActiveTab] = useState<AnalyticsTab>('overview');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -95,8 +103,8 @@ export default function Analytics() {
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg p-8 mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold mb-2">📊 Analytics</h1>
-              <p className="text-blue-100">Track user activity and engagement metrics</p>
+              <h1 className="text-4xl font-bold mb-2">📊 Enterprise Analytics</h1>
+              <p className="text-blue-100">Real-time tracking, fraud detection, and visitor intelligence</p>
             </div>
 
             {/* Time Range Selector */}
@@ -118,126 +126,170 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* Key Metrics */}
-        {analytics && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Page Views</p>
-                    <div className="text-3xl font-bold text-blue-600 mt-2">
-                      {analytics.pageViews.toLocaleString()}
+        {/* Tabs Navigation */}
+        <div className="bg-white dark:bg-gray-800 rounded-t-lg border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+          <div className="flex gap-1 p-4">
+            {[
+              { id: 'overview' as const, label: '📈 Overview', icon: '📈' },
+              { id: 'realtime' as const, label: '🔴 Real-Time', icon: '🔴' },
+              { id: 'device' as const, label: '📱 Device Intel', icon: '📱' },
+              { id: 'traffic' as const, label: '🚀 Traffic Sources', icon: '🚀' },
+              { id: 'behavior' as const, label: '🎯 Behavior', icon: '🎯' },
+              { id: 'security' as const, label: '🛡️ Security', icon: '🛡️' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-3 font-semibold text-sm whitespace-nowrap transition-all border-b-2 ${
+                  activeTab === tab.id
+                    ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400'
+                    : 'text-gray-600 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="bg-white dark:bg-gray-800 rounded-b-lg shadow p-8">
+          {/* Overview Tab */}
+          {activeTab === 'overview' && analytics && (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/40 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">Page Views</p>
+                      <div className="text-3xl font-bold text-blue-600 mt-2">
+                        {analytics.pageViews.toLocaleString()}
+                      </div>
                     </div>
+                    <div className="text-5xl opacity-20">📄</div>
                   </div>
-                  <div className="text-5xl opacity-20">📄</div>
                 </div>
-              </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Unique Visitors</p>
-                    <div className="text-3xl font-bold text-green-600 mt-2">
-                      {analytics.uniqueVisitors.toLocaleString()}
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/40 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">Unique Visitors</p>
+                      <div className="text-3xl font-bold text-green-600 mt-2">
+                        {analytics.uniqueVisitors.toLocaleString()}
+                      </div>
                     </div>
+                    <div className="text-5xl opacity-20">👥</div>
                   </div>
-                  <div className="text-5xl opacity-20">👥</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-900/40 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">Bounce Rate</p>
+                      <div className="text-3xl font-bold text-orange-600 mt-2">{analytics.bounceRate}%</div>
+                    </div>
+                    <div className="text-5xl opacity-20">📉</div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/40 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">Avg Session</p>
+                      <div className="text-3xl font-bold text-purple-600 mt-2">{analytics.avgSessionDuration}m</div>
+                    </div>
+                    <div className="text-5xl opacity-20">⏱️</div>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Bounce Rate</p>
-                    <div className="text-3xl font-bold text-orange-600 mt-2">{analytics.bounceRate}%</div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Top Pages */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Top Pages</h2>
                   </div>
-                  <div className="text-5xl opacity-20">📉</div>
-                </div>
-              </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Avg Session</p>
-                    <div className="text-3xl font-bold text-purple-600 mt-2">{analytics.avgSessionDuration}m</div>
+                  <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {analytics.topPages.map((page, idx) => (
+                      <div key={idx} className="px-6 py-4 flex items-center justify-between">
+                        <p className="text-gray-900 dark:text-white font-semibold">{page.page}</p>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-blue-600 rounded-full"
+                              style={{
+                                width: `${(page.views / analytics.topPages[0].views) * 100}%`,
+                              }}
+                            ></div>
+                          </div>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 w-16 text-right">
+                            {page.views.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-5xl opacity-20">⏱️</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Top Pages */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Top Pages</h2>
                 </div>
 
-                <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {analytics.topPages.map((page, idx) => (
-                    <div key={idx} className="px-6 py-4 flex items-center justify-between">
-                      <p className="text-gray-900 dark:text-white font-semibold">{page.page}</p>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                {/* Device Breakdown */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Devices</h2>
+                  </div>
+
+                  <div className="p-6 space-y-4">
+                    {analytics.devices.map((device, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-gray-700 dark:text-gray-300 font-semibold">{device.type}</p>
+                          <span className="text-gray-600 dark:text-gray-400">{device.percentage}%</span>
+                        </div>
+                        <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-blue-600 rounded-full"
-                            style={{
-                              width: `${(page.views / analytics.topPages[0].views) * 100}%`,
-                            }}
+                            className="h-full bg-green-600 rounded-full"
+                            style={{ width: `${device.percentage}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm text-gray-600 dark:text-gray-400 w-16 text-right">
-                          {page.views.toLocaleString()}
-                        </span>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Device Breakdown */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Devices</h2>
-                </div>
-
-                <div className="p-6 space-y-4">
-                  {analytics.devices.map((device, idx) => (
-                    <div key={idx}>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-gray-700 dark:text-gray-300 font-semibold">{device.type}</p>
-                        <span className="text-gray-600 dark:text-gray-400">{device.percentage}%</span>
-                      </div>
-                      <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-green-600 rounded-full"
-                          style={{ width: `${device.percentage}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Browser Stats */}
-            <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Browsers</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
-                {analytics.browsers.map((browser, idx) => (
-                  <div key={idx} className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <p className="text-gray-700 dark:text-gray-300 font-semibold">{browser.name}</p>
-                    <p className="text-3xl font-bold text-indigo-600 mt-2">{browser.percentage}%</p>
+                    ))}
                   </div>
-                ))}
+                </div>
+              </div>
+
+              {/* Browser Stats */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Browsers</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
+                  {analytics.browsers.map((browser, idx) => (
+                    <div key={idx} className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <p className="text-gray-700 dark:text-gray-300 font-semibold">{browser.name}</p>
+                      <p className="text-3xl font-bold text-indigo-600 mt-2">{browser.percentage}%</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </>
-        )}
+          )}
+
+          {/* Real-Time Visitors Tab */}
+          {activeTab === 'realtime' && <RealTimeVisitorsPanel />}
+
+          {/* Device Intelligence Tab */}
+          {activeTab === 'device' && <DeviceIntelligencePanel />}
+
+          {/* Traffic Sources Tab */}
+          {activeTab === 'traffic' && <TrafficSourceAnalytics />}
+
+          {/* Behavior Analytics Tab */}
+          {activeTab === 'behavior' && <BehaviorAnalytics />}
+
+          {/* Security Alerts Tab */}
+          {activeTab === 'security' && <SecurityAlerts />}
+        </div>
       </div>
     </div>
   );

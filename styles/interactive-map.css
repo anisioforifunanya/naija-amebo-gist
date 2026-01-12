@@ -1,0 +1,60 @@
+/* InteractiveAnalyticsMap Styles */
+
+.custom-marker {
+  background: transparent;
+  border: none;
+}
+
+.leaflet-popup-content-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: #1f2937;
+  color: white;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  padding: 12px;
+  color: #1f2937;
+}
+
+.dark .leaflet-popup-content {
+  color: white;
+}
+
+.leaflet-popup-tip {
+  background: white;
+  border-top-color: white;
+}
+
+.dark .leaflet-popup-tip {
+  background: #1f2937;
+  border-top-color: #1f2937;
+}
+
+.leaflet-marker-cluster {
+  background-color: rgba(59, 130, 246, 0.8);
+  border-radius: 50%;
+  border: 2px solid rgba(30, 58, 138, 0.6);
+}
+
+.leaflet-marker-cluster div {
+  background-color: rgba(37, 99, 235, 0.9);
+}
+
+.leaflet-container {
+  background: #f3f4f6;
+}
+
+.dark .leaflet-container {
+  background: #111827;
+}
+
+.analytics-popup {
+  font-family: system-ui, -apple-system, sans-serif;
+}

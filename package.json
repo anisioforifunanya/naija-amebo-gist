@@ -14,12 +14,15 @@
     "dotenv": "^17.2.3",
     "firebase": "^12.7.0",
     "leaflet": "^1.9.4",
+    "leaflet-heatmap": "^1.0.0",
+    "leaflet.markercluster": "^1.5.3",
     "next": "^16.1.1",
     "node-cron": "^4.2.1",
     "react": "^18",
     "react-dom": "^18",
     "react-leaflet": "^4.2.1",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.8",
@@ -27,6 +30,7 @@
     "@types/node-cron": "^3.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/ws": "^8.18.1",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.0",

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import InteractiveAnalyticsMap from '@/components/InteractiveAnalyticsMap';
 
 interface GeoLocation {
   region: string;
@@ -17,6 +18,8 @@ export default function GeoMap() {
   const [geoData, setGeoData] = useState<GeoLocation[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(true);
+  const [showClusters, setShowClusters] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
@@ -61,7 +64,7 @@ export default function GeoMap() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Back Button - Fixed at Top */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Link href="/dashboard" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
             <span className="mr-2">← Back to Dashboard</span>
@@ -72,8 +75,8 @@ export default function GeoMap() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg p-8 mb-8">
-          <h1 className="text-4xl font-bold mb-2">🗺️ Geo Map</h1>
-          <p className="text-green-100">View user distribution across regions</p>
+          <h1 className="text-4xl font-bold mb-2">🗺️ Live Geo Analytics Map</h1>
+          <p className="text-green-100">Real-time user locations with analytics insights (Snapchat-style)</p>
         </div>
 
         {/* Summary Stats */}
@@ -109,20 +112,43 @@ export default function GeoMap() {
           </div>
         </div>
 
+        {/* Map Controls */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-8 flex flex-wrap gap-4 items-center">
+          <h3 className="font-semibold text-gray-900 dark:text-white">Map Options:</h3>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showHeatmap}
+              onChange={(e) => setShowHeatmap(e.target.checked)}
+              className="w-4 h-4 rounded"
+            />
+            <span className="text-sm text-gray-700 dark:text-gray-300">Show Heatmap</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showClusters}
+              onChange={(e) => setShowClusters(e.target.checked)}
+              className="w-4 h-4 rounded"
+            />
+            <span className="text-sm text-gray-700 dark:text-gray-300">Cluster Markers</span>
+          </label>
+        </div>
+
         {/* Map Section */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">User Distribution Map</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Real-Time User Distribution</h2>
           
-          <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-lg p-8 text-center h-96 flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-6xl mb-4">🗺️</div>
-              <p className="text-gray-600 dark:text-gray-400 text-lg font-semibold">Nigeria Regional Distribution</p>
-              <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Interactive map showing user concentration by region</p>
-              <div className="mt-6 space-y-2">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Map visualization area</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500">Hover over regions to see detailed statistics</p>
-              </div>
-            </div>
+          <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700" style={{ height: '600px' }}>
+            <InteractiveAnalyticsMap 
+              showHeatmap={showHeatmap}
+              showClusters={showClusters}
+              zoomLevel={6}
+            />
+          </div>
+          
+          <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p>💡 Click on markers to see detailed location statistics. Hover to view real-time activity data.</p>
           </div>
         </div>
 

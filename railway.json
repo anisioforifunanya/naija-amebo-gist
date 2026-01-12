@@ -7,6 +7,14 @@
   "deploy": {
     "startCommand": "npm run start",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 5
+    "restartPolicyMaxRetries": 5,
+    "healthCheckPath": "/",
+    "healthCheckInterval": 10,
+    "healthCheckTimeout": 5
+  },
+  "environmentVariables": {
+    "NODE_ENV": "production",
+    "PORT": "3000",
+    "WS_PORT": "8000"
   }
 }
