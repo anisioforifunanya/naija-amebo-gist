@@ -6,6 +6,8 @@ import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
 import VerificationApprovalSection from '@/components/VerificationApprovalSection'
 import extendedNews from '@/data/extended-news.json'
 import { StorageSync } from '@/lib/storageSync'
+import { db } from '@/lib/firebase'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
 
 interface AdminData {
   id: string;
@@ -868,8 +870,32 @@ export default function AdminDashboard() {
     const updatedNews = [...allNews, newArticle]
     setAllNews(updatedNews)
     
-    // Save to all storages
+    // Save to localStorage for immediate display in admin
     await StorageSync.saveNews(updatedNews)
+
+    // CRITICAL: Also save to Firebase so it appears on public pages
+    try {
+      const firebaseArticle = {
+        title: newArticle.title,
+        description: newArticle.description,
+        excerpt: newArticle.description.substring(0, 200),
+        category: newArticle.category,
+        status: newArticle.status,
+        image: newArticle.image,
+        video: newArticle.video,
+        date: newArticle.date,
+        submittedBy: newArticle.submittedBy,
+        submitterEmail: newArticle.submitterEmail,
+        hashtags: newArticle.hashtags || [],
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      }
+      await addDoc(collection(db, 'articles'), firebaseArticle)
+    } catch (firebaseError) {
+      console.error('❌ Failed to save to Firebase:', firebaseError)
+      alert('⚠️ News saved locally but failed to sync to database. Please try again.')
+      return
+    }
 
     setNewNewsForm({
       title: '',
@@ -882,7 +908,7 @@ export default function AdminDashboard() {
       videoFile: null,
     })
     setShowAddNewsForm(false)
-    alert('✅ News article added successfully!')
+    alert('✅ News article added successfully and published online!')
   }
 
   const handleEditNewsArticle = (newsId: string) => {
