@@ -35,7 +35,7 @@ export function AnalyticsTracker() {
         let deviceFingerprint = ''
         try {
           const { getDeviceFingerprintBrowser } = await import('@/lib/device/DeviceFingerprint')
-          const fp = getDeviceFingerprintBrowser()
+          const fp = await getDeviceFingerprintBrowser()
           deviceFingerprint = fp.fingerprint || 'unknown'
         } catch (e) {
           console.warn('Could not generate device fingerprint:', e)
