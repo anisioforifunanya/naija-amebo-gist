@@ -1,5 +1,6 @@
 "use client";
 
+// Viral-Content Page - API fetch rebuild Jan 12 2026
 import { useState, useEffect } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';
