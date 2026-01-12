@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Image optimization for better SEO and performance
+  // Deployment trigger: API data source fix
   images: {
     formats: ['image/webp', 'image/avif'],
     remotePatterns: [
