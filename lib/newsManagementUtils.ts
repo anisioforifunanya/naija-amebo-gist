@@ -31,12 +31,19 @@ import type {
 
 export async function createNews(newsData: Omit<NewsItem, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
   try {
-    const docRef = await addDoc(collection(db, 'news'), {
+    // Save to 'articles' collection (same as breaking-news page expects)
+    const docRef = await addDoc(collection(db, 'articles'), {
       ...newsData,
-      created_at: Timestamp.now(),
-      updated_at: Timestamp.now(),
-      status: 'draft'
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+      status: newsData.status || 'draft',
+      title: newsData.title,
+      description: newsData.description,
+      category: newsData.category,
+      image: newsData.image_url,
+      hashtags: newsData.hashtags || [],
     });
+    console.log('✅ News saved to articles collection:', docRef.id);
     return docRef.id;
   } catch (error) {
     console.error('❌ Error creating news:', error);
@@ -46,10 +53,11 @@ export async function createNews(newsData: Omit<NewsItem, 'id' | 'created_at' | 
 
 export async function updateNews(newsId: string, updates: Partial<NewsItem>): Promise<void> {
   try {
-    await updateDoc(doc(db, 'news', newsId), {
+    await updateDoc(doc(db, 'articles', newsId), {
       ...updates,
-      updated_at: Timestamp.now()
+      updatedAt: Timestamp.now()
     });
+    console.log('✅ News updated in articles collection:', newsId);
   } catch (error) {
     console.error('❌ Error updating news:', error);
     throw error;
@@ -58,11 +66,12 @@ export async function updateNews(newsId: string, updates: Partial<NewsItem>): Pr
 
 export async function publishNews(newsId: string): Promise<void> {
   try {
-    await updateDoc(doc(db, 'news', newsId), {
-      status: 'published' as PublishStatus,
-      published_at: Timestamp.now(),
+    await updateDoc(doc(db, 'articles', newsId), {
+      status: 'approved',
+      publishedAt: Timestamp.now(),
       visibility: 'public'
     });
+    console.log('✅ News published:', newsId);
   } catch (error) {
     console.error('❌ Error publishing news:', error);
     throw error;
@@ -92,12 +101,12 @@ export async function bulkPublishNews(newsIds: string[], adminId: string): Promi
 
     // Update all news items
     newsIds.forEach(newsId => {
-      const newsRef = doc(db, 'news', newsId);
+      const newsRef = doc(db, 'articles', newsId);
       batch.update(newsRef, {
-        status: 'published',
-        published_at: Timestamp.now(),
+        status: 'approved',
+        publishedAt: Timestamp.now(),
         visibility: 'public',
-        updated_at: Timestamp.now()
+        updatedAt: Timestamp.now()
       });
     });
 
@@ -139,11 +148,11 @@ export async function bulkScheduleNews(newsIds: string[], scheduledFor: number):
 
     // Update all items
     newsIds.forEach(newsId => {
-      const newsRef = doc(db, 'news', newsId);
+      const newsRef = doc(db, 'articles', newsId);
       batch.update(newsRef, {
         status: 'scheduled' as PublishStatus,
-        scheduled_at: scheduledFor,
-        updated_at: Timestamp.now()
+        scheduledAt: scheduledFor,
+        updatedAt: Timestamp.now()
       });
     });
 
@@ -197,13 +206,13 @@ export async function updateNewsAnalytics(newsId: string): Promise<void> {
     const engagementRate = ((engagement / views) * 100).toFixed(2);
     const viralScore = Math.min(100, Math.floor((engagement / views) * 1000));
 
-    await updateDoc(doc(db, 'news', newsId), {
-      'analytics.views': views,
-      'analytics.shares': shares,
-      'analytics.comments': comments,
-      'analytics.engagement_rate': engagementRate,
-      'analytics.viral_score': viralScore,
-      'analytics.timestamp': Date.now()
+    await updateDoc(doc(db, 'articles', newsId), {
+      views: views,
+      shares: shares,
+      comments: comments,
+      engagementRate: engagementRate,
+      viralScore: viralScore,
+      analyticsTimestamp: Date.now()
     });
   } catch (error) {
     console.error('❌ Analytics update failed:', error);
@@ -218,10 +227,10 @@ export async function getNewsByCategory(
 ): Promise<NewsItem[]> {
   try {
     const q = query(
-      collection(db, 'news'),
+      collection(db, 'articles'),
       where('category', '==', category),
-      where('status', '==', 'published'),
-      orderBy('published_at', 'desc'),
+      where('status', '==', 'approved'),
+      orderBy('publishedAt', 'desc'),
       limit(limitNum)
     );
     
@@ -236,9 +245,9 @@ export async function getNewsByCategory(
 export async function getTrendingNews(limitNum: number = 10): Promise<NewsItem[]> {
   try {
     const q = query(
-      collection(db, 'news'),
-      where('status', '==', 'published'),
-      orderBy('analytics.viral_score', 'desc'),
+      collection(db, 'articles'),
+      where('status', '==', 'approved'),
+      orderBy('views', 'desc'),
       limit(limitNum)
     );
     
@@ -255,9 +264,9 @@ export async function getTrendingNews(limitNum: number = 10): Promise<NewsItem[]
 export async function getScheduledNews(): Promise<NewsItem[]> {
   try {
     const q = query(
-      collection(db, 'news'),
+      collection(db, 'articles'),
       where('status', '==', 'scheduled'),
-      orderBy('scheduled_at', 'asc')
+      orderBy('scheduledAt', 'asc')
     );
     
     const snapshot = await getDocs(q);
