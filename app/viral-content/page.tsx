@@ -50,9 +50,11 @@ export default function ViralContent() {
   useEffect(() => {
     const loadNews = async () => {
       try {
-        // Fetch from Firebase API
-        const response = await fetch('/api/articles/get?category=viral-content&status=approved')
+        console.log('Viral-Content: Loading articles from API...')
+        // Fetch from Firebase API with cache bust
+        const response = await fetch('/api/articles/get?category=viral-content&status=approved&t=' + Date.now())
         const apiData = await response.json()
+        console.log('Viral-Content: API returned', apiData.articles?.length, 'articles')
         const apiNews = (apiData.articles || []).map((item: any) => ({
           id: item.id,
           title: item.title,

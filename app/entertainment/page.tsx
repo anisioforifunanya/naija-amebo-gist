@@ -50,9 +50,11 @@ export default function Entertainment() {
   useEffect(() => {
     const loadNews = async () => {
       try {
-        // Fetch from Firebase API
-        const response = await fetch('/api/articles/get?category=entertainment&status=approved')
+        console.log('Entertainment: Loading articles from API...')
+        // Fetch from Firebase API with cache bust
+        const response = await fetch('/api/articles/get?category=entertainment&status=approved&t=' + Date.now())
         const apiData = await response.json()
+        console.log('Entertainment: API returned', apiData.articles?.length, 'articles')
         const apiNews = (apiData.articles || []).map((item: any) => ({
           id: item.id,
           title: item.title,
