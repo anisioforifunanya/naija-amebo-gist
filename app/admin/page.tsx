@@ -3,6 +3,7 @@
 import { createArticleFromAdmin, approveArticle, rejectArticle, removeArticle } from '@/lib/admin-article-handler';
 import { saveArticle } from '@/lib/firebase-persistence';
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import LiveRecorder from '../../components/LiveRecorder'
 import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
@@ -99,6 +100,9 @@ interface ChatMessage {
 }
 
 export default function AdminDashboard() {
+  const searchParams = useSearchParams()
+  const queryTab = searchParams?.get('tab') as any || 'news'
+  
   const [news, setNews] = useState<NewsItem[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [currentAdmin, setCurrentAdmin] = useState<AdminData | null>(null)
@@ -142,7 +146,7 @@ export default function AdminDashboard() {
     imageFile: undefined as File | undefined,
     videoFile: undefined as File | undefined,
   })
-  const [activeTab, setActiveTab] = useState<'news' | 'news-management' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
+  const [activeTab, setActiveTab] = useState<'news' | 'news-management' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>(queryTab)
   const [isAnonymousMode, setIsAnonymousMode] = useState(false)
   const [showAddAdminForm, setShowAddAdminForm] = useState(false)
   const [adminCreationMode, setAdminCreationMode] = useState<'create' | 'promote'>('create')
@@ -155,6 +159,13 @@ export default function AdminDashboard() {
     permissions: ['moderate_users', 'manage_content'] as string[]
   })
   const [isMounted, setIsMounted] = useState(false)
+
+  // Sync tab from URL query parameter
+  useEffect(() => {
+    if (queryTab && queryTab !== activeTab) {
+      setActiveTab(queryTab)
+    }
+  }, [queryTab])
 
   const loadAllData = async () => {
     try {
