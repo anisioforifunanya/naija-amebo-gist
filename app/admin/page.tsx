@@ -2214,7 +2214,7 @@ export default function AdminDashboard() {
                             <span className="text-sm">🎬 {newNewsForm.videoFile.name}</span>
                             <button
                               type="button"
-                              onClick={() => setNewNewsForm({ ...newNewsForm, videoFile: null })}
+                              onClick={() => setNewNewsForm({ ...newNewsForm, videoFile: undefined })}
                               className="text-red-500 hover:text-red-700 text-sm font-semibold"
                             >
                               ✕ Remove
