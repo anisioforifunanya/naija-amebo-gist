@@ -1,4 +1,7 @@
 "use client";
+
+import { createArticleFromAdmin, approveArticle, rejectArticle, removeArticle } from '@/lib/admin-article-handler';
+import { saveArticle } from '@/lib/firebase-persistence';
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import LiveRecorder from '../../components/LiveRecorder'
@@ -111,10 +114,10 @@ export default function AdminDashboard() {
     category: 'breaking-news',
     hashtags: '',
     socialCaption: '',
-    image: null as File | null,
-    video: null as File | null,
-    liveVideo: null as Blob | null,
-    liveAudio: null as Blob | null
+    image: undefined as File | undefined,
+    video: undefined as File | undefined,
+    liveVideo: undefined as Blob | undefined,
+    liveAudio: undefined as Blob | undefined
   })
 
   // New state for admin management
@@ -136,8 +139,8 @@ export default function AdminDashboard() {
     status: 'approved' as const,
     hashtags: '',
     imageUrl: '',
-    imageFile: null as File | null,
-    videoFile: null as File | null,
+    imageFile: undefined as File | undefined,
+    videoFile: undefined as File | undefined,
   })
   const [activeTab, setActiveTab] = useState<'news' | 'news-management' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>('news')
   const [isAnonymousMode, setIsAnonymousMode] = useState(false)
@@ -497,64 +500,62 @@ export default function AdminDashboard() {
   }
 
   const handleAddNews = async () => {
-    let imageBase64 = '';
-    let videoBase64 = '';
-    let liveVideoBase64 = '';
-    let liveAudioBase64 = '';
+    try {
+      if (!newNews.title || !newNews.description || !newNews.category) {
+        alert('Please fill in all required fields')
+        return
+      }
 
-    // Convert image to base64 if exists
-    if (newNews.image) {
-      imageBase64 = await fileToBase64(newNews.image);
+      // Create article using Firebase handler (NO localStorage!)
+      const articleId = await createArticleFromAdmin({
+        title: newNews.title,
+        description: newNews.description,
+        category: newNews.category,
+        hashtags: newNews.hashtags,
+        socialCaption: newNews.socialCaption,
+        image: newNews.image,
+        video: newNews.video,
+        liveVideo: newNews.liveVideo,
+        liveAudio: newNews.liveAudio
+      })
+
+      // Update local state for UI feedback
+      const newsItem = {
+        id: articleId,
+        title: newNews.title,
+        description: newNews.description,
+        category: newNews.category,
+        date: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
+        status: 'approved' as const,
+        submittedBy: 'admin',
+        hashtags: newNews.hashtags.split(',').map(tag => tag.trim()),
+        socialCaption: newNews.socialCaption,
+        image: undefined,
+        video: undefined
+      }
+
+      const updatedNews = [...news, newsItem]
+      setNews(updatedNews)
+      // NO localStorage.setItem() - data is in Firebase now!
+
+      alert('✅ Article saved to Firebase!')
+
+      // Reset form
+      setNewNews({
+        title: '',
+        description: '',
+        category: 'breaking-news',
+        hashtags: '',
+        socialCaption: '',
+        image: undefined,
+        video: undefined,
+        liveVideo: undefined,
+        liveAudio: undefined
+      })
+      setShowAddForm(false)
+    } catch (error) {
+      alert('❌ Failed to save article: ' + (error instanceof Error ? error.message : 'Unknown error'))
     }
-
-    // Convert video to base64 if exists
-    if (newNews.video) {
-      videoBase64 = await fileToBase64(newNews.video);
-    }
-
-    // Convert live video to base64 if exists
-    if (newNews.liveVideo) {
-      liveVideoBase64 = await blobToBase64(newNews.liveVideo);
-    }
-
-    // Convert live audio to base64 if exists
-    if (newNews.liveAudio) {
-      liveAudioBase64 = await blobToBase64(newNews.liveAudio);
-    }
-
-    const newsItem: NewsItem = {
-      id: Date.now().toString(),
-      title: newNews.title,
-      description: newNews.description,
-      category: newNews.category,
-      date: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
-      status: 'approved', // Admin-added news is auto-approved
-      submittedBy: 'admin',
-      hashtags: newNews.hashtags.split(',').map(tag => tag.trim()),
-      socialCaption: newNews.socialCaption,
-      image: imageBase64 || undefined,
-      video: videoBase64 || undefined,
-      liveVideo: liveVideoBase64 || undefined,
-      liveAudio: liveAudioBase64 || undefined
-    }
-
-    const updatedNews = [...news, newsItem]
-    setNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
-
-    // Reset form
-    setNewNews({
-      title: '',
-      description: '',
-      category: 'breaking-news',
-      hashtags: '',
-      socialCaption: '',
-      image: null,
-      video: null,
-      liveVideo: null,
-      liveAudio: null
-    })
-    setShowAddForm(false)
   }
 
   const handleStatusChange = (id: string, status: 'approved' | 'rejected') => {
@@ -562,13 +563,18 @@ export default function AdminDashboard() {
       item.id === id ? { ...item, status } : item
     )
     setNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    // Article updated in Firebase via API call, no localStorage needed
   }
 
-  const handleDelete = (id: string) => {
-    const updatedNews = news.filter(item => item.id !== id)
-    setNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+  const handleDelete = async (id: string) => {
+    try {
+      await removeArticle(id)
+      const updatedNews = news.filter(item => item.id !== id)
+      setNews(updatedNews)
+      alert('✅ Article deleted from Firebase')
+    } catch (error) {
+      alert('❌ Failed to delete article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
   }
 
   // Admin Management Functions
@@ -904,8 +910,8 @@ export default function AdminDashboard() {
       status: 'approved',
       hashtags: '',
       imageUrl: '',
-      imageFile: null,
-      videoFile: null,
+      imageFile: undefined,
+      videoFile: undefined,
     })
     setShowAddNewsForm(false)
     alert('✅ News article added successfully and published online!')
@@ -919,52 +925,68 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleSaveNewsArticleEdit = () => {
+  const handleSaveNewsArticleEdit = async () => {
     if (!editingNewsForm.title?.trim() || !editingNewsForm.description?.trim()) {
       alert('❌ Please fill in title and description')
       return
     }
 
-    const updatedNews = allNews.map(n =>
-      n.id === editingNewsId ? { ...n, ...editingNewsForm } : n
-    )
-    setAllNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
-    setEditingNewsId(null)
-    setEditingNewsForm({})
-    alert('✅ News article updated successfully!')
+    try {
+      // Save updated article to Firebase
+      await saveArticle({ id: editingNewsId, ...editingNewsForm } as any)
+      
+      const updatedNews = allNews.map(n =>
+        n.id === editingNewsId ? { ...n, ...editingNewsForm } : n
+      )
+      setAllNews(updatedNews)
+      // NO localStorage - article saved to Firebase
+      setEditingNewsId(null)
+      setEditingNewsForm({})
+      alert('✅ News article updated in Firebase!')
+    } catch (error) {
+      alert('❌ Failed to update article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
   }
 
-  const handleDeleteNewsArticle = (newsId: string, newsTitle: string) => {
+  const handleDeleteNewsArticle = async (newsId: string, newsTitle: string) => {
     if (!window.confirm(`⚠️ Are you sure you want to DELETE the article "${newsTitle}"? This action cannot be undone!`)) {
       return
     }
 
-    const updatedNews = allNews.filter(n => n.id !== newsId)
-    setAllNews(updatedNews)
-    
-    // Delete from all storages
-    StorageSync.deleteNews(newsId)
-    
-    alert('✅ News article deleted successfully!')
+    try {
+      await removeArticle(newsId)
+      const updatedNews = allNews.filter(n => n.id !== newsId)
+      setAllNews(updatedNews)
+      alert('✅ News article deleted from Firebase!')
+    } catch (error) {
+      alert('❌ Failed to delete article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
   }
 
-  const handleApproveNewsArticle = (newsId: string) => {
-    const updatedNews = allNews.map(n =>
-      n.id === newsId ? { ...n, status: 'approved' as const } : n
-    )
-    setAllNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
-    alert('✅ Article approved!')
+  const handleApproveNewsArticle = async (newsId: string) => {
+    try {
+      await approveArticle(newsId)
+      const updatedNews = allNews.map(n =>
+        n.id === newsId ? { ...n, status: 'approved' as const } : n
+      )
+      setAllNews(updatedNews)
+      alert('✅ Article approved in Firebase!')
+    } catch (error) {
+      alert('❌ Failed to approve article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
   }
 
-  const handleRejectNewsArticle = (newsId: string) => {
-    const updatedNews = allNews.map(n =>
-      n.id === newsId ? { ...n, status: 'rejected' as const } : n
-    )
-    setAllNews(updatedNews)
-    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
-    alert('✅ Article rejected!')
+  const handleRejectNewsArticle = async (newsId: string) => {
+    try {
+      await rejectArticle(newsId)
+      const updatedNews = allNews.map(n =>
+        n.id === newsId ? { ...n, status: 'rejected' as const } : n
+      )
+      setAllNews(updatedNews)
+      alert('✅ Article rejected in Firebase!')
+    } catch (error) {
+      alert('❌ Failed to reject article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
   }
 
   const handlePendingNewsArticle = (newsId: string) => {
@@ -1364,7 +1386,7 @@ export default function AdminDashboard() {
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => setNewNews({...newNews, image: e.target.files?.[0] || null})}
+                        onChange={(e) => setNewNews({...newNews, image: e.target.files?.[0]})}
                         className="border rounded px-3 py-2 w-full"
                       />
                     </div>
@@ -1373,7 +1395,7 @@ export default function AdminDashboard() {
                       <input
                         type="file"
                         accept="video/*"
-                        onChange={(e) => setNewNews({...newNews, video: e.target.files?.[0] || null})}
+                        onChange={(e) => setNewNews({...newNews, video: e.target.files?.[0]})}
                         className="border rounded px-3 py-2 w-full"
                       />
                     </div>
@@ -2154,7 +2176,7 @@ export default function AdminDashboard() {
                               <span className="text-sm">📷 {newNewsForm.imageFile.name}</span>
                               <button
                                 type="button"
-                                onClick={() => setNewNewsForm({ ...newNewsForm, imageFile: null })}
+                                onClick={() => setNewNewsForm({ ...newNewsForm, imageFile: undefined })}
                                 className="text-red-500 hover:text-red-700 text-sm font-semibold"
                               >
                                 ✕ Remove
@@ -2164,7 +2186,7 @@ export default function AdminDashboard() {
                             <input
                               type="file"
                               accept="image/*"
-                              onChange={(e) => setNewNewsForm({ ...newNewsForm, imageFile: e.target.files?.[0] || null })}
+                              onChange={(e) => setNewNewsForm({ ...newNewsForm, imageFile: e.target.files?.[0] })}
                               className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
                             />
                           )}
@@ -2202,7 +2224,7 @@ export default function AdminDashboard() {
                           <input
                             type="file"
                             accept="video/*"
-                            onChange={(e) => setNewNewsForm({ ...newNewsForm, videoFile: e.target.files?.[0] || null })}
+                            onChange={(e) => setNewNewsForm({ ...newNewsForm, videoFile: e.target.files?.[0] })}
                             className="w-full p-2 border rounded-lg dark:bg-gray-600 dark:text-white"
                           />
                         )}
