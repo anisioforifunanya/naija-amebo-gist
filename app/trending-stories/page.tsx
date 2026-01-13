@@ -2,6 +2,9 @@ import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import TrendingStoriesClient from './trending-stories-client';
 
+// Revalidate every 60 seconds to show fresh data
+export const revalidate = 60;
+
 interface NewsItem {
   id: string;
   title: string;
