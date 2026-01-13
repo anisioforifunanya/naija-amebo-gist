@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, deleteDoc } from 'firebase/firestore'
 
 export async function GET(
   request: NextRequest,
@@ -39,6 +39,40 @@ export async function GET(
     return NextResponse.json(
       { 
         error: 'Failed to retrieve article',
+        details: error instanceof Error ? error.message : String(error)
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Article ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const docRef = doc(db, 'articles', id)
+    await deleteDoc(docRef)
+
+    return NextResponse.json({
+      success: true,
+      message: 'Article deleted successfully',
+      id
+    })
+  } catch (error) {
+    console.error('Article deletion error:', error)
+    return NextResponse.json(
+      { 
+        error: 'Failed to delete article',
         details: error instanceof Error ? error.message : String(error)
       },
       { status: 500 }
