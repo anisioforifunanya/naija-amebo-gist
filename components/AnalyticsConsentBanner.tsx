@@ -1,31 +1,48 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { auth } from '@/lib/firebase'
+import { saveUserPreferences, getUserPreferences } from '@/lib/firebase-persistence'
 
 export function AnalyticsConsentBanner() {
   const [showBanner, setShowBanner] = useState(false)
   const [accepted, setAccepted] = useState<boolean | null>(null)
 
   useEffect(() => {
-    const consent = localStorage.getItem('analyticsConsent')
-    
-    if (consent === null) {
-      // First time - show banner after 2 seconds
-      const timer = setTimeout(() => setShowBanner(true), 2000)
-      return () => clearTimeout(timer)
-    } else {
-      setAccepted(consent === 'true')
+    const checkConsent = async () => {
+      const user = auth.currentUser
+      
+      if (user) {
+        const prefs = await getUserPreferences(user.uid)
+        if (prefs?.analyticsConsent !== undefined) {
+          setAccepted(prefs.analyticsConsent)
+        } else {
+          const timer = setTimeout(() => setShowBanner(true), 2000)
+          return () => clearTimeout(timer)
+        }
+      } else {
+        const timer = setTimeout(() => setShowBanner(true), 2000)
+        return () => clearTimeout(timer)
+      }
     }
+    
+    checkConsent()
   }, [])
 
-  const handleAccept = () => {
-    localStorage.setItem('analyticsConsent', 'true')
+  const handleAccept = async () => {
+    const user = auth.currentUser
+    if (user) {
+      await saveUserPreferences(user.uid, { analyticsConsent: true })
+    }
     setAccepted(true)
     setShowBanner(false)
   }
 
-  const handleReject = () => {
-    localStorage.setItem('analyticsConsent', 'false')
+  const handleReject = async () => {
+    const user = auth.currentUser
+    if (user) {
+      await saveUserPreferences(user.uid, { analyticsConsent: false })
+    }
     setAccepted(false)
     setShowBanner(false)
   }

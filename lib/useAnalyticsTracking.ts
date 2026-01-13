@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { generateDeviceFingerprint, getDeviceInfo } from './deviceFingerprint'
+import { auth } from '@/lib/firebase'
+import { getUserPreferences } from '@/lib/firebase-persistence'
 
 interface AnalyticsSession {
   sessionId: string
@@ -33,6 +35,14 @@ export function useAnalyticsTracking(userId: string | null) {
       const fingerprint = await generateDeviceFingerprint()
       const deviceInfo = getDeviceInfo()
 
+      // Check consent from Firebase
+      let consentGiven = true
+      const user = auth.currentUser
+      if (user) {
+        const prefs = await getUserPreferences(user.uid)
+        consentGiven = prefs?.analyticsConsent !== false
+      }
+
       sessionRef.current = {
         sessionId,
         userId,
@@ -60,7 +70,7 @@ export function useAnalyticsTracking(userId: string | null) {
           timeSpent: 0,
           scrollDepth: 0,
           clicks: 0,
-          consentGiven: localStorage.getItem('analyticsConsent') === 'true',
+          consentGiven,
           geolocation: geoData
         })
       } catch (error) {
@@ -118,6 +128,13 @@ export function useAnalyticsTracking(userId: string | null) {
 
       const timeSpent = Date.now() - session.startTime
 
+      let consentGiven = true
+      const user = auth.currentUser
+      if (user) {
+        const prefs = await getUserPreferences(user.uid)
+        consentGiven = prefs?.analyticsConsent !== false
+      }
+
       try {
         await trackEvent({
           sessionId: session.sessionId,
@@ -127,7 +144,7 @@ export function useAnalyticsTracking(userId: string | null) {
           timeSpent,
           scrollDepth: maxScrollRef.current,
           clicks: clickCountRef.current,
-          consentGiven: localStorage.getItem('analyticsConsent') === 'true'
+          consentGiven
         })
       } catch (error) {
         console.log('Analytics tracking error:', error)
@@ -156,7 +173,7 @@ export function useAnalyticsTracking(userId: string | null) {
               scrollDepth: maxScrollRef.current,
               clicks: clickCountRef.current,
               sessionEnded: true,
-              consentGiven: localStorage.getItem('analyticsConsent') === 'true'
+              consentGiven: true
             })
           })
         } catch (error) {

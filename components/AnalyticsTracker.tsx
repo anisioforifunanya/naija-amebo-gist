@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { auth } from '@/lib/firebase'
+import { getUserPreferences, getUserSession } from '@/lib/firebase-persistence'
 
 export function AnalyticsTracker() {
   const sessionIdRef = useRef<string>('')
@@ -11,11 +13,16 @@ export function AnalyticsTracker() {
     try {
       const initializeTracking = async () => {
         try {
-          // Check for analytics consent
-          const consent = localStorage.getItem('analyticsConsent')
-          if (consent === 'false') {
-            console.log('[Analytics] Tracking disabled by user')
-            return
+          // Check for analytics consent from Firebase
+          let consentGiven = true
+          const user = auth.currentUser
+          
+          if (user) {
+            const prefs = await getUserPreferences(user.uid)
+            if (prefs?.analyticsConsent === false) {
+              console.log('[Analytics] Tracking disabled by user')
+              return
+            }
           }
 
           // Generate or get session ID
@@ -28,13 +35,14 @@ export function AnalyticsTracker() {
           sessionIdRef.current = sessionId
           console.log('[Analytics] Session ID:', sessionId)
 
-          // Get user ID if available - simple check first
+          // Get user ID from Firebase Auth or Firebase session
           let userId = 'anonymous'
           try {
-            const userStr = localStorage.getItem('naijaAmeboCurrentUser')
-            if (userStr) {
-              const user = JSON.parse(userStr)
-              userId = user.id || user.email || 'user_from_storage'
+            if (user) {
+              const session = await getUserSession(user.uid)
+              userId = session?.userId || user.uid || 'user_from_auth'
+            } else {
+              userId = `anon_${Date.now()}`
             }
           } catch {
             userId = `anon_${Date.now()}`
@@ -85,7 +93,7 @@ export function AnalyticsTracker() {
                 screenWidth: window.innerWidth,
                 screenHeight: window.innerHeight,
                 networkInfo,
-                consentGiven: consent !== 'false'
+                consentGiven: consentGiven
               }
 
               // Queue event
