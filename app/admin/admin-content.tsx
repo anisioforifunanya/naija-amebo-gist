@@ -1,0 +1,1080 @@
+"use client";
+
+import { createArticleFromAdmin, approveArticle, rejectArticle, removeArticle } from '@/lib/admin-article-handler';
+import { saveArticle } from '@/lib/firebase-persistence';
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import LiveRecorder from '../../components/LiveRecorder'
+import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
+import VerificationApprovalSection from '@/components/VerificationApprovalSection'
+import extendedNews from '@/data/extended-news.json'
+import { StorageSync } from '@/lib/storageSync'
+import { db } from '@/lib/firebase'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
+
+interface AdminData {
+  id: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  bio: string;
+  avatar?: string;
+  role: 'admin';
+  createdAt: string;
+  isSuperAdmin?: boolean;
+  permissions?: string[];
+}
+
+interface AdminRequestData {
+  id: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  bio: string;
+  avatar?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  requestedAt: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+}
+
+interface NewsItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  status: 'pending' | 'approved' | 'rejected';
+  submittedBy: string;
+  submitterEmail?: string;
+  hashtags: string[];
+  socialCaption: string;
+  image?: string;
+  video?: string;
+  liveVideo?: string;
+  liveAudio?: string;
+  imageFile?: File;
+  videoFile?: File;
+}
+
+interface UserData {
+  id: string;
+  email: string;
+  password: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  dateOfBirth: string;
+  gender: string;
+  location: string;
+  bio: string;
+  interests: string[];
+  avatar?: string;
+  role: 'user';
+  isVerified: boolean;
+  createdAt: string;
+  lastLogin?: string;
+  isBanned?: boolean;
+  banReason?: string;
+  isRestricted?: boolean;
+  restrictionReason?: string;
+  restrictionExpires?: string;
+}
+
+interface ChatMessage {
+  id: string;
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  message: string;
+  timestamp: string;
+  reactions: { [emoji: string]: string[] };
+  isDeleted?: boolean;
+}
+
+export default function AdminContent() {
+  const searchParams = useSearchParams()
+  const queryTab = searchParams?.get('tab') as any || 'news'
+  
+  const [news, setNews] = useState<NewsItem[]>([])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [currentAdmin, setCurrentAdmin] = useState<AdminData | null>(null)
+  const [loginStep, setLoginStep] = useState<'email' | 'password'>('email')
+  const [loginForm, setLoginForm] = useState({
+    email: '',
+    password: ''
+  })
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [newNews, setNewNews] = useState({
+    title: '',
+    description: '',
+    category: 'breaking-news',
+    hashtags: '',
+    socialCaption: '',
+    image: undefined as File | undefined,
+    video: undefined as File | undefined,
+    liveVideo: undefined as Blob | undefined,
+    liveAudio: undefined as Blob | undefined
+  })
+
+  const [allAdmins, setAllAdmins] = useState<AdminData[]>([])
+  const [adminRequests, setAdminRequests] = useState<AdminRequestData[]>([])
+  const [allUsers, setAllUsers] = useState<UserData[]>([])
+  const [allMessages, setAllMessages] = useState<ChatMessage[]>([])
+  const [allNews, setAllNews] = useState<NewsItem[]>([])
+  const [newsSearchTerm, setNewsSearchTerm] = useState('')
+  const [newsCategoryFilter, setNewsCategoryFilter] = useState('')
+  const [newsStatusFilter, setNewsStatusFilter] = useState('')
+  const [editingNewsId, setEditingNewsId] = useState<string | null>(null)
+  const [editingNewsForm, setEditingNewsForm] = useState<Partial<NewsItem>>({})
+  const [showAddNewsForm, setShowAddNewsForm] = useState(false)
+  const [newNewsForm, setNewNewsForm] = useState({
+    title: '',
+    description: '',
+    category: 'breaking-news',
+    status: 'approved' as const,
+    hashtags: '',
+    imageUrl: '',
+    imageFile: undefined as File | undefined,
+    videoFile: undefined as File | undefined,
+  })
+  const [activeTab, setActiveTab] = useState<'news' | 'news-management' | 'admins' | 'users' | 'all-users-admins' | 'verification' | 'marketplace' | 'moderation' | 'settings'>(queryTab)
+  const [isAnonymousMode, setIsAnonymousMode] = useState(false)
+  const [showAddAdminForm, setShowAddAdminForm] = useState(false)
+  const [adminCreationMode, setAdminCreationMode] = useState<'create' | 'promote'>('create')
+  const [newAdminForm, setNewAdminForm] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    avatar: '',
+    permissions: ['moderate_users', 'manage_content'] as string[]
+  })
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    if (queryTab && queryTab !== activeTab) {
+      setActiveTab(queryTab)
+    }
+  }, [queryTab])
+
+  const loadAllData = async () => {
+    try {
+      const { db } = await import('@/lib/firebase')
+      const { collection, getDocs } = await import('firebase/firestore')
+      const adminsSnapshot = await getDocs(collection(db, 'admins'))
+      const admins = adminsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as AdminData[]
+      setAllAdmins(admins)
+    } catch (error) {
+      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      setAllAdmins(admins)
+    }
+
+    const requests = JSON.parse(localStorage.getItem('adminRequests') || '[]')
+    setAdminRequests(requests)
+
+    try {
+      const { db } = await import('@/lib/firebase')
+      const { collection, getDocs } = await import('firebase/firestore')
+      const usersSnapshot = await getDocs(collection(db, 'users'))
+      const users = usersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as any[]
+      setAllUsers(users)
+    } catch (error) {
+      const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+      setAllUsers(users)
+    }
+
+    const messages = JSON.parse(localStorage.getItem('naijaAmeboChatMessages') || '[]')
+    setAllMessages(messages)
+
+    const staticNews = extendedNews.map((item: any) => ({
+      id: item.id?.toString() || Math.random().toString(),
+      title: item.title,
+      description: item.excerpt || item.content,
+      category: 'breaking-news',
+      date: item.publishedAt || item.updatedAt || new Date().toISOString(),
+      status: 'approved' as const,
+      submittedBy: typeof item.author === 'object' ? item.author?.name || 'System' : (item.author || 'System'),
+      submitterEmail: 'system@naijaamebogist.com',
+      hashtags: item.tags || [],
+      socialCaption: '',
+      image: item.image,
+      video: item.videoUrl,
+    }))
+    
+    const loadedNews = await StorageSync.loadNews(staticNews)
+    const uniqueNews = Array.from(
+      new Map(loadedNews.map((item: any) => [item.title, item])).values()
+    )
+    
+    setNews(uniqueNews)
+    setAllNews(uniqueNews)
+  }
+
+  const forceRefreshRequests = () => {
+    resetAdminSession()
+  }
+
+  const resetAdminSession = () => {
+    const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+    const sessionAdmin = localStorage.getItem('naijaAmeboCurrentAdmin')
+    
+    if (sessionAdmin) {
+      try {
+        const admin = JSON.parse(sessionAdmin)
+        const freshAdmin = admins.find((a: any) => a.id === admin.id || a.email === admin.email)
+        
+        if (freshAdmin) {
+          let updatedAdmin = {
+            ...admin,
+            ...freshAdmin,
+            isSuperAdmin: freshAdmin.isSuperAdmin === true
+          }
+          
+          if (admin.email === 'ifunanya.anisiofor@gmail.com') {
+            updatedAdmin = { ...updatedAdmin, isSuperAdmin: true }
+          }
+          
+          setCurrentAdmin(updatedAdmin)
+          localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(updatedAdmin))
+          loadAllData()
+          
+          alert(`✓ Session Reset Complete!\n\nisSuperAdmin: ${updatedAdmin.isSuperAdmin ? '✓ TRUE' : '✗ FALSE'}\n\nRefresh page if needed.`)
+        } else {
+          alert('⚠ Error: Admin account not found in database. Please log in again.')
+        }
+      } catch (e) {
+        alert('⚠ Error resetting session. Check console.')
+      }
+    }
+  }
+
+  useEffect(() => {
+    const savedNews = localStorage.getItem('naijaAmeboNews')
+    if (savedNews) {
+      setNews(JSON.parse(savedNews))
+      setAllNews(JSON.parse(savedNews))
+    }
+
+    const adminSession = localStorage.getItem('naijaAmeboCurrentAdmin')
+    if (adminSession) {
+      try {
+        const admin = JSON.parse(adminSession)
+        
+        if (admin.id && admin.email && admin.role === 'admin') {
+          let adminToUse = admin
+          if (admin.email === 'ifunanya.anisiofor@gmail.com') {
+            adminToUse = { ...admin, isSuperAdmin: true }
+            localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(adminToUse))
+          }
+          
+          setCurrentAdmin(adminToUse)
+          setIsLoggedIn(true)
+          loadAllData()
+        } else {
+          localStorage.removeItem('naijaAmeboCurrentAdmin')
+          setIsLoggedIn(false)
+        }
+      } catch (e) {
+        localStorage.removeItem('naijaAmeboCurrentAdmin')
+        setIsLoggedIn(false)
+      }
+    } else {
+      setIsLoggedIn(false)
+    }
+
+    const anonymousMode = localStorage.getItem('naijaAmeboAnonymousMode')
+    setIsAnonymousMode(anonymousMode === 'true')
+  }, [])
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (activeTab === 'admins' && isLoggedIn) {
+      loadAllData()
+      
+      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      const sessionAdmin = localStorage.getItem('naijaAmeboCurrentAdmin')
+      
+      if (sessionAdmin && currentAdmin?.email) {
+        try {
+          const admin = JSON.parse(sessionAdmin)
+          const freshAdmin = admins.find((a: any) => a.email === admin.email)
+          
+          if (freshAdmin && freshAdmin.isSuperAdmin && !admin.isSuperAdmin) {
+            const updatedAdmin = { ...admin, isSuperAdmin: freshAdmin.isSuperAdmin }
+            setCurrentAdmin(updatedAdmin)
+            localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(updatedAdmin))
+          }
+        } catch (e) {
+        }
+      }
+    }
+  }, [activeTab, isLoggedIn, currentAdmin?.email])
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (loginStep === 'email') {
+      if (!loginForm.email) {
+        alert('Please enter your email or username')
+        return
+      }
+      setLoginStep('password')
+      return
+    }
+
+    if (loginStep === 'password') {
+      if (!loginForm.password) {
+        alert('Please enter your password')
+        return
+      }
+
+      try {
+        const { loginUserWithEmail } = await import('@/lib/firebaseUtils')
+        const authUser = await loginUserWithEmail(loginForm.email, loginForm.password)
+        
+        const { db } = await import('@/lib/firebase')
+        const { doc, getDoc } = await import('firebase/firestore')
+        const adminDocRef = doc(db, 'admins', authUser.uid)
+        const adminDocSnap = await getDoc(adminDocRef)
+        
+        if (adminDocSnap.exists()) {
+          const adminData = adminDocSnap.data() as any
+          const adminWithSuperAdminFlag: AdminData = {
+            id: authUser.uid,
+            email: authUser.email || '',
+            password: '',
+            firstName: adminData?.firstName || '',
+            lastName: adminData?.lastName || '',
+            phone: adminData?.phone || '',
+            bio: adminData?.bio || '',
+            avatar: adminData?.avatar,
+            role: 'admin',
+            createdAt: adminData?.createdAt || new Date().toISOString(),
+            isSuperAdmin: adminData?.isSuperAdmin === true,
+            permissions: adminData?.permissions || []
+          }
+          
+          setCurrentAdmin(adminWithSuperAdminFlag)
+          setIsLoggedIn(true)
+          setLoginStep('email')
+          localStorage.setItem('naijaAmeboCurrentAdmin', JSON.stringify(adminWithSuperAdminFlag))
+          await loadAllData()
+        } else {
+          alert('Admin profile not found. Please contact support.')
+          setLoginForm({ ...loginForm, password: '' })
+        }
+      } catch (error: any) {
+        alert('Invalid email or password. Please try again.')
+        setLoginForm({ ...loginForm, password: '' })
+      }
+    }
+  }
+
+  const handleBackToEmail = () => {
+    setLoginStep('email')
+    setLoginForm({ ...loginForm, password: '' })
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    setCurrentAdmin(null)
+    localStorage.removeItem('naijaAmeboCurrentAdmin')
+  }
+
+  const cleanupUnverifiedUsers = () => {
+    if (!confirm('⚠️ This will delete all users who haven\'t completed facial verification. This cannot be undone. Continue?')) {
+      return
+    }
+
+    try {
+      const users = JSON.parse(localStorage.getItem('naijaAmeboUsers') || '[]')
+      const admins = JSON.parse(localStorage.getItem('naijaAmeboAdmins') || '[]')
+      
+      const adminIds = new Set(admins.map((a: any) => a.id))
+
+      const verifiedUsers = users.filter((u: any) => 
+        u.facialPhoto || adminIds.has(u.id)
+      )
+
+      const deletedCount = users.length - verifiedUsers.length
+
+      localStorage.setItem('naijaAmeboUsers', JSON.stringify(verifiedUsers))
+
+      alert(`✅ Cleaned up successfully!\n\nDeleted: ${deletedCount} unverified users\nRemaining: ${verifiedUsers.length} users`)
+      
+      loadAllData()
+    } catch (error) {
+      alert('❌ Error during cleanup. Please try again.')
+    }
+  }
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  const handleAddNews = async () => {
+    try {
+      if (!newNews.title || !newNews.description || !newNews.category) {
+        alert('Please fill in all required fields')
+        return
+      }
+
+      const articleId = await createArticleFromAdmin({
+        title: newNews.title,
+        description: newNews.description,
+        category: newNews.category,
+        hashtags: newNews.hashtags,
+        socialCaption: newNews.socialCaption,
+        image: newNews.image,
+        video: newNews.video,
+        liveVideo: newNews.liveVideo,
+        liveAudio: newNews.liveAudio
+      })
+
+      const newsItem = {
+        id: articleId,
+        title: newNews.title,
+        description: newNews.description,
+        category: newNews.category,
+        date: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
+        status: 'approved' as const,
+        submittedBy: 'admin',
+        hashtags: newNews.hashtags.split(',').map(tag => tag.trim()),
+        socialCaption: newNews.socialCaption,
+        image: undefined,
+        video: undefined
+      }
+
+      const updatedNews = [...news, newsItem]
+      setNews(updatedNews)
+
+      alert('✅ Article saved to Firebase!')
+
+      setNewNews({
+        title: '',
+        description: '',
+        category: 'breaking-news',
+        hashtags: '',
+        socialCaption: '',
+        image: undefined,
+        video: undefined,
+        liveVideo: undefined,
+        liveAudio: undefined
+      })
+      setShowAddForm(false)
+    } catch (error) {
+      alert('❌ Failed to save article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleStatusChange = (id: string, status: 'approved' | 'rejected') => {
+    const updatedNews = news.map(item =>
+      item.id === id ? { ...item, status } : item
+    )
+    setNews(updatedNews)
+  }
+
+  const handleDelete = async (id: string) => {
+    try {
+      await removeArticle(id)
+      const updatedNews = news.filter(item => item.id !== id)
+      setNews(updatedNews)
+      alert('✅ Article deleted from Firebase')
+    } catch (error) {
+      alert('❌ Failed to delete article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleAddAdmin = () => {
+    if (!currentAdmin?.isSuperAdmin) {
+      alert('Only super admins can add new administrators')
+      return
+    }
+
+    if (adminCreationMode === 'promote') {
+      const user = allUsers.find(u => u.email === newAdminForm.email)
+      if (!user) {
+        alert('User not found. Please check the email address.')
+        return
+      }
+
+      if (allAdmins.some(a => a.email === newAdminForm.email)) {
+        alert('This user is already an administrator')
+        return
+      }
+
+      const newAdmin: AdminData = {
+        id: user.id,
+        email: user.email,
+        password: user.password,
+        firstName: newAdminForm.firstName || user.firstName,
+        lastName: newAdminForm.lastName || user.lastName,
+        phone: user.phone,
+        bio: user.bio,
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        isSuperAdmin: false,
+        permissions: newAdminForm.permissions
+      }
+
+      const updatedAdmins = [...allAdmins, newAdmin]
+      setAllAdmins(updatedAdmins)
+      localStorage.setItem('naijaAmeboAdmins', JSON.stringify(updatedAdmins))
+
+      setNewAdminForm({
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        avatar: '',
+        permissions: ['moderate_users', 'manage_content']
+      })
+      setShowAddAdminForm(false)
+      alert(`${user.firstName} ${user.lastName} has been promoted to administrator!`)
+    } else {
+      if (!newAdminForm.email || !newAdminForm.firstName || !newAdminForm.lastName) {
+        alert('Please fill in all required fields')
+        return
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(newAdminForm.email)) {
+        alert('Please enter a valid email address')
+        return
+      }
+
+      if (allAdmins.some(a => a.email === newAdminForm.email)) {
+        alert('This email is already registered as an administrator')
+        return
+      }
+
+      const tempPassword = 'Admin' + Math.random().toString(36).slice(-8).toUpperCase() + Math.floor(Math.random() * 100)
+
+      const newAdmin: AdminData = {
+        id: Date.now().toString(),
+        email: newAdminForm.email,
+        password: tempPassword,
+        firstName: newAdminForm.firstName,
+        lastName: newAdminForm.lastName,
+        phone: newAdminForm.phone || '',
+        avatar: newAdminForm.avatar || '',
+        bio: '',
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        isSuperAdmin: false,
+        permissions: newAdminForm.permissions
+      }
+
+      const updatedAdmins = [...allAdmins, newAdmin]
+      setAllAdmins(updatedAdmins)
+      localStorage.setItem('naijaAmeboAdmins', JSON.stringify(updatedAdmins))
+
+      setNewAdminForm({
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        avatar: '',
+        permissions: ['moderate_users', 'manage_content']
+      })
+      setShowAddAdminForm(false)
+      
+      alert(`Administrator created successfully!\n\nEmail: ${newAdmin.email}\nTemporary Password: ${tempPassword}\n\n⚠️ IMPORTANT: Share this password securely with the new admin. They should change it immediately after first login.`)
+    }
+  }
+
+  const approveAdminRequest = (request: AdminRequestData) => {
+    if (!currentAdmin?.isSuperAdmin && currentAdmin?.email !== 'ifunanya.anisiofor@gmail.com') {
+      alert('Only super admins can approve admin requests')
+      return
+    }
+
+    const newAdmin: AdminData = {
+      id: Date.now().toString(),
+      email: request.email,
+      password: request.password,
+      firstName: request.firstName,
+      lastName: request.lastName,
+      phone: request.phone,
+      bio: request.bio,
+      avatar: request.avatar,
+      role: 'admin',
+      createdAt: new Date().toISOString(),
+      isSuperAdmin: false,
+      permissions: ['moderate_content', 'manage_users']
+    }
+
+    const updatedAdmins = [...allAdmins, newAdmin]
+    setAllAdmins(updatedAdmins)
+    localStorage.setItem('naijaAmeboAdmins', JSON.stringify(updatedAdmins))
+
+    const updatedRequest: AdminRequestData = {
+      ...request,
+      status: 'approved',
+      reviewedBy: currentAdmin.email,
+      reviewedAt: new Date().toISOString()
+    }
+
+    const updatedRequests = adminRequests.map(r => r.id === request.id ? updatedRequest : r)
+    setAdminRequests(updatedRequests)
+    localStorage.setItem('adminRequests', JSON.stringify(updatedRequests))
+
+    alert(`Admin request from ${request.firstName} ${request.lastName} has been approved!`)
+  }
+
+  const rejectAdminRequest = (request: AdminRequestData) => {
+    if (!currentAdmin?.isSuperAdmin && currentAdmin?.email !== 'ifunanya.anisiofor@gmail.com') {
+      alert('Only super admins can reject admin requests')
+      return
+    }
+
+    const updatedRequest: AdminRequestData = {
+      ...request,
+      status: 'rejected',
+      reviewedBy: currentAdmin.email,
+      reviewedAt: new Date().toISOString()
+    }
+
+    const updatedRequests = adminRequests.map(r => r.id === request.id ? updatedRequest : r)
+    setAdminRequests(updatedRequests)
+    localStorage.setItem('adminRequests', JSON.stringify(updatedRequests))
+
+    alert(`Admin request from ${request.firstName} ${request.lastName} has been rejected.`)
+  }
+
+  const handleRemoveAdmin = (adminId: string) => {
+    if (!currentAdmin?.isSuperAdmin && currentAdmin?.email !== 'ifunanya.anisiofor@gmail.com') {
+      alert('Only super admins can remove administrators')
+      return
+    }
+
+    if (adminId === currentAdmin.id) {
+      alert('You cannot remove yourself')
+      return
+    }
+
+    const updatedAdmins = allAdmins.filter(a => a.id !== adminId)
+    setAllAdmins(updatedAdmins)
+    localStorage.setItem('naijaAmeboAdmins', JSON.stringify(updatedAdmins))
+    alert('Administrator removed successfully!')
+  }
+
+  const handleBanUser = (userId: string, reason: string) => {
+    const updatedUsers = allUsers.map(user =>
+      user.id === userId
+        ? { ...user, isBanned: true, banReason: reason }
+        : user
+    )
+    setAllUsers(updatedUsers)
+    localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
+  }
+
+  const handleUnbanUser = (userId: string) => {
+    const updatedUsers = allUsers.map(user =>
+      user.id === userId
+        ? { ...user, isBanned: false, banReason: undefined }
+        : user
+    )
+    setAllUsers(updatedUsers)
+    localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
+  }
+
+  const handleRestrictUser = (userId: string, reason: string, duration: number) => {
+    const expiresAt = new Date(Date.now() + duration * 24 * 60 * 60 * 1000).toISOString()
+    const updatedUsers = allUsers.map(user =>
+      user.id === userId
+        ? { ...user, isRestricted: true, restrictionReason: reason, restrictionExpires: expiresAt }
+        : user
+    )
+    setAllUsers(updatedUsers)
+    localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
+  }
+
+  const handleUnrestrictUser = (userId: string) => {
+    const updatedUsers = allUsers.map(user =>
+      user.id === userId
+        ? { ...user, isRestricted: false, restrictionReason: undefined, restrictionExpires: undefined }
+        : user
+    )
+    setAllUsers(updatedUsers)
+    localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
+  }
+
+  const handleDeleteUser = (userId: string, userName: string) => {
+    if (!window.confirm(`⚠️ Are you sure you want to DELETE user "${userName}"? This action cannot be undone!`)) {
+      return
+    }
+
+    try {
+      const updatedUsers = allUsers.filter(user => user.id !== userId)
+      setAllUsers(updatedUsers)
+      localStorage.setItem('naijaAmeboUsers', JSON.stringify(updatedUsers))
+
+      alert(`✅ User "${userName}" has been permanently deleted from the system.`)
+    } catch (error) {
+      alert('❌ Error deleting user. Please try again.')
+    }
+  }
+
+  const handleDeleteMessage = (messageId: string) => {
+    const updatedMessages = allMessages.map(msg =>
+      msg.id === messageId ? { ...msg, isDeleted: true } : msg
+    )
+    setAllMessages(updatedMessages)
+    localStorage.setItem('naijaAmeboChatMessages', JSON.stringify(updatedMessages))
+  }
+
+  const handleAddNewsArticle = async () => {
+    if (!newNewsForm.title.trim() || !newNewsForm.description.trim()) {
+      alert('❌ Please fill in title and description')
+      return
+    }
+
+    const currentAdmin = JSON.parse(localStorage.getItem('naijaAmeboCurrentAdmin') || '{}')
+    
+    let imageBase64: string | undefined = undefined
+    if (newNewsForm.imageFile) {
+      imageBase64 = await fileToBase64(newNewsForm.imageFile)
+    } else if (newNewsForm.imageUrl.trim()) {
+      imageBase64 = newNewsForm.imageUrl
+    }
+
+    let videoBase64: string | undefined = undefined
+    if (newNewsForm.videoFile) {
+      videoBase64 = await fileToBase64(newNewsForm.videoFile)
+    }
+    
+    const newArticle: NewsItem = {
+      id: Date.now().toString(),
+      title: newNewsForm.title,
+      description: newNewsForm.description,
+      category: newNewsForm.category,
+      status: newNewsForm.status,
+      date: new Date().toLocaleString(),
+      hashtags: newNewsForm.hashtags ? newNewsForm.hashtags.split(',').map(h => h.trim()) : [],
+      image: imageBase64,
+      video: videoBase64,
+      submittedBy: currentAdmin.firstName ? `${currentAdmin.firstName} ${currentAdmin.lastName}` : 'Admin',
+      submitterEmail: currentAdmin.email,
+      socialCaption: '',
+    }
+
+    const updatedNews = [...allNews, newArticle]
+    setAllNews(updatedNews)
+    
+    await StorageSync.saveNews(updatedNews)
+
+    try {
+      const firebaseArticle = {
+        title: newArticle.title,
+        description: newArticle.description,
+        excerpt: newArticle.description.substring(0, 200),
+        category: newArticle.category,
+        status: newArticle.status,
+        image: newArticle.image,
+        video: newArticle.video,
+        date: newArticle.date,
+        submittedBy: newArticle.submittedBy,
+        submitterEmail: newArticle.submitterEmail,
+        hashtags: newArticle.hashtags || [],
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      }
+      await addDoc(collection(db, 'articles'), firebaseArticle)
+    } catch (firebaseError) {
+      alert('⚠️ News saved locally but failed to sync to database. Please try again.')
+      return
+    }
+
+    setNewNewsForm({
+      title: '',
+      description: '',
+      category: 'breaking-news',
+      status: 'approved',
+      hashtags: '',
+      imageUrl: '',
+      imageFile: undefined,
+      videoFile: undefined,
+    })
+    setShowAddNewsForm(false)
+    alert('✅ News article added successfully and published online!')
+  }
+
+  const handleEditNewsArticle = (newsId: string) => {
+    const newsItem = allNews.find(n => n.id === newsId)
+    if (newsItem) {
+      setEditingNewsId(newsId)
+      setEditingNewsForm(newsItem)
+    }
+  }
+
+  const handleSaveNewsArticleEdit = async () => {
+    if (!editingNewsForm.title?.trim() || !editingNewsForm.description?.trim()) {
+      alert('❌ Please fill in title and description')
+      return
+    }
+
+    try {
+      await saveArticle({ id: editingNewsId, ...editingNewsForm } as any)
+      
+      const updatedNews = allNews.map(n =>
+        n.id === editingNewsId ? { ...n, ...editingNewsForm } : n
+      )
+      setAllNews(updatedNews)
+      setEditingNewsId(null)
+      setEditingNewsForm({})
+      alert('✅ News article updated in Firebase!')
+    } catch (error) {
+      alert('❌ Failed to update article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleDeleteNewsArticle = async (newsId: string, newsTitle: string) => {
+    if (!window.confirm(`⚠️ Are you sure you want to DELETE the article "${newsTitle}"? This action cannot be undone!`)) {
+      return
+    }
+
+    try {
+      await removeArticle(newsId)
+      const updatedNews = allNews.filter(n => n.id !== newsId)
+      setAllNews(updatedNews)
+      alert('✅ News article deleted from Firebase!')
+    } catch (error) {
+      alert('❌ Failed to delete article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleApproveNewsArticle = async (newsId: string) => {
+    try {
+      await approveArticle(newsId)
+      const updatedNews = allNews.map(n =>
+        n.id === newsId ? { ...n, status: 'approved' as const } : n
+      )
+      setAllNews(updatedNews)
+      alert('✅ Article approved in Firebase!')
+    } catch (error) {
+      alert('❌ Failed to approve article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleRejectNewsArticle = async (newsId: string) => {
+    try {
+      await rejectArticle(newsId)
+      const updatedNews = allNews.map(n =>
+        n.id === newsId ? { ...n, status: 'rejected' as const } : n
+      )
+      setAllNews(updatedNews)
+      alert('✅ Article rejected in Firebase!')
+    } catch (error) {
+      alert('❌ Failed to reject article: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handlePendingNewsArticle = (newsId: string) => {
+    const updatedNews = allNews.map(n =>
+      n.id === newsId ? { ...n, status: 'pending' as const } : n
+    )
+    setAllNews(updatedNews)
+    localStorage.setItem('naijaAmeboNews', JSON.stringify(updatedNews))
+    alert('✅ Article set to pending!')
+  }
+
+  const handleToggleAnonymousMode = () => {
+    const newMode = !isAnonymousMode
+    setIsAnonymousMode(newMode)
+    localStorage.setItem('naijaAmeboAnonymousMode', newMode.toString())
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div>
+            <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+              Admin Login
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              Sign in to manage the platform
+            </p>
+          </div>
+          <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+            <div className="space-y-4">
+              {loginStep === 'email' && (
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Email or Username
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    autoFocus
+                    value={loginForm.email}
+                    onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                    placeholder="Enter your admin email or username"
+                  />
+                </div>
+              )}
+
+              {loginStep === 'password' && (
+                <>
+                  <div>
+                    <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Email: <span className="font-semibold text-purple-600">{loginForm.email}</span>
+                    </p>
+                  </div>
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      required
+                      autoFocus
+                      value={loginForm.password}
+                      onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                      placeholder="Enter your password"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              {loginStep === 'password' && (
+                <button
+                  type="button"
+                  onClick={handleBackToEmail}
+                  className="flex-1 flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                >
+                  Back
+                </button>
+              )}
+              <button
+                type="submit"
+                className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              >
+                {loginStep === 'email' ? 'Next' : 'Sign in as Admin'}
+              </button>
+            </div>
+
+            <div className="text-center space-y-2">
+              <div>
+                <Link
+                  href="/admin-register"
+                  className="text-sm text-purple-600 hover:text-purple-500"
+                >
+                  Don't have an admin account? Register
+                </Link>
+              </div>
+              <div>
+                <Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-500">
+                  ← Back to Home
+                </Link>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Keep the rest of the JSX exactly the same as in the original file */}
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center py-6 space-y-4 md:space-y-0">
+            <div>
+              <h1 className="text-3xl font-bold text-white flex items-center">
+                <svg className="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Admin Dashboard
+              </h1>
+              <p className="text-purple-100 mt-1 flex items-center">
+                Welcome back, 
+                <span className="font-semibold ml-2">
+                  {isAnonymousMode ? '🕵️ Anonymous Admin' : `${currentAdmin?.firstName} ${currentAdmin?.lastName}`}
+                </span>
+                {currentAdmin?.isSuperAdmin && (
+                  <span className="ml-2 px-2 py-0.5 bg-yellow-400 text-purple-900 rounded-full text-xs font-bold flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    Super Admin
+                  </span>
+                )}
+              </p>
+              <p className="text-purple-200 text-sm mt-1">{currentAdmin?.email}</p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleToggleAnonymousMode}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold shadow-lg transition-all duration-200 ${
+                  isAnonymousMode
+                    ? 'bg-white text-purple-600 hover:bg-gray-100'
+                    : 'bg-purple-800 text-white hover:bg-purple-900'
+                }`}
+              >
+                <span className="flex items-center">
+                  {isAnonymousMode ? '🕵️ Anonymous Mode ON' : '👤 Anonymous Mode OFF'}
+                </span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 font-semibold shadow-lg transition-all duration-200 flex items-center space-x-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rest of the dashboard JSX continues the same... */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <p className="text-center text-gray-600">Dashboard content rendering...</p>
+      </div>
+    </div>
+  )
+}

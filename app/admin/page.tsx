@@ -1,17 +1,13 @@
-"use client";
+import { Suspense } from 'react'
+import AdminContent from './admin-content'
 
-import { createArticleFromAdmin, approveArticle, rejectArticle, removeArticle } from '@/lib/admin-article-handler';
-import { saveArticle } from '@/lib/firebase-persistence';
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import LiveRecorder from '../../components/LiveRecorder'
-import MarketplaceApprovalSection from '@/components/MarketplaceApprovalSection'
-import VerificationApprovalSection from '@/components/VerificationApprovalSection'
-import extendedNews from '@/data/extended-news.json'
-import { StorageSync } from '@/lib/storageSync'
-import { db } from '@/lib/firebase'
-import { collection, addDoc, Timestamp } from 'firebase/firestore'
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminContent />
+    </Suspense>
+  )
+}
 
 interface AdminData {
   id: string;
