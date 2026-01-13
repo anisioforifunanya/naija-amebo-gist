@@ -106,227 +106,117 @@ export default function NewsManagementDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-4">
-      {/* Back Button - Fixed at Top */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 px-8 py-3">
-        <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-lg transition-colors">
-          <span className="mr-2">← Back to Home</span>
-        </Link>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
+      {/* Navigation Bar */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 font-bold transition-colors">
+            <span className="mr-2">←</span>
+            <span>Back</span>
+          </Link>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Super Admin Dashboard</h1>
+          <div className="w-20"></div>
+        </div>
       </div>
 
-      {/* Main Content with Top Padding */}
-      <div className="pt-12">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl shadow-2xl">
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-            📰 Super Admin News Management System
-          </h1>
-          <p className="text-indigo-100 text-lg">
-            Phase 1: Complete News Control Suite with Real-time Updates, Bulk Operations & Analytics
-          </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
-            <div className="bg-white/20 rounded-lg px-3 py-2">✅ Real-time Updates</div>
-            <div className="bg-white/20 rounded-lg px-3 py-2">✅ Bulk Posting</div>
-            <div className="bg-white/20 rounded-lg px-3 py-2">✅ Social Auto-Post</div>
-            <div className="bg-white/20 rounded-lg px-3 py-2">✅ Analytics</div>
-            <div className="bg-white/20 rounded-lg px-3 py-2">✅ RBAC Ready</div>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        {/* Hero Section */}
+        <div className="mb-12">
+          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-12 rounded-2xl shadow-xl">
+            <h2 className="text-4xl font-bold mb-3 flex items-center gap-3">
+              📰 News Management System
+            </h2>
+            <p className="text-indigo-100 text-lg mb-6">
+              Complete control over all news content with real-time monitoring and analytics
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white/15 backdrop-blur rounded-lg px-4 py-3 text-sm font-medium">✅ Real-time Updates</div>
+              <div className="bg-white/15 backdrop-blur rounded-lg px-4 py-3 text-sm font-medium">✅ Bulk Operations</div>
+              <div className="bg-white/15 backdrop-blur rounded-lg px-4 py-3 text-sm font-medium">✅ Auto-Posting</div>
+              <div className="bg-white/15 backdrop-blur rounded-lg px-4 py-3 text-sm font-medium">✅ Analytics</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Quick Access Cards */}
-      <div className="max-w-7xl mx-auto mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link href="/super-admin/user-presence" className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-2xl hover:scale-105 transition-all border-2 border-green-200 dark:border-green-800 group">
-            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🟢</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">User Presence</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Monitor who's online now</p>
-          </Link>
-
-          <Link href="/super-admin/analytics" className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-2xl hover:scale-105 transition-all border-2 border-blue-200 dark:border-blue-800 group">
-            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">📊</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">Analytics</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Track system metrics</p>
-          </Link>
-
-          <Link href="/super-admin/geo-map" className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-2xl hover:scale-105 transition-all border-2 border-red-200 dark:border-red-800 group">
-            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🗺️</div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">Geo Map</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">View regional distribution</p>
-          </Link>
+        {/* Tab Navigation - Horizontal Scroll on Mobile */}
+        <div className="mb-12 overflow-x-auto pb-4">
+          <div className="flex gap-3 min-w-min">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-105`
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-md hover:scale-105'
+                }`}
+              >
+                <span className="text-xl">{tab.icon}</span>
+                <span>{tab.name}</span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Navigation Tabs - Improved Layout */}
-      <div className="max-w-7xl mx-auto mb-12">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-4 rounded-xl font-bold text-center whitespace-nowrap transition-all transform hover:scale-105 shadow-md hover:shadow-xl duration-200 ${
-                activeTab === tab.id
-                  ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-105`
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
-            >
-              <div className="text-2xl mb-2">{tab.icon}</div>
-              <div className="text-sm font-semibold">{tab.name}</div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Content Area */}
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
-          {/* Tab Content */}
+        {/* Content Area - Spacious and Clean */}
+        <div className="space-y-8">
           {activeTab === 'radar' && (
-            <div className="p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">📡 Real-time News Radar</h3>
               <RealtimeNewsRadar />
             </div>
           )}
 
           {activeTab === 'breaking' && (
-            <div className="p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">🚨 Breaking News Monitor</h3>
               <BreakingNewsMonitor />
             </div>
           )}
 
           {activeTab === 'intelligence' && (
-            <div className="p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">🧠 Intelligence Hub</h3>
               <IntelligenceHub />
             </div>
           )}
 
           {activeTab === 'trends' && (
-            <div className="p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">📊 Live Trend Desk</h3>
               <LiveTrendDesk />
             </div>
           )}
 
           {activeTab === 'aggregation' && (
-            <div className="p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">🌐 News Aggregation</h3>
               <NewsAggregationEngine />
             </div>
           )}
         </div>
-      </div>
 
-      {/* Feature Summary */}
-      <div className="max-w-7xl mx-auto mt-12">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-          ⚡ Phase 1 Features
-        </h2>
+        {/* Quick Links Section */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Link href="/super-admin/user-presence" className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition-all border-l-4 border-green-500 group">
+            <div className="text-4xl mb-3">🟢</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1">User Presence</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Monitor active users now</p>
+          </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {/* Radar Features */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-red-500">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              📡 News Radar
-            </h3>
-            <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
-              <li>✓ Breaking news alerts</li>
-              <li>✓ Engagement spikes</li>
-              <li>✓ Viral score tracking</li>
-              <li>✓ Priority filtering</li>
-              <li>✓ Live monitoring</li>
-            </ul>
-          </div>
+          <Link href="/super-admin/analytics" className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition-all border-l-4 border-blue-500 group">
+            <div className="text-4xl mb-3">📊</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1">Analytics</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">View system metrics</p>
+          </Link>
 
-          {/* Breaking News Features */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-orange-500">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              🚨 Breaking News
-            </h3>
-            <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
-              <li>✓ Instant publishing</li>
-              <li>✓ Multi-platform posting</li>
-              <li>✓ Image/video support</li>
-              <li>✓ Hashtag management</li>
-              <li>✓ Source attribution</li>
-            </ul>
-          </div>
-
-          {/* Intelligence Features */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-purple-500">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              🧠 Intelligence
-            </h3>
-            <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
-              <li>✓ Real-time analytics</li>
-              <li>✓ Category breakdown</li>
-              <li>✓ Social performance</li>
-              <li>✓ Trending topics</li>
-              <li>✓ AI recommendations</li>
-            </ul>
-          </div>
-
-          {/* Trends Features */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-blue-500">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              📊 Trend Desk
-            </h3>
-            <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
-              <li>✓ Manual trending control</li>
-              <li>✓ Momentum adjustment</li>
-              <li>✓ Boost to #1</li>
-              <li>✓ Remove from trending</li>
-              <li>✓ Real-time ranking</li>
-            </ul>
-          </div>
-
-          {/* Aggregation Features */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-green-500">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              🌐 Aggregation
-            </h3>
-            <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
-              <li>✓ Multi-source sync</li>
-              <li>✓ Auto-categorization</li>
-              <li>✓ Deduplication</li>
-              <li>✓ Bulk publishing</li>
-              <li>✓ API integration</li>
-            </ul>
-          </div>
+          <Link href="/super-admin/geo-map" className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition-all border-l-4 border-purple-500 group">
+            <div className="text-4xl mb-3">🗺️</div>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1">Geo Map</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">View geographic distribution</p>
+          </Link>
         </div>
-      </div>
-
-      {/* Performance Metrics */}
-      <div className="max-w-7xl mx-auto mt-12 mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-          🚀 Optimized for High Traffic
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
-            <div className="text-3xl font-bold mb-2">⚡ 5s</div>
-            <div className="text-sm opacity-90">Real-time Update Interval</div>
-          </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-lg shadow-lg">
-            <div className="text-3xl font-bold mb-2">📦  500+</div>
-            <div className="text-sm opacity-90">Batch Processing Limit</div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow-lg">
-            <div className="text-3xl font-bold mb-2">💾 5min</div>
-            <div className="text-sm opacity-90">Content Caching</div>
-          </div>
-          <div className="bg-gradient-to-br from-pink-500 to-pink-600 text-white p-6 rounded-lg shadow-lg">
-            <div className="text-3xl font-bold mb-2">📱 5 Apps</div>
-            <div className="text-sm opacity-90">Simultaneous Platforms</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer Info */}
-      <div className="max-w-7xl mx-auto bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center mb-8">
-        <p className="text-gray-700 dark:text-gray-300">
-          <strong>Phase 1 Complete:</strong> All 5 core news management tools are fully functional and ready for production deployment. 
-          <br/>
-          <strong>Next Phase:</strong> Authentication & RBAC System + Content Management Suite (500+ features planned)
-        </p>
-      </div>
       </div>
     </div>
   );
