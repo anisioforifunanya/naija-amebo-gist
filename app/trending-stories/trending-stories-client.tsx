@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import NewsCard from '../../components/NewsCard';
 import NewsCarousel from '../../components/NewsCarousel';
 import DashboardButton from '../../components/DashboardButton';
-import { StorageSync } from '@/lib/storageSync';
-import extendedNews from '@/data/extended-news.json';
 
 interface NewsItem {
   id: string;
@@ -27,64 +25,7 @@ interface TrendingStoriesClientProps {
 export default function TrendingStoriesClient({ initialNews }: TrendingStoriesClientProps) {
   const [newsItems, setNewsItems] = useState<NewsItem[]>(initialNews);
 
-  useEffect(() => {
-    const loadNews = async () => {
-      try {
-        console.log('Trending-Stories: Loading articles from API...')
-        const response = await fetch('/api/articles/get?category=trending-stories&status=approved&t=' + Date.now())
-        const apiData = await response.json()
-        console.log('Trending-Stories: API returned', apiData.articles?.length, 'articles')
-        const apiNews = (apiData.articles || []).map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.excerpt || item.description,
-          date: item.date,
-          category: item.category,
-          status: item.status as 'approved' | 'pending' | 'rejected',
-          submittedBy: item.submittedBy,
-          hashtags: item.hashtags || [],
-          image: item.image,
-          video: item.video,
-        }))
-
-        const staticNews = (extendedNews as any[])
-          .filter((item: any) => item.category === 'trending-stories' && item.status === 'approved')
-          .map((item: any) => ({
-            id: item.id?.toString() || '',
-            title: item.title,
-            description: item.excerpt || item.description,
-            date: item.date,
-            category: item.category,
-            status: item.status as 'approved' | 'pending' | 'rejected',
-            author: typeof item.author === 'object' ? item.author?.name : item.author,
-            hashtags: item.hashtags || [],
-            image: item.image,
-            video: item.videoUrl,
-          }))
-
-        const combined = [...apiNews, ...staticNews, ...initialNews]
-        const unique = Array.from(
-          new Map(combined.map((item: any) => [item.title, item])).values()
-        )
-        console.log('Trending-Stories: Setting newsItems to', unique.length, 'items')
-        setNewsItems(unique)
-      } catch (error) {
-        console.error('Error loading trending stories:', error)
-        setNewsItems(initialNews)
-      }
-    };
-
-    loadNews();
-    
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'naijaAmeboNews') {
-        loadNews();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [initialNews]);
+  // Articles are already fetched server-side, no need to refetch on client
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
