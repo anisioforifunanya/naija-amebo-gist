@@ -37,7 +37,7 @@ export default function CelebrityNewsClient({ initialNews }: CelebrityNewsClient
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
-        <NewsCarousel items={newsItems} title="Featured Celebrity News" />
+        <NewsCarousel items={newsItems.slice(0, 3)} title="Featured Celebrity News" />
       </div>
     </div>
   )

@@ -37,7 +37,7 @@ export default function ViralContentClient({ initialNews }: ViralContentClientPr
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
-        <NewsCarousel items={newsItems} title="Featured Viral Content" />
+        <NewsCarousel items={newsItems.slice(0, 3)} title="Featured Viral Content" />
       </div>
     </div>
   )

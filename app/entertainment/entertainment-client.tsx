@@ -37,8 +37,8 @@ export default function EntertainmentClient({ initialNews }: EntertainmentClient
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
-        {/* News Carousel */}
-        <NewsCarousel items={newsItems} title="Featured Entertainment" />
+        {/* News Carousel - only show first 3 articles */}
+        <NewsCarousel items={newsItems.slice(0, 3)} title="Featured Entertainment" />
       </div>
     </div>
   )

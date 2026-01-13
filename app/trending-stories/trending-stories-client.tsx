@@ -37,7 +37,7 @@ export default function TrendingStoriesClient({ initialNews }: TrendingStoriesCl
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
-        <NewsCarousel items={newsItems} title="Featured Trending Stories" />
+        <NewsCarousel items={newsItems.slice(0, 3)} title="Featured Trending Stories" />
       </div>
     </div>
   )
