@@ -1,12 +1,6 @@
-"use client";
-
-// Force cache clear: 2026-01-13
-import { useState, useEffect } from 'react';
-import NewsCard from '../../components/NewsCard';
-import NewsCarousel from '../../components/NewsCarousel';
-import DashboardButton from '../../components/DashboardButton';
-import { StorageSync } from '@/lib/storageSync';
-import extendedNews from '@/data/extended-news.json';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import EntertainmentClient from './entertainment-client';
 
 interface NewsItem {
   id: string;
@@ -21,7 +15,7 @@ interface NewsItem {
   video?: string;
 }
 
-const defaultNews = [
+const defaultNews: NewsItem[] = [
   { id: '31', title: "New Movie Trailer Released", description: "Fans excited for the upcoming blockbuster...", date: "30 minutes ago", category: "entertainment", status: "approved" as const },
   { id: '32', title: "Award Show Winners Announced", description: "Celebrating the best in entertainment...", date: "1 hour ago", category: "entertainment", status: "approved" as const },
   { id: '33', title: "TV Series Finale", description: "Emotional ending leaves fans in tears...", date: "2 hours ago", category: "entertainment", status: "approved" as const },
@@ -44,84 +38,42 @@ const defaultNews = [
   { id: '50', title: "Entertainment Merger", description: "Major companies join forces...", date: "19 hours ago", category: "entertainment", status: "approved" as const },
 ];
 
-export default function Entertainment() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(defaultNews);
+export default async function EntertainmentPage() {
+  let initialNews = defaultNews;
 
-  useEffect(() => {
-    const loadNews = async () => {
-      try {
-        console.log('Entertainment: Loading articles from API...')
-        // Fetch from Firebase API with cache bust
-        const response = await fetch('/api/articles/get?category=entertainment&status=approved&t=' + Date.now())
-        const apiData = await response.json()
-        console.log('Entertainment: API returned', apiData.articles?.length, 'articles')
-        const apiNews = (apiData.articles || []).map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.excerpt || item.description,
-          date: item.date,
-          category: item.category,
-          status: item.status as 'approved' | 'pending' | 'rejected',
-          submittedBy: item.submittedBy,
-          hashtags: item.hashtags || [],
-          image: item.image,
-          video: item.video,
-        }))
-
-        // Load static news from extended-news.json
-        const staticNews = (extendedNews as any[])
-          .filter((item: any) => item.category === 'entertainment' && item.status === 'approved')
-          .map((item: any) => ({
-            id: item.id?.toString() || '',
-            title: item.title,
-            description: item.excerpt || item.description,
-            date: item.date,
-            category: item.category,
-            status: item.status as 'approved' | 'pending' | 'rejected',
-            author: typeof item.author === 'object' ? item.author?.name : item.author,
-            hashtags: item.hashtags || [],
-            image: item.image,
-            video: item.videoUrl,
-          }))
-
-        // Merge both sources and remove duplicates
-        const combined = [...apiNews, ...staticNews, ...defaultNews]
-        const unique = Array.from(
-          new Map(combined.map((item: any) => [item.title, item])).values()
-        )
-        console.log('Entertainment: Setting newsItems to', unique.length, 'items')
-        setNewsItems(unique)
-      } catch (error) {
-        console.error('Error loading entertainment news:', error)
-        setNewsItems(defaultNews)
-      }
-    };
-
-    loadNews();
+  try {
+    // Fetch from Firebase on the server
+    const q = query(
+      collection(db, 'articles'),
+      where('category', '==', 'entertainment'),
+      where('status', '==', 'approved')
+    );
+    const querySnapshot = await getDocs(q);
     
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'naijaAmeboNews') {
-        loadNews();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    const fbNews: NewsItem[] = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title || '',
+        description: data.excerpt || data.description || '',
+        date: data.date || new Date().toISOString(),
+        category: data.category || 'entertainment',
+        status: data.status || 'pending',
+        author: data.submittedBy || '',
+        hashtags: data.hashtags || [],
+        image: data.image || '',
+        video: data.video || '',
+      };
+    });
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <DashboardButton />
-        <h1 className="text-4xl font-bold mb-8">Entertainment</h1>
-        <div className="space-y-8">
-          {newsItems.map((item, index) => (
-            <NewsCard key={item.id} item={item} index={index} />
-          ))}
-        </div>
-        {/* News Carousel */}
-        <NewsCarousel items={newsItems} title="Featured Entertainment" />
-      </div>
-    </div>
-  )
+    // Use Firebase data if available, otherwise fallback to defaults
+    if (fbNews.length > 0) {
+      initialNews = fbNews;
+    }
+  } catch (error) {
+    console.error('Entertainment: Server-side fetch failed:', error);
+    // Fall back to defaultNews
+  }
+
+  return <EntertainmentClient initialNews={initialNews} />;
 }

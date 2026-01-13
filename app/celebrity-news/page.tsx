@@ -1,12 +1,6 @@
-"use client";
-
-// Celebrity-News Page - API fetch rebuild Jan 12 2026 - Cache clear 2026-01-13
-import { useState, useEffect } from 'react';
-import NewsCard from '../../components/NewsCard';
-import NewsCarousel from '../../components/NewsCarousel';
-import DashboardButton from '../../components/DashboardButton';
-import { StorageSync } from '@/lib/storageSync';
-import extendedNews from '@/data/extended-news.json';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import CelebrityNewsClient from './celebrity-news-client';
 
 interface NewsItem {
   id: string;
@@ -21,106 +15,47 @@ interface NewsItem {
   video?: string;
 }
 
-const defaultNews = [
-  { id: '11', title: "Actor Lands Major Role", description: "Exciting new project announced...", date: "1 hour ago", category: "celebrity-news", status: "approved" as const },
-  { id: '12', title: "Musician Releases New Album", description: "Fans eagerly awaiting the tracks...", date: "2 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '13', title: "Celebrity Couple's Romance", description: "New photos surface online...", date: "3 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '14', title: "Award-Winning Performance", description: "Critics praise the latest role...", date: "4 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '15', title: "Celebrity's Charity Work", description: "Donates to local community...", date: "5 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '16', title: "Movie Star's Comeback", description: "Returns to screens after hiatus...", date: "6 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '17', title: "Singer's World Tour", description: "Announces dates for next year...", date: "7 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '18', title: "Celebrity's Fashion Line", description: "New collection hits stores...", date: "8 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '19', title: "Actor's Directorial Debut", description: "First film as director released...", date: "9 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '20', title: "Musician's Collaboration", description: "Teams up with popular artist...", date: "10 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '21', title: "Celebrity's Health Update", description: "Shares recovery journey...", date: "11 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '22', title: "Award Show Appearance", description: "Stuns in red carpet look...", date: "12 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '23', title: "Celebrity's New Business", description: "Launches successful venture...", date: "13 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '24', title: "Singer's Hit Single", description: "Breaks streaming records...", date: "14 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '25', title: "Actor's Memoir Release", description: "Book becomes bestseller...", date: "15 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '26', title: "Celebrity's Social Media", description: "Posts inspiring message...", date: "16 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '27', title: "Movie Premiere Event", description: "Stars attend glamorous event...", date: "17 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '28', title: "Musician's Album Tour", description: "Fans line up for tickets...", date: "18 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '29', title: "Celebrity's Family News", description: "Welcomes new addition...", date: "19 hours ago", category: "celebrity-news", status: "approved" as const },
-  { id: '30', title: "Actor's Next Project", description: "Teases upcoming film...", date: "20 hours ago", category: "celebrity-news", status: "approved" as const },
+const defaultNews: NewsItem[] = [
+  { id: '1', title: "Celebrity Red Carpet", description: "Stars shine at awards...", date: "1 hour ago", category: "celebrity-news", status: "approved" as const },
+  { id: '2', title: "Celebrity Breakup", description: "Famous couple splits...", date: "2 hours ago", category: "celebrity-news", status: "approved" as const },
+  { id: '3', title: "Celebrity Wedding", description: "Star-studded event...", date: "3 hours ago", category: "celebrity-news", status: "approved" as const },
+  { id: '4', title: "Celebrity Interview", description: "Exclusive chat...", date: "4 hours ago", category: "celebrity-news", status: "approved" as const },
+  { id: '5', title: "Celebrity Feud", description: "Drama unfolds...", date: "5 hours ago", category: "celebrity-news", status: "approved" as const },
 ];
 
-export default function CelebrityNews() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(defaultNews);
+export default async function CelebrityNewsPage() {
+  let initialNews = defaultNews;
 
-  useEffect(() => {
-    const loadNews = async () => {
-      try {
-        console.log('Celebrity-News: Loading articles from API...')
-        // Fetch from Firebase API with cache bust
-        const response = await fetch('/api/articles/get?category=celebrity-news&status=approved&t=' + Date.now())
-        const apiData = await response.json()
-        console.log('Celebrity-News: API returned', apiData.articles?.length, 'articles')
-        const apiNews = (apiData.articles || []).map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.excerpt || item.description,
-          date: item.date,
-          category: item.category,
-          status: item.status as 'approved' | 'pending' | 'rejected',
-          submittedBy: item.submittedBy,
-          hashtags: item.hashtags || [],
-          image: item.image,
-          video: item.video,
-        }))
-
-        // Load static news from extended-news.json
-        const staticNews = (extendedNews as any[])
-          .filter((item: any) => item.category === 'celebrity-news' && item.status === 'approved')
-          .map((item: any) => ({
-            id: item.id?.toString() || '',
-            title: item.title,
-            description: item.excerpt || item.description,
-            date: item.date,
-            category: item.category,
-            status: item.status as 'approved' | 'pending' | 'rejected',
-            author: typeof item.author === 'object' ? item.author?.name : item.author,
-            hashtags: item.hashtags || [],
-            image: item.image,
-            video: item.videoUrl,
-          }))
-
-        // Merge both sources and remove duplicates
-        const combined = [...apiNews, ...staticNews, ...defaultNews]
-        const unique = Array.from(
-          new Map(combined.map((item: any) => [item.title, item])).values()
-        )
-        setNewsItems(unique)
-      } catch (error) {
-        console.error('Error loading celebrity news:', error)
-        setNewsItems(defaultNews)
-      }
-    };
-
-    loadNews();
+  try {
+    const q = query(
+      collection(db, 'articles'),
+      where('category', '==', 'celebrity-news'),
+      where('status', '==', 'approved')
+    );
+    const querySnapshot = await getDocs(q);
     
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'naijaAmeboNews') {
-        loadNews();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    const fbNews: NewsItem[] = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title || '',
+        description: data.excerpt || data.description || '',
+        date: data.date || new Date().toISOString(),
+        category: data.category || 'celebrity-news',
+        status: data.status || 'pending',
+        author: data.submittedBy || '',
+        hashtags: data.hashtags || [],
+        image: data.image || '',
+        video: data.video || '',
+      };
+    });
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <DashboardButton />
-        <h1 className="text-4xl font-bold mb-8">Celebrity News</h1>
-        <div className="space-y-8">
-          {newsItems.map((item, index) => (
-            <NewsCard key={item.id} item={item} index={index} />
-          ))}
-        </div>
-        {/* News Carousel */}
-        <NewsCarousel items={newsItems} title="Featured Celebrity News" />
-      </div>
-    </div>
-  )
+    if (fbNews.length > 0) {
+      initialNews = fbNews;
+    }
+  } catch (error) {
+    console.error('Celebrity-News: Server-side fetch failed:', error);
+  }
+
+  return <CelebrityNewsClient initialNews={initialNews} />;
 }

@@ -1,12 +1,6 @@
-"use client";
-
-// Trending-Stories Page - API fetch rebuild Jan 12 2026 - Cache clear 2026-01-13
-import { useState, useEffect } from 'react';
-import NewsCard from '../../components/NewsCard';
-import NewsCarousel from '../../components/NewsCarousel';
-import DashboardButton from '../../components/DashboardButton';
-import { StorageSync } from '@/lib/storageSync';
-import extendedNews from '@/data/extended-news.json';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import TrendingStoriesClient from './trending-stories-client';
 
 interface NewsItem {
   id: string;
@@ -21,106 +15,45 @@ interface NewsItem {
   video?: string;
 }
 
-const defaultNews = [
-  { id: '51', title: "Viral Dance Challenge Takes Over", description: "Millions participating worldwide...", date: "1 hour ago", category: "trending-stories", status: "approved" as const },
-  { id: '52', title: "Celebrity Hashtag Trend", description: "Social media explodes with new challenge...", date: "2 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '53', title: "Music Video Breaks Records", description: "Most viewed in 24 hours...", date: "3 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '54', title: "Influencer's Live Stream", description: "Record-breaking viewer count...", date: "4 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '55', title: "Celebrity's Viral Outfit", description: "Fans recreate the look...", date: "5 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '56', title: "TikTok Star's New Trend", description: "Spreading across platforms...", date: "6 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '57', title: "Movie Trailer Goes Viral", description: "Breaking streaming records...", date: "7 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '58', title: "Celebrity's Funny Moment", description: "Clips shared millions of times...", date: "8 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '59', title: "Social Media Challenge", description: "Everyone is joining in...", date: "9 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '60', title: "Viral Pet Video", description: "Celebrity's pet steals the show...", date: "10 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '61', title: "Dance Routine Craze", description: "From TikTok to Instagram...", date: "11 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '62', title: "Celebrity's Viral Tweet", description: "Thread goes viral instantly...", date: "12 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '63', title: "Music Remix Trend", description: "Artists jumping on the bandwagon...", date: "13 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '64', title: "Viral Cooking Video", description: "Celebrity chef's recipe explodes...", date: "14 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '65', title: "Challenge for Charity", description: "Viral campaign raises funds...", date: "15 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '66', title: "Celebrity's Dance Fail", description: "Funny moment goes viral...", date: "16 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '67', title: "Viral Art Creation", description: "Artist's work spreads online...", date: "17 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '68', title: "Social Media Filter", description: "Everyone trying the new effect...", date: "18 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '69', title: "Celebrity's Viral Song", description: "Old track gains new popularity...", date: "19 hours ago", category: "trending-stories", status: "approved" as const },
-  { id: '70', title: "Viral Fashion Trend", description: "Celebrity's style influences masses...", date: "20 hours ago", category: "trending-stories", status: "approved" as const },
+const defaultNews: NewsItem[] = [
+  { id: '1', title: "Trending Today", description: "What's hot...", date: "1 hour ago", category: "trending-stories", status: "approved" as const },
+  { id: '2', title: "Breaking News", description: "Latest updates...", date: "2 hours ago", category: "trending-stories", status: "approved" as const },
+  { id: '3', title: "Top Stories", description: "Most read...", date: "3 hours ago", category: "trending-stories", status: "approved" as const },
 ];
 
-export default function TrendingStories() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(defaultNews);
+export default async function TrendingStoriesPage() {
+  let initialNews = defaultNews;
 
-  useEffect(() => {
-    const loadNews = async () => {
-      try {
-        console.log('Trending-Stories: Loading articles from API...')
-        // Fetch from Firebase API with cache bust
-        const response = await fetch('/api/articles/get?category=trending-stories&status=approved&t=' + Date.now())
-        const apiData = await response.json()
-        console.log('Trending-Stories: API returned', apiData.articles?.length, 'articles')
-        const apiNews = (apiData.articles || []).map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.excerpt || item.description,
-          date: item.date,
-          category: item.category,
-          status: item.status as 'approved' | 'pending' | 'rejected',
-          submittedBy: item.submittedBy,
-          hashtags: item.hashtags || [],
-          image: item.image,
-          video: item.video,
-        }))
-
-        // Load static news from extended-news.json
-        const staticNews = (extendedNews as any[])
-          .filter((item: any) => item.category === 'trending-stories' && item.status === 'approved')
-          .map((item: any) => ({
-            id: item.id?.toString() || '',
-            title: item.title,
-            description: item.excerpt || item.description,
-            date: item.date,
-            category: item.category,
-            status: item.status as 'approved' | 'pending' | 'rejected',
-            author: typeof item.author === 'object' ? item.author?.name : item.author,
-            hashtags: item.hashtags || [],
-            image: item.image,
-            video: item.videoUrl,
-          }))
-
-        // Merge both sources and remove duplicates
-        const combined = [...apiNews, ...staticNews, ...defaultNews]
-        const unique = Array.from(
-          new Map(combined.map((item: any) => [item.title, item])).values()
-        )
-        setNewsItems(unique)
-      } catch (error) {
-        console.error('Error loading trending stories:', error)
-        setNewsItems(defaultNews)
-      }
-    };
-
-    loadNews();
+  try {
+    const q = query(
+      collection(db, 'articles'),
+      where('category', '==', 'trending-stories'),
+      where('status', '==', 'approved')
+    );
+    const querySnapshot = await getDocs(q);
     
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'naijaAmeboNews') {
-        loadNews();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    const fbNews: NewsItem[] = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title || '',
+        description: data.excerpt || data.description || '',
+        date: data.date || new Date().toISOString(),
+        category: data.category || 'trending-stories',
+        status: data.status || 'pending',
+        author: data.submittedBy || '',
+        hashtags: data.hashtags || [],
+        image: data.image || '',
+        video: data.video || '',
+      };
+    });
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <DashboardButton />
-        <h1 className="text-4xl font-bold mb-8">Trending Stories</h1>
-        <div className="space-y-8">
-          {newsItems.map((item, index) => (
-            <NewsCard key={item.id} item={item} index={index} />
-          ))}
-        </div>
-        {/* News Carousel */}
-        <NewsCarousel items={newsItems} title="Featured Trending Stories" />
-      </div>
-    </div>
-  )
+    if (fbNews.length > 0) {
+      initialNews = fbNews;
+    }
+  } catch (error) {
+    console.error('Trending-Stories: Server-side fetch failed:', error);
+  }
+
+  return <TrendingStoriesClient initialNews={initialNews} />;
 }
