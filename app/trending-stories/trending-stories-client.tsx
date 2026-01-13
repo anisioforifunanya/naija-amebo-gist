@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import NewsCard from '../../components/NewsCard';
-import NewsCarousel from '../../components/NewsCarousel';
 import DashboardButton from '../../components/DashboardButton';
 
 interface NewsItem {
@@ -37,7 +36,6 @@ export default function TrendingStoriesClient({ initialNews }: TrendingStoriesCl
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
-        <NewsCarousel items={newsItems.slice(0, 3)} title="Featured Trending Stories" />
       </div>
     </div>
   )

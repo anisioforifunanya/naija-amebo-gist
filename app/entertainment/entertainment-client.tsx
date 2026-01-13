@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import NewsCard from '../../components/NewsCard';
-import NewsCarousel from '../../components/NewsCarousel';
 import DashboardButton from '../../components/DashboardButton';
 
 interface NewsItem {
@@ -37,8 +36,6 @@ export default function EntertainmentClient({ initialNews }: EntertainmentClient
             <NewsCard key={item.id} item={item} index={index} />
           ))}
         </div>
-        {/* News Carousel - only show first 3 articles */}
-        <NewsCarousel items={newsItems.slice(0, 3)} title="Featured Entertainment" />
       </div>
     </div>
   )
