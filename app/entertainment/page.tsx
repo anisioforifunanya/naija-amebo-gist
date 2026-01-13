@@ -89,6 +89,7 @@ export default function Entertainment() {
         const unique = Array.from(
           new Map(combined.map((item: any) => [item.title, item])).values()
         )
+        console.log('Entertainment: Setting newsItems to', unique.length, 'items')
         setNewsItems(unique)
       } catch (error) {
         console.error('Error loading entertainment news:', error)
