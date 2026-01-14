@@ -1221,8 +1221,135 @@ export default function AdminContent() {
 
         {activeTab === 'news-management' && (
           <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">🎛️ News Control Center</h2>
-            <p className="text-gray-600">Total articles: {allNews.length}</p>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">🎛️ News Control Center</h2>
+              <button
+                onClick={() => setShowAddNewsForm(!showAddNewsForm)}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 font-semibold"
+              >
+                ➕ Add News Article
+              </button>
+            </div>
+
+            {showAddNewsForm && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-6 border-l-4 border-green-500">
+                <h3 className="text-lg font-semibold mb-4">Create New Article</h3>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Article Title"
+                    value={newNewsForm.title}
+                    onChange={(e) => setNewNewsForm({ ...newNewsForm, title: e.target.value })}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                  <textarea
+                    placeholder="Article Description"
+                    value={newNewsForm.description}
+                    onChange={(e) => setNewNewsForm({ ...newNewsForm, description: e.target.value })}
+                    rows={4}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <select
+                      value={newNewsForm.category}
+                      onChange={(e) => setNewNewsForm({ ...newNewsForm, category: e.target.value })}
+                      className="p-2 border rounded-lg"
+                    >
+                      <option value="breaking-news">Breaking News</option>
+                      <option value="trending-stories">Trending Stories</option>
+                      <option value="entertainment">Entertainment</option>
+                      <option value="gossip">Gossip</option>
+                    </select>
+                    <select
+                      value={newNewsForm.status}
+                      onChange={(e) => setNewNewsForm({ ...newNewsForm, status: e.target.value as any })}
+                      className="p-2 border rounded-lg"
+                    >
+                      <option value="approved">Approved</option>
+                      <option value="pending">Pending</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleAddNewsArticle}
+                      className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 font-semibold"
+                    >
+                      ✅ Publish Article
+                    </button>
+                    <button
+                      onClick={() => setShowAddNewsForm(false)}
+                      className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 font-semibold"
+                    >
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Total Articles</p>
+                <p className="text-2xl font-bold text-blue-600">{allNews.length}</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Approved</p>
+                <p className="text-2xl font-bold text-green-600">{allNews.filter(n => n.status === 'approved').length}</p>
+              </div>
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Pending</p>
+                <p className="text-2xl font-bold text-yellow-600">{allNews.filter(n => n.status === 'pending').length}</p>
+              </div>
+              <div className="bg-red-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Rejected</p>
+                <p className="text-2xl font-bold text-red-600">{allNews.filter(n => n.status === 'rejected').length}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {allNews.map((newsItem) => (
+                <div key={newsItem.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg mb-1">{newsItem.title}</h3>
+                      <div className="flex gap-2 mb-2">
+                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">📁 {newsItem.category}</span>
+                        {newsItem.status === 'approved' && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✅ Approved</span>}
+                        {newsItem.status === 'pending' && <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">⏳ Pending</span>}
+                        {newsItem.status === 'rejected' && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">❌ Rejected</span>}
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{newsItem.description.substring(0, 150)}...</p>
+                      <p className="text-xs text-gray-500">📅 {newsItem.date}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {newsItem.status !== 'approved' && (
+                        <button
+                          onClick={() => handleApproveNewsArticle(newsItem.id)}
+                          className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 font-semibold"
+                        >
+                          ✅ Approve
+                        </button>
+                      )}
+                      {newsItem.status !== 'rejected' && (
+                        <button
+                          onClick={() => handleRejectNewsArticle(newsItem.id)}
+                          className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600 font-semibold"
+                        >
+                          🚫 Reject
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteNewsArticle(newsItem.id, newsItem.title)}
+                        className="bg-red-700 text-white px-3 py-1 rounded text-sm hover:bg-red-800 font-semibold"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -1264,23 +1391,96 @@ export default function AdminContent() {
 
         {activeTab === 'all-users-admins' && (
           <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">📋 All Users & Admins</h2>
-            <p className="text-gray-600">Users: {allUsers.length} | Admins: {allAdmins.length}</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">📋 All Users & Admins Directory</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Total Users</p>
+                <p className="text-3xl font-bold text-blue-600">{allUsers.length}</p>
+              </div>
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Total Admins</p>
+                <p className="text-3xl font-bold text-purple-600">{allAdmins.length}</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Verified Users</p>
+                <p className="text-3xl font-bold text-green-600">{allUsers.filter(u => u.isVerified).length}</p>
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <h3 className="text-md font-semibold text-gray-900 mb-4">Registered Users</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left font-semibold">Name</th>
+                      <th className="px-4 py-2 text-left font-semibold">Email</th>
+                      <th className="px-4 py-2 text-left font-semibold">Username</th>
+                      <th className="px-4 py-2 text-left font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allUsers.map((user) => (
+                      <tr key={user.id} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3">{user.firstName} {user.lastName}</td>
+                        <td className="px-4 py-3">{user.email}</td>
+                        <td className="px-4 py-3">@{user.username}</td>
+                        <td className="px-4 py-3">
+                          {user.isBanned ? (
+                            <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">🚫 Banned</span>
+                          ) : (
+                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-semibold">✅ Active</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-md font-semibold text-gray-900 mb-4">Administrator Accounts</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left font-semibold">Name</th>
+                      <th className="px-4 py-2 text-left font-semibold">Email</th>
+                      <th className="px-4 py-2 text-left font-semibold">Role</th>
+                      <th className="px-4 py-2 text-left font-semibold">Created</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allAdmins.map((admin) => (
+                      <tr key={admin.id} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3 flex items-center gap-2">
+                          {admin.firstName} {admin.lastName}
+                          {admin.isSuperAdmin && <span className="text-lg">👑</span>}
+                        </td>
+                        <td className="px-4 py-3">{admin.email}</td>
+                        <td className="px-4 py-3">
+                          <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
+                            {admin.isSuperAdmin ? '🛡️ Super Admin' : '👑 Admin'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{new Date(admin.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         )}
 
         {activeTab === 'verification' && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">🔐 Face Verification</h2>
-            <p className="text-gray-600">Verified users: {allUsers.filter(u => u.isVerified).length}</p>
-          </div>
+          <VerificationApprovalSection />
         )}
 
         {activeTab === 'marketplace' && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">🛍️ Product Approvals</h2>
-            <p className="text-gray-600">Marketplace module</p>
-          </div>
+          <MarketplaceApprovalSection />
         )}
 
         {activeTab === 'moderation' && (
