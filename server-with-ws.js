@@ -29,7 +29,7 @@ app.prepare().then(() => {
   });
 
   // Start Next.js server
-  server.listen(port, (err?: Error) => {
+  server.listen(port, (err) => {
     if (err) throw err;
     console.log(`> Ready on http://${hostname}:${port}`);
   });
