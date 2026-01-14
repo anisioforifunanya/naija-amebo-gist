@@ -27,10 +27,70 @@ export default function MarketplaceApprovalSection() {
   }, []);
 
   const loadData = () => {
-    setPendingProducts(getPendingUserProducts());
-    setApprovedProducts(getApprovedUserProducts());
-    setRejectedProducts(getRejectedUserProducts());
-    setStats(getProductStatistics());
+    const pending = getPendingUserProducts();
+    const approved = getApprovedUserProducts();
+    const rejected = getRejectedUserProducts();
+    
+    // If no data, create sample data for demonstration
+    if (pending.length === 0 && approved.length === 0 && rejected.length === 0) {
+      const samplePending: Product[] = [
+        {
+          id: '1',
+          name: 'Premium Leather Handbag',
+          description: 'High-quality Italian leather handbag with gold hardware. Perfect for daily use.',
+          sku: 'HB-001',
+          price: 15000,
+          originalPrice: 18000,
+          category: 'Fashion',
+          image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=300&fit=crop',
+          images: [{ url: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=300&fit=crop', alt: 'Handbag', isPrimary: true }],
+          rating: 4.5,
+          reviews: 12,
+          seller: 'Premium Goods Store',
+          inStock: true,
+          stockCount: 5,
+          deliveryTime: '3-5 days',
+          shippingCost: 500,
+          phoneNumber: '08012345678',
+          email: 'seller@example.com',
+          location: 'Lagos, Nigeria',
+          status: 'pending',
+          createdAt: new Date()
+        },
+        {
+          id: '2',
+          name: 'Smart Watch Pro',
+          description: 'Latest model with health monitoring features, water resistant, 7-day battery.',
+          sku: 'SW-002',
+          price: 35000,
+          originalPrice: 42000,
+          category: 'Electronics',
+          image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop',
+          images: [{ url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop', alt: 'Smart Watch', isPrimary: true }],
+          rating: 4.8,
+          reviews: 45,
+          seller: 'Tech Hub Nigeria',
+          inStock: true,
+          stockCount: 10,
+          deliveryTime: '2-3 days',
+          shippingCost: 1000,
+          phoneNumber: '08098765432',
+          email: 'tech.seller@example.com',
+          location: 'Abuja, Nigeria',
+          status: 'pending',
+          createdAt: new Date()
+        }
+      ];
+      setPendingProducts(samplePending);
+      setApprovedProducts([]);
+      setRejectedProducts([]);
+      setStats({ total: 2, pending: 2, approved: 0, rejected: 0 });
+    } else {
+      setPendingProducts(pending);
+      setApprovedProducts(approved);
+      setRejectedProducts(rejected);
+      setStats(getProductStatistics());
+    }
     setLoading(false);
   };
 
