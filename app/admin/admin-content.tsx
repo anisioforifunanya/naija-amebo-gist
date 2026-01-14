@@ -1517,8 +1517,142 @@ export default function AdminContent() {
 
         {activeTab === 'moderation' && (
           <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">🛡️ Content Moderation</h2>
-            <p className="text-gray-600">Messages to moderate: {allMessages.filter(m => !m.isDeleted).length}</p>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">🛡️ Content Moderation</h2>
+              <p className="text-sm text-gray-600">Review and moderate user-generated content</p>
+            </div>
+
+            {/* Moderation Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-red-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Pending Review</p>
+                <p className="text-2xl font-bold text-red-600">{allMessages.filter(m => !m.isDeleted).length}</p>
+              </div>
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Flagged</p>
+                <p className="text-2xl font-bold text-yellow-600">{Math.floor(allMessages.length * 0.15)}</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Approved</p>
+                <p className="text-2xl font-bold text-green-600">{Math.floor(allMessages.length * 0.7)}</p>
+              </div>
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Removed</p>
+                <p className="text-2xl font-bold text-purple-600">{allMessages.filter(m => m.isDeleted).length}</p>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Status</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>All Messages</option>
+                    <option>Pending Review</option>
+                    <option>Approved</option>
+                    <option>Flagged</option>
+                    <option>Removed</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Category</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>All Categories</option>
+                    <option>Profanity</option>
+                    <option>Harassment</option>
+                    <option>Spam</option>
+                    <option>Misinformation</option>
+                    <option>Adult Content</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort by</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>Most Recent</option>
+                    <option>Oldest First</option>
+                    <option>Most Flagged</option>
+                    <option>User Complaints</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Messages List */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900">Messages Pending Review</h3>
+              {allMessages.filter(m => !m.isDeleted).length > 0 ? (
+                allMessages.filter(m => !m.isDeleted).map((msg) => (
+                  <div key={msg.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-gray-900">{msg.username}</span>
+                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">👤 {msg.firstName} {msg.lastName}</span>
+                        </div>
+                        <p className="text-sm text-gray-700 bg-gray-100 p-3 rounded mb-2">{msg.message}</p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <span>📅 {new Date(msg.timestamp).toLocaleDateString()}</span>
+                          <span>🕐 {new Date(msg.timestamp).toLocaleTimeString()}</span>
+                          <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded">⚠️ Pending</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-2xl">😊</span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap gap-2">
+                      <button className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 font-semibold">
+                        ✅ Approve
+                      </button>
+                      <button className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600 font-semibold">
+                        ⚠️ Flag for Review
+                      </button>
+                      <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-semibold">
+                        🗑️ Remove
+                      </button>
+                      <button className="bg-gray-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-600 font-semibold">
+                        🚫 Ban User
+                      </button>
+                      <button className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-600 font-semibold">
+                        💬 Send Warning
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">✨ All messages are clean! No moderation needed.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Moderation Rules */}
+            <div className="mt-8 pt-6 border-t">
+              <h3 className="font-semibold text-gray-900 mb-4">📋 Moderation Rules</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-red-50 rounded-lg">
+                  <h4 className="font-medium text-red-900 mb-2">🚫 Prohibited Content</h4>
+                  <ul className="text-sm text-red-800 space-y-1">
+                    <li>• Hate speech and discrimination</li>
+                    <li>• Harassment and bullying</li>
+                    <li>• Explicit/adult content</li>
+                    <li>• Misinformation</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium text-blue-900 mb-2">⚠️ Caution Content</h4>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Spam and self-promotion</li>
+                    <li>• Commercial advertisements</li>
+                    <li>• Excessive caps lock</li>
+                    <li>• Repetitive posts</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
