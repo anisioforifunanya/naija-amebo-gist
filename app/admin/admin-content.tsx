@@ -1192,26 +1192,41 @@ export default function AdminContent() {
             <h2 className="text-lg font-semibold mb-4">📰 News Management</h2>
             <div className="space-y-4">
               {news.map((item) => (
-                <div key={item.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-medium">{item.title}</h3>
-                      <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-                      <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                        <span>{item.category}</span>
-                        <span>{item.date}</span>
-                        <span className={`px-2 py-1 rounded ${
-                          item.status === 'approved' ? 'bg-green-100 text-green-800' :
-                          item.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {item.status}
-                        </span>
+                <div key={item.id} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="flex flex-col sm:flex-row">
+                    {/* Image Section */}
+                    {item.image && (
+                      <div className="w-full sm:w-40 h-40 sm:h-auto bg-gray-200 flex-shrink-0">
+                        <img 
+                          src={item.image} 
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       </div>
+                    )}
+                    
+                    {/* Content Section */}
+                    <div className="flex-1 p-4 flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="font-medium text-lg mb-1">{item.title}</h3>
+                        <p className="text-sm text-gray-600 mb-2">{item.description.substring(0, 120)}...</p>
+                        <div className="flex items-center space-x-4 text-xs text-gray-500">
+                          <span className="bg-gray-100 px-2 py-1 rounded">{item.category}</span>
+                          <span>{item.date}</span>
+                          <span className={`px-2 py-1 rounded font-semibold ${
+                            item.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            item.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {item.status}
+                          </span>
+                        </div>
+                      </div>
+                      <button onClick={() => handleDelete(item.id)} className="ml-4 bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600 font-semibold flex-shrink-0">
+                        Delete
+                      </button>
                     </div>
-                    <button onClick={() => handleDelete(item.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
-                      Delete
-                    </button>
                   </div>
                 </div>
               ))}
@@ -1309,42 +1324,59 @@ export default function AdminContent() {
 
             <div className="space-y-4">
               {allNews.map((newsItem) => (
-                <div key={newsItem.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg mb-1">{newsItem.title}</h3>
-                      <div className="flex gap-2 mb-2">
-                        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">📁 {newsItem.category}</span>
-                        {newsItem.status === 'approved' && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✅ Approved</span>}
-                        {newsItem.status === 'pending' && <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">⏳ Pending</span>}
-                        {newsItem.status === 'rejected' && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">❌ Rejected</span>}
+                <div key={newsItem.id} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="flex flex-col sm:flex-row">
+                    {/* Image Section */}
+                    {newsItem.image && (
+                      <div className="w-full sm:w-48 h-48 sm:h-auto bg-gray-200 flex-shrink-0">
+                        <img 
+                          src={newsItem.image} 
+                          alt={newsItem.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{newsItem.description.substring(0, 150)}...</p>
-                      <p className="text-xs text-gray-500">📅 {newsItem.date}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {newsItem.status !== 'approved' && (
+                    )}
+                    
+                    {/* Content Section */}
+                    <div className="flex-1 p-4 flex flex-col justify-between">
+                      <div>
+                        <h3 className="font-bold text-lg mb-1">{newsItem.title}</h3>
+                        <div className="flex gap-2 mb-2 flex-wrap">
+                          <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">📁 {newsItem.category}</span>
+                          {newsItem.status === 'approved' && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✅ Approved</span>}
+                          {newsItem.status === 'pending' && <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">⏳ Pending</span>}
+                          {newsItem.status === 'rejected' && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">❌ Rejected</span>}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{newsItem.description.substring(0, 150)}...</p>
+                        <p className="text-xs text-gray-500">📅 {newsItem.date}</p>
+                      </div>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {newsItem.status !== 'approved' && (
+                          <button
+                            onClick={() => handleApproveNewsArticle(newsItem.id)}
+                            className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 font-semibold"
+                          >
+                            ✅ Approve
+                          </button>
+                        )}
+                        {newsItem.status !== 'rejected' && (
+                          <button
+                            onClick={() => handleRejectNewsArticle(newsItem.id)}
+                            className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600 font-semibold"
+                          >
+                            🚫 Reject
+                          </button>
+                        )}
                         <button
-                          onClick={() => handleApproveNewsArticle(newsItem.id)}
-                          className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 font-semibold"
+                          onClick={() => handleDeleteNewsArticle(newsItem.id, newsItem.title)}
+                          className="bg-red-700 text-white px-3 py-1 rounded text-sm hover:bg-red-800 font-semibold"
                         >
-                          ✅ Approve
+                          🗑️ Delete
                         </button>
-                      )}
-                      {newsItem.status !== 'rejected' && (
-                        <button
-                          onClick={() => handleRejectNewsArticle(newsItem.id)}
-                          className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600 font-semibold"
-                        >
-                          🚫 Reject
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDeleteNewsArticle(newsItem.id, newsItem.title)}
-                        className="bg-red-700 text-white px-3 py-1 rounded text-sm hover:bg-red-800 font-semibold"
-                      >
-                        🗑️ Delete
-                      </button>
+                      </div>
                     </div>
                   </div>
                 </div>
