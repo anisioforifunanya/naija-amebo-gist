@@ -1072,8 +1072,46 @@ export default function AdminContent() {
       </div>
 
       {/* Rest of the dashboard JSX continues the same... */}
+      <div className="bg-white dark:bg-gray-800 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 py-4">
+            <nav className="flex space-x-4 overflow-x-auto flex-1">
+              {[
+                { id: 'news', label: 'News', icon: '📰' },
+                { id: 'admins', label: 'Admins', icon: '👑' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`py-4 px-4 border-b-2 font-semibold text-sm whitespace-nowrap transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700'
+                  }`}
+                >
+                  {tab.icon} {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Tab Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <p className="text-center text-gray-600">Dashboard content rendering...</p>
+        {activeTab === 'news' && (
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-lg font-semibold mb-4">📰 News Management</h2>
+            <p className="text-gray-600">News items: {news.length}</p>
+          </div>
+        )}
+
+        {activeTab === 'admins' && (
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-lg font-semibold mb-4">👑 Admin Management</h2>
+            <p className="text-gray-600">Admins: {allAdmins.length}</p>
+          </div>
+        )}
       </div>
     </div>
   )
