@@ -1128,6 +1128,63 @@ export default function AdminContent() {
         </div>
       </div>
 
+      {/* Quick Links Section */}
+      <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link
+              href="/admin"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">📊</span>
+              <span>Dashboard</span>
+            </Link>
+            <Link
+              href="/admin/user-presence"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">🟢</span>
+              <span>User Presence</span>
+            </Link>
+            <Link
+              href="/admin/analytics"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">📊</span>
+              <span>Analytics</span>
+            </Link>
+            <Link
+              href="/super-admin/geo-map"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">🗺️</span>
+              <span>Geo Map</span>
+            </Link>
+            <Link
+              href="/admin/community-moderation"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">🛡️</span>
+              <span>Community</span>
+            </Link>
+            <Link
+              href="/private-messages"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">💬</span>
+              <span>Messages</span>
+            </Link>
+            <Link
+              href="/setup-demo"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-semibold transition-all shadow-md"
+            >
+              <span className="text-lg">🚀</span>
+              <span>Setup Demo</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Tab Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {activeTab === 'news' && (
