@@ -1524,8 +1524,189 @@ export default function AdminContent() {
 
         {activeTab === 'settings' && (
           <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">⚙️ Settings</h2>
-            <p className="text-gray-600">Admin settings panel</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">⚙️ Admin Settings</h2>
+            
+            <div className="space-y-8">
+              {/* Platform Settings */}
+              <div className="border-b pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">📱 Platform Settings</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Maintenance Mode</p>
+                      <p className="text-sm text-gray-600">Put site in maintenance mode</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">User Registration</p>
+                      <p className="text-sm text-gray-600">Allow new user registrations</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Community Features</p>
+                      <p className="text-sm text-gray-600">Enable user interactions</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                </div>
+              </div>
+
+              {/* Content Moderation */}
+              <div className="border-b pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">🛡️ Content Moderation</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Auto-approve articles from verified users</label>
+                    <select className="w-full p-2 border rounded-lg">
+                      <option>Disabled</option>
+                      <option selected>Enabled</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Content filter sensitivity</label>
+                    <select className="w-full p-2 border rounded-lg">
+                      <option>Low</option>
+                      <option selected>Medium</option>
+                      <option>High</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Profanity Filter</p>
+                      <p className="text-sm text-gray-600">Filter offensive content</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Settings */}
+              <div className="border-b pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">📧 Email Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Notifications</label>
+                    <select className="w-full p-2 border rounded-lg">
+                      <option>All Events</option>
+                      <option selected>Critical Only</option>
+                      <option>Disabled</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Daily Report</p>
+                      <p className="text-sm text-gray-600">Receive daily activity reports</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Newsletter Summary</p>
+                      <p className="text-sm text-gray-600">Weekly content summary</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Notification Settings */}
+              <div className="border-b pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">🔔 Notifications</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Push Notifications</p>
+                      <p className="text-sm text-gray-600">Enable browser notifications</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">User Reports</p>
+                      <p className="text-sm text-gray-600">Notify on user reports</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Verification Pending</p>
+                      <p className="text-sm text-gray-600">Notify on pending verifications</p>
+                    </div>
+                    <input type="checkbox" className="w-5 h-5 cursor-pointer" defaultChecked />
+                  </div>
+                </div>
+              </div>
+
+              {/* Security Settings */}
+              <div className="border-b pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">🔐 Security</h3>
+                <div className="space-y-4">
+                  <button className="w-full p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-semibold">
+                    🔑 Change Password
+                  </button>
+                  <button className="w-full p-3 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 font-semibold">
+                    📝 Manage Two-Factor Authentication
+                  </button>
+                  <button className="w-full p-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 font-semibold">
+                    👤 View Active Sessions
+                  </button>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Session Timeout</p>
+                      <p className="text-sm text-gray-600">Auto-logout after inactivity</p>
+                    </div>
+                    <select className="p-1 border rounded">
+                      <option>15 min</option>
+                      <option selected>30 min</option>
+                      <option>1 hour</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Management */}
+              <div className="border-b pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">💾 Data Management</h3>
+                <div className="space-y-4">
+                  <button className="w-full p-3 bg-cyan-50 text-cyan-700 rounded-lg hover:bg-cyan-100 font-semibold">
+                    📥 Export Analytics Data
+                  </button>
+                  <button className="w-full p-3 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 font-semibold">
+                    🗑️ Clear Cache
+                  </button>
+                  <button className="w-full p-3 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 font-semibold">
+                    ⚠️ Reset to Defaults
+                  </button>
+                </div>
+              </div>
+
+              {/* Admin Information */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">ℹ️ Admin Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Admin Name</p>
+                    <p className="font-semibold text-gray-900">{currentAdmin?.firstName} {currentAdmin?.lastName}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Email</p>
+                    <p className="font-semibold text-gray-900">{currentAdmin?.email}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Role</p>
+                    <p className="font-semibold text-gray-900">{currentAdmin?.isSuperAdmin ? '👑 Super Admin' : '👤 Admin'}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Member Since</p>
+                    <p className="font-semibold text-gray-900">{currentAdmin?.createdAt ? new Date(currentAdmin.createdAt).toLocaleDateString() : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
