@@ -99,6 +99,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Suppress non-critical preload warnings */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              const originalWarn = console.warn;
+              console.warn = function(...args) {
+                const message = args[0]?.toString() || '';
+                if (message.includes('was preloaded using link preload')) {
+                  return; // Suppress preload warnings
+                }
+                return originalWarn.apply(console, args);
+              };
+            `
+          }}
+        />
         {/* Cache control meta tags for fresh content across all browsers */}
         <meta httpEquiv="cache-control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="pragma" content="no-cache" />
