@@ -1407,14 +1407,121 @@ export default function AdminContent() {
 
         {activeTab === 'users' && (
           <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">👥 User Moderation</h2>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">👥 User Moderation</h2>
+              <p className="text-sm text-gray-600">Review and manage user accounts and activity</p>
+            </div>
+
+            {/* User Statistics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Total Users</p>
+                <p className="text-2xl font-bold text-blue-600">{allUsers.length}</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Active Users</p>
+                <p className="text-2xl font-bold text-green-600">{allUsers.filter(u => !u.isBanned).length}</p>
+              </div>
+              <div className="bg-red-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Banned Users</p>
+                <p className="text-2xl font-bold text-red-600">{allUsers.filter(u => u.isBanned).length}</p>
+              </div>
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Verified Users</p>
+                <p className="text-2xl font-bold text-yellow-600">{allUsers.filter(u => u.isVerified).length}</p>
+              </div>
+            </div>
+
+            {/* Filter Options */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Status</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>All Users</option>
+                    <option>Active</option>
+                    <option>Banned</option>
+                    <option>Restricted</option>
+                    <option>Verified</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort by</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>Most Recent</option>
+                    <option>Oldest First</option>
+                    <option>Alphabetical</option>
+                    <option>Violations</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Search User</label>
+                  <input type="text" placeholder="Search by name, email or username" className="w-full p-2 border rounded-lg text-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* Users List */}
             <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900">Registered Users</h3>
               {allUsers.map((user) => (
-                <div key={user.id} className={`border rounded-lg p-4 ${user.isBanned ? 'bg-red-50' : ''}`}>
-                  <h3 className="font-medium">{user.firstName} {user.lastName}
-                    {user.isBanned && <span className="text-red-600 ml-2">🚫 BANNED</span>}
-                  </h3>
-                  <p className="text-sm text-gray-600">@{user.username} • {user.email}</p>
+                <div key={user.id} className={`border rounded-lg p-4 ${user.isBanned ? 'bg-red-50 border-red-300' : 'hover:bg-gray-50'} transition-colors`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-gray-900">{user.firstName} {user.lastName}</h3>
+                        {user.isVerified && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✅ Verified</span>}
+                        {user.isBanned && <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">🚫 Banned</span>}
+                        {user.isRestricted && <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">⚠️ Restricted</span>}
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">@{user.username} • {user.email}</p>
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                        <span>📍 {user.location || 'Location not set'}</span>
+                        <span>📱 {user.phone || 'Phone not provided'}</span>
+                        {user.createdAt && <span>📅 Joined {new Date(user.createdAt).toLocaleDateString()}</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Ban/Restriction Details */}
+                  {user.isBanned && user.banReason && (
+                    <div className="bg-red-100 border-l-4 border-red-500 p-3 rounded mb-3">
+                      <p className="text-sm font-semibold text-red-700">Ban Reason:</p>
+                      <p className="text-sm text-red-600">{user.banReason}</p>
+                    </div>
+                  )}
+                  
+                  {user.isRestricted && user.restrictionReason && (
+                    <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded mb-3">
+                      <p className="text-sm font-semibold text-yellow-700">Restriction Reason:</p>
+                      <p className="text-sm text-yellow-600">{user.restrictionReason}</p>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-2">
+                    {!user.isBanned && (
+                      <>
+                        <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-semibold">
+                          🚫 Ban User
+                        </button>
+                        <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-600 font-semibold">
+                          ⚠️ Restrict User
+                        </button>
+                      </>
+                    )}
+                    {user.isBanned && (
+                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-semibold">
+                        ✅ Unban User
+                      </button>
+                    )}
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 font-semibold">
+                      👁️ View Profile
+                    </button>
+                    <button className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-600 font-semibold">
+                      💬 Send Message
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
