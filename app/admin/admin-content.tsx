@@ -1387,20 +1387,131 @@ export default function AdminContent() {
 
         {activeTab === 'admins' && (
           <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">👑 Admin Management</h2>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">👑 Admin Management</h2>
+              <p className="text-sm text-gray-600">Manage administrators and their permissions</p>
+            </div>
+
+            {/* Admin Statistics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Total Admins</p>
+                <p className="text-2xl font-bold text-purple-600">{allAdmins.length}</p>
+              </div>
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Super Admins</p>
+                <p className="text-2xl font-bold text-blue-600">{allAdmins.filter(a => a.isSuperAdmin).length}</p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Regular Admins</p>
+                <p className="text-2xl font-bold text-green-600">{allAdmins.filter(a => !a.isSuperAdmin).length}</p>
+              </div>
+              <div className="bg-orange-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">Active Sessions</p>
+                <p className="text-2xl font-bold text-orange-600">{allAdmins.length}</p>
+              </div>
+            </div>
+
+            {/* Filter Options */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Role</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>All Admins</option>
+                    <option>Super Admin</option>
+                    <option>Regular Admin</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort by</label>
+                  <select className="w-full p-2 border rounded-lg text-sm">
+                    <option>Most Recent</option>
+                    <option>Oldest First</option>
+                    <option>Alphabetical</option>
+                    <option>Super Admin First</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Search Admin</label>
+                  <input type="text" placeholder="Search by name or email" className="w-full p-2 border rounded-lg text-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* Admins List */}
             <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900">Administrator Accounts</h3>
               {allAdmins.map((admin) => (
-                <div key={admin.id} className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">{admin.firstName} {admin.lastName}
-                        {admin.isSuperAdmin && <span className="text-purple-600 ml-2">👑 Super Admin</span>}
-                      </h3>
-                      <p className="text-sm text-gray-600">{admin.email}</p>
+                <div key={admin.id} className={`border rounded-lg p-4 ${admin.isSuperAdmin ? 'bg-purple-50 border-purple-200' : 'hover:bg-gray-50'} transition-colors`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-gray-900">{admin.firstName} {admin.lastName}</h3>
+                        {admin.isSuperAdmin && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">👑 Super Admin</span>}
+                        {!admin.isSuperAdmin && <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">⚙️ Admin</span>}
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{admin.email}</p>
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                        {admin.phone && <span>📱 {admin.phone}</span>}
+                        {admin.createdAt && <span>📅 Joined {new Date(admin.createdAt).toLocaleDateString()}</span>}
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Permissions/Bio */}
+                  {admin.bio && (
+                    <div className="bg-gray-100 p-3 rounded mb-3">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Bio:</span> {admin.bio}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Permissions List */}
+                  {admin.permissions && admin.permissions.length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-sm font-semibold text-gray-700 mb-2">Permissions:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {admin.permissions.map((perm, idx) => (
+                          <span key={idx} className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                            ✓ {perm}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-2">
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 font-semibold">
+                      ✏️ Edit Admin
+                    </button>
+                    <button className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-600 font-semibold">
+                      🔐 Manage Permissions
+                    </button>
+                    {admin.isSuperAdmin ? (
+                      <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-600 font-semibold">
+                        ⬇️ Demote to Admin
+                      </button>
+                    ) : (
+                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-semibold">
+                        ⬆️ Promote to Super Admin
+                      </button>
+                    )}
+                    <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-semibold">
+                      🗑️ Remove Admin
+                    </button>
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Add New Admin Button */}
+            <div className="mt-6 pt-6 border-t">
+              <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 font-bold text-lg transition-all shadow-lg">
+                ➕ Add New Administrator
+              </button>
             </div>
           </div>
         )}
